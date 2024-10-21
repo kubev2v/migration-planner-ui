@@ -155,5 +155,158 @@
     "status": "up-to-date",
     "statusInfo": "Inventory successfully collected",
     "updatedAt": "2024-08-29T12:10:47.917317Z"
+  },
+  {
+    "createdAt": "2024-08-29T11:28:04.161521Z",
+    "credentialUrl": "N/A",
+    "id": "29031FCA-3274-4067-A655-8BC4C322EA3C",
+    "inventory": {
+      "infra": {
+        "datastores": [
+          { "freeCapacityGB": 1146, "totalCapacityGB": 3071, "type": "VMFS" },
+          { "freeCapacityGB": 1222, "totalCapacityGB": 1273, "type": "VMFS" },
+          { "freeCapacityGB": 731, "totalCapacityGB": 766, "type": "VMFS" },
+          { "freeCapacityGB": 638, "totalCapacityGB": 766, "type": "VMFS" },
+          { "freeCapacityGB": 460, "totalCapacityGB": 766, "type": "VMFS" },
+          { "freeCapacityGB": 503, "totalCapacityGB": 766, "type": "VMFS" },
+          { "freeCapacityGB": 33, "totalCapacityGB": 77, "type": "NFS" },
+          { "freeCapacityGB": 740, "totalCapacityGB": 766, "type": "VMFS" }
+        ],
+        "hostPowerStates": { "green": 5 },
+        "hostsPerCluster": [5],
+        "networks": [
+          { "name": "vDSwitch0", "type": "distributed" },
+          { "name": "TestNetwork", "type": "distributed" },
+          { "name": "vDSwitch0-DVUplinks", "type": "distributed" },
+          { "name": "rhalle", "type": "distributed" },
+          { "name": "VM Network", "type": "distributed" },
+          { "name": "v375_10.46.52.x", "type": "distributed" },
+          { "name": "v370_10.46.48.x", "type": "distributed" },
+          { "name": "Management Network", "type": "distributed" },
+          { "name": "vMotion", "type": "distributed" },
+          { "name": "test-dummy-dswitch", "type": "distributed" }
+        ],
+        "totalClusters": 1,
+        "totalHosts": 5,
+        "vlans": [
+          "375",
+          "341",
+          "341",
+          "370",
+          "375",
+          "341",
+          "Range 0 - 4094",
+          "341",
+          "0",
+          "Range 0 - 4094"
+        ]
+      },
+      "vms": {
+        "cpuCores": {
+          "histogram": {
+            "data": [17, 21, 0, 8, 0, 0, 9],
+            "minValue": 1,
+            "step": 2
+          },
+          "total": 317,
+          "totalForMigratable": 0,
+          "totalForMigratableWithWarnings": 317,
+          "totalForNotMigratable": 0
+        },
+        "diskCount": {
+          "histogram": {
+            "data": [52, 1, 0, 1, 0, 0, 1],
+            "minValue": 0,
+            "step": 2
+          },
+          "total": 78,
+          "totalForMigratable": 0,
+          "totalForMigratableWithWarnings": 78,
+          "totalForNotMigratable": 0
+        },
+        "diskGB": {
+          "histogram": {
+            "data": [52, 2, 0, 0, 0, 0, 1],
+            "minValue": 0,
+            "step": 131
+          },
+          "total": 4948,
+          "totalForMigratable": 0,
+          "totalForMigratableWithWarnings": 4948,
+          "totalForNotMigratable": 0
+        },
+        "migrationWarnings": [
+          {
+            "assessment": "Changed Block Tracking (CBT) has not been enabled on this VM. This feature is a prerequisite for VM warm migration.",
+            "count": 55,
+            "label": "Changed Block Tracking (CBT) not enabled"
+          },
+          {
+            "assessment": "UEFI secure boot will be disabled on OpenShift Virtualization. If the VM was set with UEFI secure boot, manual steps within the guest would be needed for the guest operating system to boot.",
+            "count": 32,
+            "label": "UEFI detected"
+          },
+          {
+            "assessment": "The VM is configured with a TPM device. TPM data is not transferred during the migration.",
+            "count": 2,
+            "label": "VM configured with a TPM device"
+          },
+          {
+            "assessment": "The VM name must comply with the DNS subdomain name format defined in RFC 1123. The name can contain lowercase letters (a-z), numbers (0-9), and hyphens (-), up to a maximum of 63 characters. The first and last characters must be alphanumeric. The name must not contain uppercase letters, spaces, periods (.), or special characters. The VM will be renamed automatically during the migration to meet the RFC convention.",
+            "count": 23,
+            "label": "Invalid VM Name"
+          },
+          {
+            "assessment": "Independent disks cannot be transferred using recent versions of VDDK. It is recommended to change them in vSphere to 'Dependent' mode, or alternatively, to export the VM to an OVA.",
+            "count": 2,
+            "label": "Independent disk detected"
+          },
+          {
+            "assessment": "Hot pluggable CPU or memory is not currently supported by OpenShift Virtualization. Review CPU or memory configuration after migration.",
+            "count": 1,
+            "label": "CPU/Memory hotplug detected"
+          }
+        ],
+        "notMigratableReasons": [],
+        "os": {
+          "Amazon Linux 2 (64-bit)": 1,
+          "CentOS 7 (64-bit)": 1,
+          "CentOS 8 (64-bit)": 1,
+          "Microsoft Windows 10 (64-bit)": 1,
+          "Microsoft Windows 11 (64-bit)": 2,
+          "Microsoft Windows Server 2019 (64-bit)": 4,
+          "Other (32-bit)": 16,
+          "Other (64-bit)": 1,
+          "Other 2.6.x Linux (64-bit)": 2,
+          "Other 3.x or later Linux (64-bit)": 1,
+          "Other Linux (64-bit)": 1,
+          "Red Hat Enterprise Linux 8 (64-bit)": 4,
+          "Red Hat Enterprise Linux 9 (64-bit)": 12,
+          "Red Hat Fedora (64-bit)": 2,
+          "Ubuntu Linux (64-bit)": 3,
+          "VMware ESXi 8.0 or later": 1,
+          "VMware Photon CRX (64-bit)": 2
+        },
+        "powerStates": { "poweredOff": 32, "poweredOn": 23 },
+        "ramGB": {
+          "histogram": {
+            "data": [37, 5, 10, 2, 0, 0, 1],
+            "minValue": 0,
+            "step": 14
+          },
+          "total": 767,
+          "totalForMigratable": 0,
+          "totalForMigratableWithWarnings": 767,
+          "totalForNotMigratable": 0
+        },
+        "total": 45,
+        "totalMigratable": 45,
+        "totalMigratableWithWarnings": 45
+      }
+    },
+    "name": "ams-vcenter-prod-2",
+    "status": "up-to-date",
+    "statusInfo": "Inventory successfully collected",
+    "updatedAt": "2024-08-29T12:10:47.917317Z"
   }
 ]

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import {
   Stack,
   StackItem,
@@ -13,14 +13,25 @@ import {
   Icon,
   Alert,
   AlertActionLink,
+  Button,
 } from "@patternfly/react-core";
-import { ClusterIcon } from "@patternfly/react-icons";
+import { chart_color_blue_300 as blueColor } from "@patternfly/react-tokens/dist/esm/chart_color_blue_300";
+import { ClusterIcon, PlusCircleIcon } from "@patternfly/react-icons";
 import { SourcesTable } from "#/migration-wizard/steps/connect/sources-table/SourcesTable";
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
+import { DiscoverySourceSetupModal } from "./sources-table/empty-state/DiscoverySourceSetupModal";
 
 export const ConnectStep: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
   const [firstSource, ..._otherSources] = discoverySourcesContext.sources;
+  const [
+    shouldShowDiscoverySourceSetupModal,
+    setShouldShowDiscoverySetupModal,
+  ] = useState(false);
+
+  const toggleDiscoverySourceSetupModal = useCallback((): void => {
+    setShouldShowDiscoverySetupModal((lastState) => !lastState);
+  }, []);
 
   return (
     <Stack hasGutter>
@@ -91,6 +102,31 @@ export const ConnectStep: React.FC = () => {
             <SourcesTable />
           </PanelMain>
         </Panel>
+      </StackItem>
+      <StackItem>
+        <Button
+          variant="secondary"
+          onClick={toggleDiscoverySourceSetupModal}
+          style={{ marginTop: "1rem" }}
+          icon={<PlusCircleIcon color={blueColor.value} />}
+        >
+          Add source
+        </Button>
+        {shouldShowDiscoverySourceSetupModal && (
+          <DiscoverySourceSetupModal
+            isOpen={shouldShowDiscoverySourceSetupModal}
+            onClose={toggleDiscoverySourceSetupModal}
+            isDisabled={discoverySourcesContext.isDownloadingSource}
+            onSubmit={async (event) => {
+              const form = event.currentTarget;
+              const name = form["discoverySourceName"].value as string;
+              const sshKey = form["discoverySourceSshKey"].value as string;
+              await discoverySourcesContext.downloadSource(name, sshKey);
+              toggleDiscoverySourceSetupModal();
+              await discoverySourcesContext.listSources();
+            }}
+          />
+        )}
       </StackItem>
     </Stack>
   );
