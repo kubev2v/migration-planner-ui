@@ -32,6 +32,7 @@ export const ConnectStep: React.FC = () => {
   const toggleDiscoverySourceSetupModal = useCallback((): void => {
     setShouldShowDiscoverySetupModal((lastState) => !lastState);
   }, []);
+  const hasSources = discoverySourcesContext.sources.length > 0;
 
   return (
     <Stack hasGutter>
@@ -104,14 +105,16 @@ export const ConnectStep: React.FC = () => {
         </Panel>
       </StackItem>
       <StackItem>
-        <Button
-          variant="secondary"
-          onClick={toggleDiscoverySourceSetupModal}
-          style={{ marginTop: "1rem" }}
-          icon={<PlusCircleIcon color={blueColor.value} />}
-        >
-          Add source
-        </Button>
+        {hasSources && (
+          <Button
+            variant="secondary"
+            onClick={toggleDiscoverySourceSetupModal}
+            style={{ marginTop: "1rem" }}
+            icon={<PlusCircleIcon color={blueColor.value} />}
+          >
+            Add source
+          </Button>
+        )}
         {shouldShowDiscoverySourceSetupModal && (
           <DiscoverySourceSetupModal
             isOpen={shouldShowDiscoverySourceSetupModal}
