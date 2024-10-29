@@ -130,6 +130,17 @@ export const ConnectStep: React.FC = () => {
             }}
           />
         )}
+        </StackItem>
+        <StackItem>
+        {discoverySourcesContext.errorDownloadingSource && (
+        <Alert
+        isInline
+        variant="danger"
+        title="Download OVA image server error"
+      >
+        Please try again in a few minutes
+        </Alert>
+      )}
       </StackItem>
     </Stack>
   );
