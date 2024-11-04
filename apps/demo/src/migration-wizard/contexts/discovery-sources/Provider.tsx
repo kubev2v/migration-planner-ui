@@ -8,9 +8,12 @@ import { type SourceApiInterface } from "@migration-planner-ui/api-client/apis";
 import { useInjection } from "@migration-planner-ui/ioc";
 import { Symbols } from "#/main/Symbols";
 import { Context } from "./Context";
+import { Source } from "@migration-planner-ui/api-client/models";
 
 export const Provider: React.FC<PropsWithChildren> = (props) => {
   const { children } = props;
+
+  const [sourceSelected, setSourceSelected] = useState<Source | null>(null)
 
   const sourceApi = useInjection<SourceApiInterface>(Symbols.SourceApi);
 
@@ -70,6 +73,10 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     listSources();
   }, pollingDelay);
 
+  const selectSource = useCallback((source: Source) => {
+    setSourceSelected(source);
+  }, []);
+
   const ctx: DiscoverySources.Context = {
     sources: listSourcesState.value ?? [],
     isLoadingSources: listSourcesState.loading,
@@ -87,6 +94,8 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     downloadSource,
     startPolling,
     stopPolling,
+    sourceSelected: sourceSelected,
+    selectSource,
   };
 
   return <Context.Provider value={ctx}>{children}</Context.Provider>;

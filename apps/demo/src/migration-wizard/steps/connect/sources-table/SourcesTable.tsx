@@ -7,6 +7,8 @@ import { Columns } from "./Columns";
 import { DEFAULT_POLLING_DELAY, VALUE_NOT_AVAILABLE } from "./Constants";
 import { SourceStatusView } from "./SourceStatusView";
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
+import { Radio } from "@patternfly/react-core";
+import { Source } from "@migration-planner-ui/api-client/models";
 
 export const SourcesTable: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
@@ -52,7 +54,18 @@ export const SourcesTable: React.FC = () => {
         {hasSources ? (
           discoverySourcesContext.sources.map((src) => (
             <Tr key={src.id}>
-              <Td dataLabel={Columns.Name}>{src.name}</Td>
+              <Td dataLabel={Columns.Name}>
+                {" "}
+                <Radio
+                  id={src.id}
+                  name="source-selection"
+                  label={src.name}
+                  isChecked={
+                    discoverySourcesContext.sourceSelected?.id === src.id
+                  }
+                  onChange={() => discoverySourcesContext.selectSource(src)}
+                />
+              </Td>
               <Td dataLabel={Columns.Status}>
                 <SourceStatusView
                   status={src.status}
