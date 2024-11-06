@@ -36,21 +36,32 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
 
   const [downloadSourceState, downloadSource] = useAsyncFn(
     async (sourceName: string, sourceSshKey: string): Promise<void> => {
-      const anchor = document.createElement("a");
-      anchor.download = sourceName + ".ova";
-
-      const newSource = await createSource(sourceName, sourceSshKey);
-      // TODO(jkilzi): See: ECOPROJECT-2192. 
-      // Then don't forget to  remove the '/planner/' prefix in production.
-      // const image = await sourceApi.getSourceImage({ id: newSource.id }); // This API is useless in production
-      // anchor.href = URL.createObjectURL(image); // Don't do this...
-      anchor.href = `/planner/api/v1/sources/${newSource.id}/image`;
-
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
+      try {
+        const newSource = await createSource(sourceName, sourceSshKey);
+        const url = `/planner/api/v1/sources/${newSource.id}/image`;
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const blob = await response.blob();
+        const anchor = document.createElement("a");
+        anchor.download = sourceName + ".ova";
+        anchor.href = URL.createObjectURL(blob);
+        
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        URL.revokeObjectURL(anchor.href);
+      } catch (error) {
+        downloadSourceState.error = error as Error;
+        console.error("Error downloading source:", error);
+        throw error; // Re-lanza el error para que useAsyncFn lo capture
+      }
     }
   );
+
 
   const [isPolling, setIsPolling] = useState(false);
   const [pollingDelay, setPollingDelay] = useState<number | null>(null);
