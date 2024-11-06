@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Stack,
   StackItem,
@@ -23,7 +23,6 @@ import { DiscoverySourceSetupModal } from "./sources-table/empty-state/Discovery
 
 export const ConnectStep: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
-  const [firstSource, ..._otherSources] = discoverySourcesContext.sources;
   const [
     shouldShowDiscoverySourceSetupModal,
     setShouldShowDiscoverySetupModal,
@@ -33,6 +32,14 @@ export const ConnectStep: React.FC = () => {
     setShouldShowDiscoverySetupModal((lastState) => !lastState);
   }, []);
   const hasSources = discoverySourcesContext.sources.length > 0;
+  const [firstSource, ..._otherSources] = discoverySourcesContext.sources;
+  
+  useEffect(() => {
+    if (!discoverySourcesContext.sourceSelected && firstSource) {
+      discoverySourcesContext.selectSource(firstSource);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstSource]);
 
   return (
     <Stack hasGutter>
@@ -62,7 +69,8 @@ export const ConnectStep: React.FC = () => {
             </ListItem>
           </List>
         </TextContent>
-        {firstSource?.status === "waiting-for-credentials" && (
+        {discoverySourcesContext.sourceSelected?.status ===
+          "waiting-for-credentials" && (
           <Alert
             isInline
             variant="custom"
@@ -70,11 +78,11 @@ export const ConnectStep: React.FC = () => {
             actionLinks={
               <AlertActionLink
                 component="a"
-                href={firstSource.credentialUrl}
+                href={discoverySourcesContext.sourceSelected?.credentialUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {firstSource.credentialUrl}
+                {discoverySourcesContext.sourceSelected?.credentialUrl}
               </AlertActionLink>
             }
           >
@@ -130,15 +138,11 @@ export const ConnectStep: React.FC = () => {
             }}
           />
         )}
-        </StackItem>
-        <StackItem>
+      </StackItem>
+      <StackItem>
         {discoverySourcesContext.errorDownloadingSource && (
-        <Alert
-        isInline
-        variant="danger"
-        title="Download Source error"        
-      />
-      )}
+          <Alert isInline variant="danger" title="Download Source error" />
+        )}
       </StackItem>
     </Stack>
   );

@@ -25,15 +25,21 @@ export const SourcesTable: React.FC = () => {
   });
 
   useEffect(() => {
-    if (["error", "up-to-date"].includes(firstSource?.status)) {
+    if (
+      ["error", "up-to-date"].includes(
+        discoverySourcesContext.sourceSelected?.status
+      )
+    ) {
       discoverySourcesContext.stopPolling();
       return;
     } else {
       discoverySourcesContext.startPolling(DEFAULT_POLLING_DELAY);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstSource?.status]);
+  }, [discoverySourcesContext.sourceSelected?.status]);
 
+  
+  
   return (
     <Table aria-label="Sources table" variant="compact" borders={false}>
       {hasSources && (
@@ -60,9 +66,9 @@ export const SourcesTable: React.FC = () => {
                   name="source-selection"
                   label={src.name}
                   isChecked={
-                    discoverySourcesContext.sourceSelected !== undefined
+                    discoverySourcesContext.sourceSelected
                       ? discoverySourcesContext.sourceSelected?.id === src.id
-                      : firstSource.src.id === src.id
+                      : firstSource.id === src.id
                   }
                   onChange={() => discoverySourcesContext.selectSource(src)}
                 />
