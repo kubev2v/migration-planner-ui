@@ -60,7 +60,9 @@ export const SourcesTable: React.FC = () => {
                   name="source-selection"
                   label={src.name}
                   isChecked={
-                    discoverySourcesContext.sourceSelected?.id === src.id
+                    discoverySourcesContext.sourceSelected !== undefined
+                      ? discoverySourcesContext.sourceSelected?.id === src.id
+                      : firstSource.src.id === src.id
                   }
                   onChange={() => discoverySourcesContext.selectSource(src)}
                 />

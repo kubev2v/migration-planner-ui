@@ -152,7 +152,7 @@
       }
     },
     "name": "ams-vcenter-prod-1",
-    "status": "up-to-date",
+    "status": "gathering-initial-inventory",
     "statusInfo": "Inventory successfully collected",
     "updatedAt": "2024-08-29T12:10:47.917317Z"
   },

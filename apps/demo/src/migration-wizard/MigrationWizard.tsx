@@ -13,10 +13,8 @@ const openAssistedInstaller = (): void => {
 export const MigrationWizard: React.FC = () => {
   const computedHeight = useComputedHeightFromPageHeader();
   const discoverSourcesContext = useDiscoverySources();
-  const [firstSource, ..._otherSources] = discoverSourcesContext.sources;
-  const isDiscoverySourceUpToDate = firstSource?.status === "up-to-date";
-  const noSourcesInReadyState = discoverSourcesContext.sources.every(source => source.status !== 'up-to-date');
-
+  const isDiscoverySourceUpToDate = discoverSourcesContext.sourceSelected?.status === "up-to-date";
+  
   return (
     <Wizard height={computedHeight}>
       <WizardStep
@@ -33,7 +31,7 @@ export const MigrationWizard: React.FC = () => {
         name="Discover"
         id="discover-step"
         footer={{ isCancelHidden: true }}
-        isDisabled={noSourcesInReadyState}
+        isDisabled={discoverSourcesContext.sourceSelected?.status !== 'up-to-date'}
       >
         <DiscoveryStep />
       </WizardStep>
@@ -44,7 +42,7 @@ export const MigrationWizard: React.FC = () => {
           nextButtonText: "Let's create a new cluster",
           onNext: openAssistedInstaller,
         }}
-        isDisabled={noSourcesInReadyState}
+        isDisabled={discoverSourcesContext.sourceSelected?.status !== 'up-to-date'}
       >
         <PrepareMigrationStep />
       </WizardStep>
