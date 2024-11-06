@@ -38,8 +38,7 @@ import { ReportBarChart } from "./ReportBarChart";
 
 export const DiscoveryStep: React.FC = () => {
   const discoverSourcesContext = useDiscoverySources();
-  const [firstSource, ..._otherSources] = discoverSourcesContext.sources;
-  const { inventory } = firstSource as Source;
+  const { inventory } = discoverSourcesContext.sourceSelected as Source;
   const { infra, vms } = inventory!;
   const {
     datastores,

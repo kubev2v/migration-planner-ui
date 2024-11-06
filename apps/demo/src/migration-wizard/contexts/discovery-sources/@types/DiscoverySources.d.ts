@@ -10,11 +10,13 @@ declare namespace DiscoverySources {
     isDownloadingSource: boolean;
     errorDownloadingSource?: Error;
     isPolling: boolean;
+    sourceSelected: Source;
     listSources: () => Promise<Source[]>;
     deleteSource: (id: string) => Promise<Source>;
     createSource: (name: string, sourceSshKey: string) => Promise<Source>;
     downloadSource: (sourceName: string, sourceSshKey: string) => Promise<void>;
     startPolling: (delay: number) => void;
     stopPolling: () => void;
+    selectSource: (source:Source) => void;
   };
 }
