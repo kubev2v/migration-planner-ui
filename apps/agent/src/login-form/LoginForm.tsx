@@ -189,6 +189,14 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
             >
               Login
             </Button>
+            {vm.formState === FormStates.CredentialsAccepted && (
+          <Button
+            variant="secondary"
+            onClick={vm.handleReturnToAssistedMigration}
+            style={{ marginLeft: '16px' }}
+          >
+            Return to Assisted Migration
+          </Button>)}
           </SplitItem>
           <SplitItem isFilled></SplitItem>
           <SplitItem style={{ paddingRight: "2rem" }}>

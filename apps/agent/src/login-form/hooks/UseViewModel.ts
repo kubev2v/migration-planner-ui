@@ -33,6 +33,7 @@ export interface LoginFormViewModelInterface {
   alertActionLinkText?: string;
   shouldDisplayAlert: boolean;
   handleSubmit: React.FormEventHandler<HTMLFormElement>;
+  handleReturnToAssistedMigration: () => void;
 }
 
 const _computeFormControlVariant = (
@@ -218,5 +219,8 @@ export const useViewModel = (): LoginFormViewModelInterface => {
       },
       [agentApi, navigateTo]
     ),
+    handleReturnToAssistedMigration: useCallback(() => {
+      window.open('http://localhost:3000/migrate', '_blank', 'noopener,noreferrer'); // Abre en una nueva pestaña
+    }, []),
   };
 };
