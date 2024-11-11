@@ -220,7 +220,8 @@ export const useViewModel = (): LoginFormViewModelInterface => {
       [agentApi, navigateTo]
     ),
     handleReturnToAssistedMigration: useCallback(() => {
-      window.open('http://localhost:3000/migrate', '_blank', 'noopener,noreferrer'); // Abre en una nueva pestaña
+      const assistedMigrationUrl = import.meta.env.ASSISTED_MIGRATION_URL || 'http://localhost:3000/migrate';
+      window.open(assistedMigrationUrl, '_blank', 'noopener,noreferrer');
     }, []),
   };
 };
