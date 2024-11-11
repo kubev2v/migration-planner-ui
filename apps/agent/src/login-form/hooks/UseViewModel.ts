@@ -220,7 +220,7 @@ export const useViewModel = (): LoginFormViewModelInterface => {
       [agentApi, navigateTo]
     ),
     handleReturnToAssistedMigration: useCallback(() => {
-      const assistedMigrationUrl = import.meta.env.ASSISTED_MIGRATION_URL || 'http://localhost:3000/migrate';
+      const assistedMigrationUrl = import.meta.env.ASSISTED_MIGRATION_URL || 'http://localhost:3000/migrate/wizard';
       window.open(assistedMigrationUrl, '_blank', 'noopener,noreferrer');
     }, []),
   };
