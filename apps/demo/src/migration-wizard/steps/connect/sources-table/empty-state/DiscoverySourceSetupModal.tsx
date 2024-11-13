@@ -20,6 +20,7 @@ import * as Yup from 'yup';
 const SSH_PUBLIC_KEY_REGEX =
   /^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+/]+[=]{0,3}( .*)?$/;
 
+// eslint-disable-next-line react-refresh/only-export-components, @typescript-eslint/explicit-function-return-type
 export const trimSshPublicKey = (key: string) =>
   key
     .split('\n')
@@ -28,6 +29,7 @@ export const trimSshPublicKey = (key: string) =>
     .join('\n');
 
 // Define your validation schema
+// eslint-disable-next-line react-refresh/only-export-components
 export const sshPublicKeyValidationSchema = Yup.string().test(
   'ssh-public-key',
   'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT]. A single key can be provided only.',
@@ -56,6 +58,7 @@ export const DiscoverySourceSetupModal: React.FC<DiscoverySourceSetupModalProps>
   const [sshKeyErrorMessage, setSshKeyErrorMessage] = useState("");
 
   // Validate SSH key when it changes
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleSshKeyChange = async (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = event.target.value;
     setSshKey(value);

@@ -45,6 +45,7 @@ jobs:
           echo "skip=${skip}" >> $GITHUB_OUTPUT
           echo "skip=${skip}"
   lint-and-build:
+    # Execute lint and build when a PR is ready
     needs: preflight-check
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
@@ -60,7 +61,7 @@ jobs:
         run: |
           corepack enable
           corepack prepare yarn@4.5.0 --activate
-          
+
       - run: yarn install --immutable
       - run: yarn all:lint
       - run: yarn all:build
