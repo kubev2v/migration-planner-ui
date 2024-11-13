@@ -17,7 +17,7 @@ env:
   ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
 jobs:
   preflight-check:
-    # Prevents running the workflow when a PR is marked as draft.
+  # Prevents running the workflow when a PR is marked as draft.
     runs-on: ubuntu-latest
     outputs:
       skip: ${{ steps.check.outputs.skip }}
@@ -44,6 +44,7 @@ jobs:
           fi
           echo "skip=${skip}" >> $GITHUB_OUTPUT
           echo "skip=${skip}"
+
   lint-and-build:
     # Execute lint and build when a PR is ready
     needs: preflight-check
