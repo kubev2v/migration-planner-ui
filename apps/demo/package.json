@@ -32,6 +32,7 @@
     "react-use": "^17.5.1"
   },
   "devDependencies": {
-    "@types/humanize-plus": "^1"
+    "@types/humanize-plus": "^1",
+    "@types/node": "^22.9.0"
   }
 }
