@@ -75,6 +75,8 @@ export const useViewModel = (): LoginFormViewModelInterface => {
         setFormState(FormStates.WaitingForCredentials);
         break;
       case SourceStatus.SourceStatusGatheringInitialInventory:
+        setFormState(FormStates.GatheringInventory);
+        break;
       case SourceStatus.SourceStatusUpToDate:
         setFormState(FormStates.CredentialsAccepted);
         break;
@@ -135,7 +137,7 @@ export const useViewModel = (): LoginFormViewModelInterface => {
           return [
             {
               id: 1,
-              text: "The Migration Planner has connected to your VMware environment",
+              text: "The migration discovery WM is connected to your VMware environment",
             },
           ];
         case FormStates.InvalidCredentials:
@@ -161,6 +163,7 @@ export const useViewModel = (): LoginFormViewModelInterface => {
           FormStates.CheckingStatus,
           FormStates.WaitingForCredentials,
           FormStates.Submitting,
+          FormStates.GatheringInventory
         ].includes(formState),
       [formState]
     ),

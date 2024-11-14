@@ -5,4 +5,5 @@ export const enum FormStates {
   CredentialsAccepted = "credentialsAccepted",
   CredentialsRejected = "credentialsRejected",
   InvalidCredentials = "invalidCredentials",
+  GatheringInventory = "gatheringInventory"
 }

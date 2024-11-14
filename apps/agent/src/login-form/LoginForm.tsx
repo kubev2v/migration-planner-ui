@@ -21,9 +21,12 @@ import {
   Spinner,
   SplitItem,
   Split,
+  Icon,
 } from "@patternfly/react-core";
 import { LoginFormViewModelInterface } from "./hooks/UseViewModel";
 import { FormStates } from "./FormStates";
+import { CheckCircleIcon } from "@patternfly/react-icons";
+import globalSuccessColor100 from "@patternfly/react-tokens/dist/esm/global_success_color_100";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace LoginForm {
@@ -34,7 +37,7 @@ export namespace LoginForm {
 
 export const LoginForm: React.FC<LoginForm.Props> = (props) => {
   const { vm } = props;
-
+  console.log(vm.formState);
   return (
     <Card
       style={{ width: "36rem" }}
@@ -45,21 +48,32 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
     >
       <CardHeader id="card-header-title">
         <TextContent>
-          <Text component="h2">Migration Planner </Text>
+          <Text component="h2">Migration Discovery VM</Text>
           <Text>
-            The Migration Planner requires access to your VMware environment to
-            execute a comprehensive discovery process that gathers essential
-            data, including network topology, storage configuration, and virtual
-            machine inventory. The process leverages this information to provide
-            tailored recommendations for a seamless workload transition to
-            OpenShift Virtualization.
+            The migration discovery VM requires access to your VMware
+            environment to execute a discovery process that gathers essential
+            data, including network topology, storage configuration, and VM
+            inventory. The process leverages this information to provide
+            recommendations for a seamless migration to OpenShift
+            Virtualization.
           </Text>
         </TextContent>
       </CardHeader>
 
-      <CardBody id="card-body-description">
+      <CardBody
+        id="card-body-description"
+       
+      >
         <Form ref={vm.formRef} onSubmit={vm.handleSubmit} id="login-form">
-          <FormGroup label="URL" isRequired fieldId="url-form-control">
+          <FormGroup
+            label="Environment URL"
+            isRequired
+            fieldId="url-form-control"
+            hidden={
+              vm.formState === FormStates.GatheringInventory ||
+              vm.formState === FormStates.CredentialsAccepted
+            }
+          >
             <TextInput
               validated={vm.urlControlStateVariant}
               isDisabled={vm.shouldDisableFormControl}
@@ -86,9 +100,13 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
           </FormGroup>
 
           <FormGroup
-            label="Username"
+            label="WMware Username"
             isRequired
             fieldId="username-form-control"
+            hidden={
+              vm.formState === FormStates.GatheringInventory ||
+              vm.formState === FormStates.CredentialsAccepted
+            }
           >
             <TextInput
               validated={vm.usernameControlStateVariant}
@@ -118,6 +136,10 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
             label="Password"
             isRequired
             fieldId="password-form-control"
+            hidden={
+              vm.formState === FormStates.GatheringInventory ||
+              vm.formState === FormStates.CredentialsAccepted
+            }
           >
             <TextInput
               validated={vm.passwordControlStateVariant}
@@ -142,7 +164,10 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
             )}
           </FormGroup>
 
-          <FormGroup fieldId="checkbox-form-control">
+          <FormGroup fieldId="checkbox-form-control"  hidden={
+          vm.formState === FormStates.GatheringInventory ||
+          vm.formState === FormStates.CredentialsAccepted
+        }>
             <Checkbox
               isDisabled={vm.shouldDisableFormControl}
               id="checkbox-form-control"
@@ -178,25 +203,53 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
         </Form>
       </CardBody>
 
+      <CardBody
+        id="card-body-discovery-status"
+        hidden={
+          vm.formState !== FormStates.GatheringInventory &&
+          vm.formState !== FormStates.CredentialsAccepted
+        }
+      >
+        {vm.formState === FormStates.GatheringInventory && (
+          <Text component="p" style={{ textAlign: "center" }}>
+          <Icon size="xl" >
+            <Spinner />
+          </Icon>
+          <br/>Gathering inventory...
+        </Text>
+          
+        )}
+        {vm.formState === FormStates.CredentialsAccepted && (
+          <Text component="p" style={{ textAlign: "center" }}>
+          <Icon size="xl" isInline>
+            <CheckCircleIcon color={globalSuccessColor100.value} />
+          </Icon>
+          <br/>Discovery completed
+        </Text>
+          
+        )}
+      </CardBody>
       <CardFooter>
         <Split style={{ alignItems: "flex-end" }}>
           <SplitItem>
+          {vm.formState !== FormStates.CredentialsAccepted && vm.formState !== FormStates.GatheringInventory && (
             <Button
               type="submit"
               variant="primary"
               isDisabled={vm.shouldDisableFormControl}
               form="login-form"
             >
-              Login
-            </Button>
-            {vm.formState === FormStates.CredentialsAccepted && (
-          <Button
-            variant="secondary"
-            onClick={vm.handleReturnToAssistedMigration}
-            style={{ marginLeft: '16px' }}
-          >
-            Return to Assisted Migration
-          </Button>)}
+              Log in
+            </Button>)}
+            {(vm.formState === FormStates.CredentialsAccepted || vm.formState === FormStates.GatheringInventory) && (
+              <Button
+                variant="primary"
+                onClick={vm.handleReturnToAssistedMigration}
+                style={{ marginLeft: "16px" }}
+              >
+                Go back to assessment wizard
+              </Button>
+            )}
           </SplitItem>
           <SplitItem isFilled></SplitItem>
           <SplitItem style={{ paddingRight: "2rem" }}>
