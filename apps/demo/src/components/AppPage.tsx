@@ -14,6 +14,7 @@ import {
   PageHeader,
   PageHeaderTitle,
 } from "@redhat-cloud-services/frontend-components/PageHeader";
+import { getMigrationPlannerUiVersion } from "#/common/version";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace AppPage {
@@ -40,6 +41,9 @@ export const AppPage: React.FC<React.PropsWithChildren<AppPage.Props>> = (
               </BreadcrumbItem>
             ))}
           </Breadcrumb>
+          <div data-testid="migration-planner-ui-version" hidden>
+            {getMigrationPlannerUiVersion()}
+          </div>
         </PageBreadcrumb>
         <PageHeader>
           <PageHeaderTitle title={title} />
