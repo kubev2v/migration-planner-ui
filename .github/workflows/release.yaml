@@ -73,7 +73,7 @@ jobs:
             -H "Content-Type: application/gzip" \
             --data-binary @apps/agent/dist/agent-latest.tgz \
             "${upload_url}?name=agent-latest.tgz"
-publish-to-npm:
+  publish-to-npm:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -89,7 +89,8 @@ publish-to-npm:
           corepack prepare yarn@4.5.0 --activate
 
       - name: Publish to NPM 
-        run: npm ci
-        run: npm run build
-        run: npm publish
+        run: |
+          npm ci
+          npm run build
+          npm publish
    
