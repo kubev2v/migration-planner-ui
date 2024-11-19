@@ -15,32 +15,6 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@patternfly/react-core/next";
-import * as Yup from 'yup';
-
-const SSH_PUBLIC_KEY_REGEX =
-  /^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+/]+[=]{0,3}( .*)?$/;
-
-// eslint-disable-next-line react-refresh/only-export-components, @typescript-eslint/explicit-function-return-type
-export const trimSshPublicKey = (key: string) =>
-  key
-    .split('\n')
-    .map((row) => row.trim())
-    .filter(Boolean)
-    .join('\n');
-
-// Define your validation schema
-// eslint-disable-next-line react-refresh/only-export-components
-export const sshPublicKeyValidationSchema = Yup.string().test(
-  'ssh-public-key',
-  'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT]. A single key can be provided only.',
-  (value?: string) => {
-    if (!value) {
-      return true;
-    }
-
-    return !!trimSshPublicKey(value).match(SSH_PUBLIC_KEY_REGEX);
-  },
-);
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace DiscoverySourceSetupModal {
@@ -52,38 +26,51 @@ export namespace DiscoverySourceSetupModal {
   };
 }
 
-// Your component
 export const DiscoverySourceSetupModal: React.FC<
   DiscoverySourceSetupModal.Props
 > = (props) => {
   const { isOpen = false, isDisabled = false, onClose, onSubmit } = props;
-
   const [sshKey, setSshKey] = useState("");
-  const [isSshKeyValid, setIsSshKeyValid] = useState<true | false | undefined>(undefined);
-  const [sshKeyErrorMessage, setSshKeyErrorMessage] = useState("");
+  const [sshKeyError, setSshKeyError] = useState<string | null>(null);
 
-  // Validate SSH key when it changes
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleSshKeyChange = async (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = event.target.value;
+  const validateSshKey = useCallback((key: string): string | null => {
+    // SSH key validation regex patterns
+    const SSH_KEY_PATTERNS = {
+      RSA: /^ssh-rsa\s+[A-Za-z0-9+/]+[=]{0,2}(\s+.*)?$/,
+      ED25519: /^ssh-ed25519\s+[A-Za-z0-9+/]+[=]{0,2}(\s+.*)?$/,
+      ECDSA: /^ssh-(ecdsa|sk-ecdsa)-sha2-nistp[0-9]+\s+[A-Za-z0-9+/]+[=]{0,2}(\s+.*)?$/,
+    };
+
+    // Optional field, so empty is valid
+    if (!key) return null;
+
+    // Check if the key matches any of the known SSH key formats
+    const isValidKey = Object.values(SSH_KEY_PATTERNS).some(pattern => pattern.test(key.trim()));
+
+    return isValidKey ? null : "Invalid SSH key format. Please provide a valid SSH public key.";
+  }, []);
+
+  const handleSshKeyChange = (value: string): void => {
     setSshKey(value);
-    const isValid = await sshPublicKeyValidationSchema.isValid(value);
-    setIsSshKeyValid(isValid);
-    if (!isValid) {
-      setSshKeyErrorMessage("SSH key is not valid.");
-    } else {
-      setSshKeyErrorMessage("");
-    }
+    setSshKeyError(validateSshKey(value));
   };
 
   const handleSubmit = useCallback<React.FormEventHandler<HTMLFormElement>>(
     (event) => {
       event.preventDefault();
+
+      // Validate SSH key before submission
+      const keyValidationError = validateSshKey(sshKey);
+      if (keyValidationError) {
+        setSshKeyError(keyValidationError);
+        return;
+      }
+
       if (onSubmit) {
         onSubmit(event);
       }
     },
-    [onSubmit]
+    [onSubmit, sshKey, validateSshKey]
   );
 
   return (
@@ -132,33 +119,22 @@ export const DiscoverySourceSetupModal: React.FC<
           </FormGroup>
           <FormGroup
             label="SSH Key"
-            isRequired
             fieldId="discovery-source-sshkey-form-control"
           >
             <TextArea
               id="discovery-source-sshkey-form-control"
               name="discoverySourceSshKey"
-              type="text"
-              placeholder="Example: ssh-rsa AA...a"
-              isRequired
-              aria-describedby="sshkey-helper-text"
               value={sshKey}
-              onChange={(value) => handleSshKeyChange(value)}
-              validated={isSshKeyValid === undefined ? "default" : isSshKeyValid ? "success" : "error"}
+              onChange={(_, value) => handleSshKeyChange(value)}
+              type="text"
+              placeholder="Example: ssh-rsa AAAAB3NzaC1yc2E..."
+              aria-describedby="sshkey-helper-text"
+              validated={sshKeyError ? 'error' : 'default'}
             />
-            {!isSshKeyValid && (
-              <FormHelperText>
-                <HelperText>
-                  <HelperTextItem variant="error" id="sshkey-helper-text">
-                    {sshKeyErrorMessage}
-                  </HelperTextItem>
-                </HelperText>
-              </FormHelperText>
-            )}
             <FormHelperText>
               <HelperText>
-                <HelperTextItem variant="default" id="sshkey-helper-text">
-                  Enter your SSH public key to enable SSH access to the OVA image.
+                <HelperTextItem variant={sshKeyError ? 'error' : 'default'} id="sshkey-helper-text">
+                  {sshKeyError || "Enter your SSH public key to enable SSH access to the OVA image."}
                 </HelperTextItem>
               </HelperText>
             </FormHelperText>
@@ -171,7 +147,7 @@ export const DiscoverySourceSetupModal: React.FC<
           type="submit"
           key="confirm"
           variant="primary"
-          isDisabled={isDisabled || !isSshKeyValid}
+          isDisabled={isDisabled || !!sshKeyError}
         >
           Download OVA Image
         </Button>
