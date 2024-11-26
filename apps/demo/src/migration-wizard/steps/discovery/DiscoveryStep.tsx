@@ -34,7 +34,7 @@ import type {
 } from "@migration-planner-ui/api-client/models";
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
 import { ReportTable } from "./ReportTable";
-import { ReportBarChart } from "./ReportBarChart";
+import { ReportPieChart } from "./ReportPieChart";
 
 export const DiscoveryStep: React.FC = () => {
   const discoverSourcesContext = useDiscoverySources();
@@ -75,19 +75,29 @@ export const DiscoveryStep: React.FC = () => {
     title: "Compute",
     icon: <MicrochipIcon />,
     id: "compute",
-    name: (
-      <Flex
-        fullWidth={{ default: "fullWidth" }}
-        spaceItems={{ default: "spaceItemsXl" }}
-      >
-        <FlexItem>
-          <ReportBarChart histogram={cpuCores.histogram} title="CPU Cores" />
-        </FlexItem>
-        <FlexItem>
-          <ReportBarChart histogram={ramGB.histogram} title="Memory" />
-        </FlexItem>
-      </Flex>
-    ),
+    name: "",
+    children: [
+      {
+        title: "Details",
+        id: "compute-details",
+        name: (
+          <Flex
+            fullWidth={{ default: "fullWidth" }}
+            spaceItems={{ default: "spaceItemsXl" }}
+          >
+            <FlexItem>
+              <ReportPieChart
+                histogram={cpuCores.histogram}
+                title="CPU Cores"
+              />
+            </FlexItem>
+            <FlexItem>
+              <ReportPieChart histogram={ramGB.histogram} title="Memory" />
+            </FlexItem>
+          </Flex>
+        ),
+      },
+    ],
   };
 
   const diskStatsViewData: TreeViewDataItem = {
@@ -111,13 +121,13 @@ export const DiscoveryStep: React.FC = () => {
             spaceItems={{ default: "spaceItemsXl" }}
           >
             <FlexItem>
-              <ReportBarChart
+              <ReportPieChart
                 histogram={diskGB.histogram}
                 title="Disk capacity per VM"
               />
             </FlexItem>
             <FlexItem>
-              <ReportBarChart
+              <ReportPieChart
                 histogram={diskCount.histogram}
                 title="Number of disks per VM"
               />
