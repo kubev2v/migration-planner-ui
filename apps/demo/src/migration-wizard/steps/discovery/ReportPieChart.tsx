@@ -1,5 +1,5 @@
 import React from "react";
-import { ChartPie, ChartThemeColor } from "@patternfly/react-charts";
+import { ChartPie } from "@patternfly/react-charts";
 import { TextContent, Text } from "@patternfly/react-core";
 
 type ChartBarDataEntry = {
@@ -14,14 +14,13 @@ function histogramToPieChartData(
   legendLabel: string,
 ): ChartBarDataEntry[] {
   const { data } = histogram;
-  console.log(data);
   return data
   .filter(y => y > 0) // Filtrar valores mayores que 0
   .map((y, idx) => ({
     name: legendLabel,
     x: `${idx + 1} ${legendLabel}`, // Cambia esto según tus necesidades
     y,
-  }));
+  })).sort((a, b) => a.y - b.y);
 }
 
 function getLegendData( histogram: ReportPieChart.Histogram,legendLabel:string): { name: string; }[] {

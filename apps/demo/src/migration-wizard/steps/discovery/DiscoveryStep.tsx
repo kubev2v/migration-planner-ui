@@ -73,7 +73,7 @@ export const DiscoveryStep: React.FC = () => {
   };
 
   const computeStatsViewData: TreeViewDataItem = {
-    title: "Compute",
+    title: "Compute per VM",
     icon: <MicrochipIcon />,
     id: "compute",
     name: "",
@@ -89,14 +89,14 @@ export const DiscoveryStep: React.FC = () => {
             <FlexItem>
               <ReportPieChart
                 histogram={cpuCores.histogram}
-                title="CPU Cores per VM"
+                title="CPU Cores"
                 legendLabel="CPU Cores"
               />
             </FlexItem>
             <FlexItem>
               <ReportPieChart
                 histogram={ramGB.histogram}
-                title="Memory per VM"
+                title="Memory"
                 legendLabel="GB"
               />
             </FlexItem>
@@ -107,7 +107,7 @@ export const DiscoveryStep: React.FC = () => {
   };
 
   const diskStatsViewData: TreeViewDataItem = {
-    title: "Disk size",
+    title: "Disk size per VM",
     icon: <HddIcon />,
     name: (
       <>
@@ -129,14 +129,14 @@ export const DiscoveryStep: React.FC = () => {
             <FlexItem>
               <ReportPieChart
                 histogram={diskGB.histogram}
-                title="Disk capacity per VM"
+                title="Disk capacity"
                 legendLabel="GB"
               />
             </FlexItem>
             <FlexItem>
               <ReportPieChart
                 histogram={diskCount.histogram}
-                title="Number of disks per VM"
+                title="Number of disks"
                 legendLabel="Disks"
               />
             </FlexItem>
@@ -317,7 +317,7 @@ export const DiscoveryStep: React.FC = () => {
                 </div>
               ),
             }))}
-            columns={["Total", "Free", "Type", "Usage"]}
+            columns={["Total", "Free", "Type", "Usage %"]}
             fields={["totalCapacityGB", "freeCapacityGB", "type", "usage"]}
           />
         ),
