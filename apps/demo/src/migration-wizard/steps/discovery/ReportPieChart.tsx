@@ -11,15 +11,21 @@ type ChartBarDataEntry = {
 
 function histogramToPieChartData(
   histogram: ReportPieChart.Histogram,
-  name: string,
+  legendLabel: string,
 ): ChartBarDataEntry[] {
   const { data } = histogram;
   console.log(data);
-  return data.map((y, idx) => ({
-    name,
-    x: `${idx + 1} ${name}`, // Cambia esto según tus necesidades
+  return data
+  .filter(y => y > 0) // Filtrar valores mayores que 0
+  .map((y, idx) => ({
+    name: legendLabel,
+    x: `${idx + 1} ${legendLabel}`, // Cambia esto según tus necesidades
     y,
   }));
+}
+
+function getLegendData( histogram: ReportPieChart.Histogram,legendLabel:string): { name: string; }[] {
+  return histogramToPieChartData(histogram, '').map(d => ({ name: `${d.x} ${legendLabel}: ${d.y} VM` }))
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -28,17 +34,18 @@ export namespace ReportPieChart {
     data: number[];
     minValue: number;
     step: number;
+    
   };
 
   export type Props = {
     histogram: Histogram;
     title: string;
+    legendLabel: string;
   };
 }
 
 export function ReportPieChart(props: ReportPieChart.Props): React.ReactNode {
-  const { title, histogram } = props;
-  console.log(title);
+  const { title, histogram,legendLabel } = props;
   return (
     <>
       <TextContent style={{ textAlign: "center" }}>
@@ -49,10 +56,10 @@ export function ReportPieChart(props: ReportPieChart.Props): React.ReactNode {
         ariaDesc={title + " chart"}
         ariaTitle={title + " chart"}
         constrainToVisibleArea
-        data={histogramToPieChartData(histogram, title)}
+        data={histogramToPieChartData(histogram, legendLabel)}
         height={230}
         labels={({ datum }) => `${datum.x}: ${datum.y}`}
-        legendData={histogramToPieChartData(histogram, '').map(d => ({ name: `${d.x}: ${d.y}` }))}
+        legendData={getLegendData(histogram,legendLabel)}
         legendOrientation="vertical"
         legendPosition="right"
         padding={{
@@ -61,9 +68,9 @@ export function ReportPieChart(props: ReportPieChart.Props): React.ReactNode {
           right: 140, // Adjusted to accommodate legend
           top: 20,
         }}
-        width={350}
-        themeColor={ChartThemeColor.blue}
-      />
+        width={450}
+       colorScale={['#73BCF7','#73C5C5','#F9E0A2','#BDE5B8','#D2D2D2','#F4B678','#CBC1FF','#FF7468','#7CDBF3','#E4F5BC']}/>
+       
     </>
   );
 }
