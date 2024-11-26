@@ -11,6 +11,7 @@ import {
   Badge,
   Flex,
   FlexItem,
+  Progress,
 } from "@patternfly/react-core";
 import {
   CogsIcon,
@@ -293,10 +294,23 @@ export const DiscoveryStep: React.FC = () => {
       {
         title: "Datastores",
         name: (
-          <ReportTable<InfraDatastoresInner>
-            data={datastores}
-            columns={["Total", "Free", "Type"]}
-            fields={["totalCapacityGB", "freeCapacityGB", "type"]}
+          <ReportTable<InfraDatastoresInner & {
+            usage: JSX.Element;
+          }>
+             data={datastores.map(ds => ({
+              ...ds,
+              usage: (
+                <div style={{ width: '200px' }}>
+                <Progress 
+                  value={(ds.freeCapacityGB / ds.totalCapacityGB) * 100} 
+                  size="sm"
+                />
+                </div>
+              )
+            }))}
+            columns={["Total", "Free", "Type", "Usage"]}
+            fields={["totalCapacityGB", "freeCapacityGB", "type", "usage"]}
+            
           />
         ),
         id: "datastores",
