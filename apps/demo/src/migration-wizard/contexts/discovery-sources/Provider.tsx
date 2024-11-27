@@ -40,11 +40,21 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
       anchor.download = sourceName + ".ova";
 
       const newSource = await createSource(sourceName, sourceSshKey);
+      const imageUrl = `/planner/api/v1/sources/${newSource.id}/image`;
+
+      const response = await fetch(imageUrl, { method: 'HEAD' });
+      
+      if (!response.ok) {
+        const error: Error = new Error(`Error downloading source: ${response.status} ${response.statusText}`);
+        downloadSourceState.error = error;
+        console.error("Error downloading source:", error);
+        throw error;
+      }
       // TODO(jkilzi): See: ECOPROJECT-2192. 
       // Then don't forget to  remove the '/planner/' prefix in production.
       // const image = await sourceApi.getSourceImage({ id: newSource.id }); // This API is useless in production
       // anchor.href = URL.createObjectURL(image); // Don't do this...
-      anchor.href = `/planner/api/v1/sources/${newSource.id}/image`;
+      anchor.href = imageUrl;
 
       document.body.appendChild(anchor);
       anchor.click();

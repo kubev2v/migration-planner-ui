@@ -88,4 +88,25 @@ export class MockSourceApi implements SourceApiInterface {
   ): Promise<Source> {
     throw new Error("Method not implemented.");
   }
+  async headSourceImage(
+    _requestParameters: { id: string },
+    _initOverrides?: RequestInit | InitOverrideFunction
+  ): Promise<Response> {
+    // Simula diferentes escenarios de error
+    const errorScenarios = [
+      { status: 404, statusText: "Not Found" },
+      { status: 500, statusText: "Internal Server Error" },
+      { status: 403, statusText: "Forbidden" },
+      { status: 401, statusText: "Unautorized" },
+    ];
+  
+    // Elige un escenario de error aleatoriamente
+    const randomError = errorScenarios[Math.floor(Math.random() * errorScenarios.length)];
+  
+    // Simula una respuesta de error
+    return new Response(null, {
+      status: randomError.status,
+      statusText: randomError.statusText,
+    });
+  }
 }

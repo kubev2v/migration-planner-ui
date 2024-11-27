@@ -139,6 +139,13 @@ export const ConnectStep: React.FC = () => {
           />
         )}
       </StackItem>
+      <StackItem>
+        {discoverySourcesContext.errorDownloadingSource && (
+          <Alert isInline variant="danger" title="Download Source error">
+            {discoverySourcesContext.errorDownloadingSource.message}
+            </Alert>
+        )}
+      </StackItem>
     </Stack>
   );
 };
