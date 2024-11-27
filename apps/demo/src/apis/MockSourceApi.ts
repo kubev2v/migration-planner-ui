@@ -92,7 +92,7 @@ export class MockSourceApi implements SourceApiInterface {
     _requestParameters: { id: string },
     _initOverrides?: RequestInit | InitOverrideFunction
   ): Promise<Response> {
-    // Simula diferentes escenarios de error
+    // Different scenarios
     const errorScenarios = [
       { status: 404, statusText: "Not Found" },
       { status: 500, statusText: "Internal Server Error" },
@@ -100,10 +100,10 @@ export class MockSourceApi implements SourceApiInterface {
       { status: 401, statusText: "Unautorized" },
     ];
   
-    // Elige un escenario de error aleatoriamente
+    // Choose one option randomly
     const randomError = errorScenarios[Math.floor(Math.random() * errorScenarios.length)];
   
-    // Simula una respuesta de error
+    // Simulation of error response 
     return new Response(null, {
       status: randomError.status,
       statusText: randomError.statusText,

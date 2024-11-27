@@ -50,6 +50,9 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
         console.error("Error downloading source:", error);
         throw error;
       }
+      else {
+        downloadSourceState.loading = true;
+      }
       // TODO(jkilzi): See: ECOPROJECT-2192. 
       // Then don't forget to  remove the '/planner/' prefix in production.
       // const image = await sourceApi.getSourceImage({ id: newSource.id }); // This API is useless in production
