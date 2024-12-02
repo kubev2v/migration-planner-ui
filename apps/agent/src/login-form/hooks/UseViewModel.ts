@@ -34,6 +34,8 @@ export interface LoginFormViewModelInterface {
   shouldDisplayAlert: boolean;
   handleSubmit: React.FormEventHandler<HTMLFormElement>;
   handleReturnToAssistedMigration: () => void;
+  handleChangeDataSharingAllowed: (checked:boolean)=>void;
+  isDataSharingChecked: boolean;
 }
 
 const _computeFormControlVariant = (
@@ -58,6 +60,7 @@ export const useViewModel = (): LoginFormViewModelInterface => {
   );
   const formRef = useRef<HTMLFormElement>();
   const agentApi = useInjection<AgentApiInterface>(Symbols.AgentApi);
+  const [isDataSharingAllowed,setIsDataSharingAllowed] = useState<boolean>(DATA_SHARING_ALLOWED_DEFAULT_STATE);
 
   useMount(() => {
     const form = formRef.current;
@@ -65,7 +68,7 @@ export const useViewModel = (): LoginFormViewModelInterface => {
       return;
     }
 
-    form["isDataSharingAllowed"].checked = DATA_SHARING_ALLOWED_DEFAULT_STATE;
+    form["isDataSharingAllowed"].checked = isDataSharingAllowed;
   });
 
   useAsync(async () => {
@@ -226,5 +229,10 @@ export const useViewModel = (): LoginFormViewModelInterface => {
       const assistedMigrationUrl = import.meta.env.ASSISTED_MIGRATION_URL || 'http://localhost:3000/migrate/wizard';
       window.open(assistedMigrationUrl, '_blank', 'noopener,noreferrer');
     }, []),
+    handleChangeDataSharingAllowed: useCallback((checked)=>{
+      console.log(checked);
+      setIsDataSharingAllowed(checked);
+    },[]),
+    isDataSharingChecked: isDataSharingAllowed
   };
 };

@@ -174,6 +174,8 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
               name="isDataSharingAllowed"
               label="I agree to share aggregated data about my environment with Red Hat."
               aria-label="Share aggregated data"
+              onChange={(_event,checked)=>vm.handleChangeDataSharingAllowed(checked)}
+              isChecked={vm.isDataSharingChecked}
             />
           </FormGroup>
           
@@ -236,7 +238,7 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
             <Button
               type="submit"
               variant="primary"
-              isDisabled={vm.shouldDisableFormControl}
+              isDisabled={vm.shouldDisableFormControl || !vm.isDataSharingChecked}
               form="login-form"
             >
               Log in
