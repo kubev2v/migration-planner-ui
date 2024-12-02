@@ -41,6 +41,11 @@ export const ConnectStep: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstSource]);
 
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const showDownloadOVAAlert = () => {
+    alert("OVA file is downloading. This maybe take some time. Please, take a look to your donwloads folder to find the file");
+  };
+  
   return (
     <Stack hasGutter>
       <StackItem>
@@ -133,19 +138,15 @@ export const ConnectStep: React.FC = () => {
               const name = form["discoverySourceName"].value as string;
               const sshKey = form["discoverySourceSshKey"].value as string;
               await discoverySourcesContext.downloadSource(name, sshKey);
-              toggleDiscoverySourceSetupModal();
+              toggleDiscoverySourceSetupModal();              
               await discoverySourcesContext.listSources();
+              showDownloadOVAAlert();
             }}
           />
         )}
       </StackItem>
-      <StackItem>
-        {discoverySourcesContext.isDownloadingSource && (
-          <Alert isInline variant="info" title="Download OVA image">
-            The OVA image is downloading
-            </Alert>
-        )}
-      </StackItem>
+       
+     
       <StackItem>
         {discoverySourcesContext.errorDownloadingSource && (
           <Alert isInline variant="danger" title="Download Source error">
