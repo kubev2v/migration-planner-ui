@@ -12,6 +12,7 @@ import {
 } from "@migration-planner-ui/ioc";
 import { router } from "./Router";
 import { Symbols } from "./Symbols";
+import { AgentUIVersion } from "#/common/AgentUIVersion";
 
 function getConfigurationBasePath(): string {
   if (import.meta.env.PROD) {
@@ -40,6 +41,7 @@ function main(): void {
       <React.StrictMode>
         <DependencyInjectionProvider container={container}>
           <React.Suspense fallback={<Spinner />}>
+            <AgentUIVersion />
             <RouterProvider router={router} />
           </React.Suspense>
         </DependencyInjectionProvider>
