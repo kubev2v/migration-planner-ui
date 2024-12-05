@@ -16,46 +16,46 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface SourceCreate
+ * @interface VCenter
  */
-export interface SourceCreate {
+export interface VCenter {
     /**
      * 
      * @type {string}
-     * @memberof SourceCreate
+     * @memberof VCenter
      */
-    name: string;
+    id: string;
 }
 
 /**
- * Check if a given object implements the SourceCreate interface.
+ * Check if a given object implements the VCenter interface.
  */
-export function instanceOfSourceCreate(value: object): value is SourceCreate {
-    if (!('name' in value) || value['name'] === undefined) return false;
+export function instanceOfVCenter(value: object): value is VCenter {
+    if (!('id' in value) || value['id'] === undefined) return false;
     return true;
 }
 
-export function SourceCreateFromJSON(json: any): SourceCreate {
-    return SourceCreateFromJSONTyped(json, false);
+export function VCenterFromJSON(json: any): VCenter {
+    return VCenterFromJSONTyped(json, false);
 }
 
-export function SourceCreateFromJSONTyped(json: any, ignoreDiscriminator: boolean): SourceCreate {
+export function VCenterFromJSONTyped(json: any, ignoreDiscriminator: boolean): VCenter {
     if (json == null) {
         return json;
     }
     return {
         
-        'name': json['name'],
+        'id': json['id'],
     };
 }
 
-export function SourceCreateToJSON(value?: SourceCreate | null): any {
+export function VCenterToJSON(value?: VCenter | null): any {
     if (value == null) {
         return value;
     }
     return {
         
-        'name': value['name'],
+        'id': value['id'],
     };
 }
 

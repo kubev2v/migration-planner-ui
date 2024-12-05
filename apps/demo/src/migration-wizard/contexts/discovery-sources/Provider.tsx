@@ -27,20 +27,13 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     return deletedSource;
   });
 
-  const [createSourceState, createSource] = useAsyncFn(async (name: string, sshKey: string) => {
-    const createdSource = await sourceApi.createSource({
-      sourceCreate: { name, sshKey },
-    });
-    return createdSource;
-  });
 
   const [downloadSourceState, downloadSource] = useAsyncFn(
-    async (sourceName: string, sourceSshKey: string): Promise<void> => {
+    async (sourceName: string): Promise<void> => {
       const anchor = document.createElement("a");
       anchor.download = sourceName + ".ova";
 
-      const newSource = await createSource(sourceName, sourceSshKey);
-      const imageUrl = `/planner/api/v1/sources/${newSource.id}/image`;
+      const imageUrl = `/planner/api/v1/image`;
 
       const response = await fetch(imageUrl, { method: 'HEAD' });
       
@@ -96,14 +89,11 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     errorLoadingSources: listSourcesState.error,
     isDeletingSource: deleteSourceState.loading,
     errorDeletingSource: deleteSourceState.error,
-    isCreatingSource: createSourceState.loading,
-    errorCreatingSource: createSourceState.error,
     isDownloadingSource: downloadSourceState.loading,
     errorDownloadingSource: downloadSourceState.error,
     isPolling,
     listSources,
     deleteSource,
-    createSource,
     downloadSource,
     startPolling,
     stopPolling,

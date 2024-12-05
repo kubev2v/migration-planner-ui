@@ -47,7 +47,6 @@ export const EmptyState: React.FC = () => {
           <Button
             variant="secondary"
             onClick={toggleDiscoverySourceSetupModal}
-            isDisabled={discoverySourcesContext.isCreatingSource}
           >
             Create
           </Button>

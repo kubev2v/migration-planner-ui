@@ -31,6 +31,18 @@ export interface InfraNetworksInner {
      * @memberof InfraNetworksInner
      */
     name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InfraNetworksInner
+     */
+    vlanId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InfraNetworksInner
+     */
+    dvswitch?: string;
 }
 
 
@@ -39,7 +51,9 @@ export interface InfraNetworksInner {
  */
 export const InfraNetworksInnerTypeEnum = {
     Standard: 'standard',
-    Distributed: 'distributed'
+    Distributed: 'distributed',
+    Dvswitch: 'dvswitch',
+    Unsupported: 'unsupported'
 } as const;
 export type InfraNetworksInnerTypeEnum = typeof InfraNetworksInnerTypeEnum[keyof typeof InfraNetworksInnerTypeEnum];
 
@@ -65,6 +79,8 @@ export function InfraNetworksInnerFromJSONTyped(json: any, ignoreDiscriminator: 
         
         'type': json['type'],
         'name': json['name'],
+        'vlanId': json['vlanId'] == null ? undefined : json['vlanId'],
+        'dvswitch': json['dvswitch'] == null ? undefined : json['dvswitch'],
     };
 }
 
@@ -76,6 +92,8 @@ export function InfraNetworksInnerToJSON(value?: InfraNetworksInner | null): any
         
         'type': value['type'],
         'name': value['name'],
+        'vlanId': value['vlanId'],
+        'dvswitch': value['dvswitch'],
     };
 }
 
