@@ -182,7 +182,7 @@ export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
      * list sources
      */
     async listSources(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Source>> {
-        const response = await this.listSourcesRaw(initOverrides);
+        const response = await this.listSourcesRaw(initOverrides); 
         return await response.value();
     }
 

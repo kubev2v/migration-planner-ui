@@ -11,9 +11,16 @@ declare namespace DiscoverySources {
     sourceSelected: Source;
     listSources: () => Promise<Source[]>;
     deleteSource: (id: string) => Promise<Source>;
-    downloadSource: (sourceName: string, sourceSshKey: string) => Promise<void>;
+    downloadSource: (sourceSshKey: string) => Promise<void>;
     startPolling: (delay: number) => void;
     stopPolling: () => void;
     selectSource: (source:Source) => void;
+    agents: Agent[]|undefined;
+    isLoadingAgents: boolean;
+    errorLoadingAgents?: Error;
+    listAgents: () => Promise<Agent[]>;
+    deleteAgent: (id: string) => Promise<Agent>;
+    isDeletingAgent: boolean;
+    errorDeletingAgent?: Error;
   };
 }

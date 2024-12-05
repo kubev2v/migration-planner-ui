@@ -18,3 +18,9 @@ export {
   type HealthApiInterface,
   HealthApi
 } from "./HealthApi";
+
+export {
+  type AgentApiInterface,
+  type DeleteAgentRequest,
+  AgentApi
+} from "./AgentApi";

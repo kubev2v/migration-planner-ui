@@ -4,7 +4,7 @@ import React, {
   type PropsWithChildren,
 } from "react";
 import { useAsyncFn, useInterval } from "react-use";
-import { type SourceApiInterface } from "@migration-planner-ui/api-client/apis";
+import { type SourceApiInterface, type AgentApiInterface } from "@migration-planner-ui/api-client/apis";
 import { useInjection } from "@migration-planner-ui/ioc";
 import { Symbols } from "#/main/Symbols";
 import { Context } from "./Context";
@@ -16,6 +16,12 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
   const [sourceSelected, setSourceSelected] = useState<Source | null>(null)
 
   const sourceApi = useInjection<SourceApiInterface>(Symbols.SourceApi);
+  const agentsApi = useInjection<AgentApiInterface>(Symbols.AgentApi);
+
+  const [listAgentsState, listAgents] = useAsyncFn(async () => {
+    const agents = await agentsApi.listAgents();
+    return agents;
+  });
 
   const [listSourcesState, listSources] = useAsyncFn(async () => {
     const sources = await sourceApi.listSources();
@@ -29,13 +35,11 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
 
 
   const [downloadSourceState, downloadSource] = useAsyncFn(
-    async (sourceName: string): Promise<void> => {
+    async (sshKey:string): Promise<void> => {
       const anchor = document.createElement("a");
-      anchor.download = sourceName + ".ova";
+      const imageUrl = `/planner/api/v1/image${sshKey ? '?sshKey=' + sshKey : ''}`;      
 
-      const imageUrl = `/planner/api/v1/image`;
-
-      const response = await fetch(imageUrl, { method: 'HEAD' });
+      /*const response = await fetch(imageUrl, { method: 'HEAD' });
       
       if (!response.ok) {
         const error: Error = new Error(`Error downloading source: ${response.status} ${response.statusText}`);
@@ -45,7 +49,7 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
       }
       else {
         downloadSourceState.loading = true;
-      }
+      }*/
       // TODO(jkilzi): See: ECOPROJECT-2192. 
       // Then don't forget to  remove the '/planner/' prefix in production.
       // const image = await sourceApi.getSourceImage({ id: newSource.id }); // This API is useless in production
@@ -77,11 +81,17 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
   }, [isPolling]);
   useInterval(() => {
     listSources();
+    //listAgents();
   }, pollingDelay);
 
   const selectSource = useCallback((source: Source) => {
     setSourceSelected(source);
   }, []);
+
+  const [deleteAgentState, deleteAgent] = useAsyncFn(async (id: string) => {
+    const deletedAgent = await agentsApi.deleteAgent({id});   
+    return deletedAgent;
+  });
 
   const ctx: DiscoverySources.Context = {
     sources: listSourcesState.value ?? [],
@@ -90,7 +100,7 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     isDeletingSource: deleteSourceState.loading,
     errorDeletingSource: deleteSourceState.error,
     isDownloadingSource: downloadSourceState.loading,
-    errorDownloadingSource: downloadSourceState.error,
+    errorDownloadingSource: downloadSourceState.error,    
     isPolling,
     listSources,
     deleteSource,
@@ -99,6 +109,13 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     stopPolling,
     sourceSelected: sourceSelected,
     selectSource,
+    agents: listAgentsState.value,
+    isLoadingAgents: listAgentsState.loading,
+    errorLoadingAgents: listAgentsState.error,
+    listAgents,
+    deleteAgent,
+    isDeletingAgent: deleteAgentState.loading,
+    errorDeletingAgent: deleteAgentState.error
   };
 
   return <Context.Provider value={ctx}>{children}</Context.Provider>;

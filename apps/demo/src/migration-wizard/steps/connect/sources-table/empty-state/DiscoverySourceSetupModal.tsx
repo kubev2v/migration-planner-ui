@@ -7,7 +7,6 @@ import {
   HelperText,
   HelperTextItem,
   TextArea,
-  TextInput,
 } from "@patternfly/react-core";
 import {
   Modal,
@@ -92,31 +91,6 @@ export const DiscoverySourceSetupModal: React.FC<
           id="discovery-source-setup-form"
           onSubmit={handleSubmit}
         >
-          <FormGroup
-            label="Name"
-            isRequired
-            fieldId="discovery-source-name-form-control"
-          >
-            <TextInput
-              id="discovery-source-name-form-control"
-              name="discoverySourceName"
-              type="text"
-              placeholder="Example: ams-vcenter-prod-1"
-              pattern="^[a-zA-Z][a-zA-Z0-9_\-]*$"
-              maxLength={50}
-              minLength={1}
-              isRequired
-              aria-describedby="name-helper-text"
-            />
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant="default" id="name-helper-text">
-                  Name the discovery source to help track its deployment
-                  environment.
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          </FormGroup>
           <FormGroup
             label="SSH Key"
             fieldId="discovery-source-sshkey-form-control"
