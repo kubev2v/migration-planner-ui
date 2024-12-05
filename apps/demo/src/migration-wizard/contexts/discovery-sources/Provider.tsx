@@ -12,6 +12,7 @@ import {
   Source,
   SourceUpdateOnPremFromJSON
 } from "@migration-planner-ui/api-client/models";
+import { getToken } from "#/services/localStorage"
 
 export const Provider: React.FC<PropsWithChildren> = (props) => {
   const { children } = props;
@@ -20,7 +21,7 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
 
   const [agentSelected, setAgentSelected] = useState<Agent | null>(null);
 
-  const [sourcesLoaded, setSourcesLoaded] = useState(false);
+  const [sourcesLoaded, _] = useState(false);
 
   const sourceApi = useInjection<SourceApiInterface>(Symbols.SourceApi);
   const agentsApi = useInjection<AgentApiInterface>(Symbols.AgentApi);
@@ -32,24 +33,44 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
   }, [sourcesLoaded]);
 
   const [listSourcesState, listSources] = useAsyncFn(async () => {
-    const sources = await sourceApi.listSources({ includeDefault: true });
-    setSourcesLoaded(true);
+    const token = getToken();
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    const sources = await sourceApi.listSources({}, {
+      headers: {
+        'Authorization': `${token.type} ${token.value}`,
+      }
+    });
     return sources;
   });
 
   const [deleteSourceState, deleteSource] = useAsyncFn(async (id: string) => {
-    const deletedSource = await sourceApi.deleteSource({ id });
+    const token = getToken();
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    const deletedSource = await sourceApi.deleteSource({ id }, {headers: {
+      'Authorization': `${token.type} ${token.value}`,
+    }});
     return deletedSource;
   });
 
-  const [createSourceState, createSource] = useAsyncFn(
-    async (name: string, sshPublicKey: string) => {
-      const createdSource = await sourceApi.createSource({
-        sourceCreate: { name, sshPublicKey },
-      });
-      return createdSource;
+
+  const [createSourceState, createSource] = useAsyncFn(async (name: string, sshPublicKey: string) => {
+    const token = getToken();
+    if (!token) {
+      throw new Error('No authentication token found');
     }
-  );
+    const createdSource = await sourceApi.createSource({
+      sourceCreate: { name, sshPublicKey },
+    }, {
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': `${token.type} ${token.value}`,
+    }});
+    return createdSource;
+  });
 
   const [downloadSourceState, downloadSource] = useAsyncFn(
     async (sourceName: string, sourceSshKey: string): Promise<void> => {
@@ -59,8 +80,13 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
       const newSource = await createSource(sourceName, sourceSshKey);
       const imageUrl = `/planner/api/v1/sources/${newSource.id}/image`;
 
-      const response = await fetch(imageUrl, { method: "HEAD" });
+      const token = getToken();
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
 
+      const response = await fetch(imageUrl, { method: 'HEAD', headers: {'Authorization': `${token.type} ${token.value}`,} });
+      
       if (!response.ok) {
         const error: Error = new Error(
           `Error downloading source: ${response.status} ${response.statusText}`

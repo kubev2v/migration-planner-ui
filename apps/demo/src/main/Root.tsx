@@ -12,6 +12,8 @@ import {
 } from "@migration-planner-ui/ioc";
 import { router } from "./Router";
 import { Symbols } from "./Symbols";
+import { Provider } from "react-redux";
+import store from "../store";
 
 function getConfiguredContainer(): Container {
   const plannerApiConfig = new Configuration({
@@ -33,6 +35,7 @@ function main(): void {
     root.style.height = "inherit";
     const container = getConfiguredContainer();
     ReactDOM.createRoot(root).render(
+      <Provider store={store}>
       <React.StrictMode>
         <DependencyInjectionProvider container={container}>
           <React.Suspense fallback={<Spinner />}>
@@ -40,6 +43,7 @@ function main(): void {
           </React.Suspense>
         </DependencyInjectionProvider>
       </React.StrictMode>
+      </Provider>
     );
   }
 }

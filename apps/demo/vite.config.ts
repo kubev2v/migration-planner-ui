@@ -13,7 +13,7 @@ export default defineConfig((_env) => {
     server: {
       proxy: {
         "/planner/api": {
-          target: "http://172.17.0.3:3443",
+          target: "http://127.0.0.1:3443",
           changeOrigin: true,
           rewrite: (path): string => path.replace(/^\/planner/, ""),
         },
