@@ -130,11 +130,11 @@ export const ConnectStep: React.FC = () => {
             isDisabled={discoverySourcesContext.isDownloadingSource}
             onSubmit={async (event) => {
               const form = event.currentTarget;
-              const name = form["discoverySourceName"].value as string;
               const sshKey = form["discoverySourceSshKey"].value as string;
-              await discoverySourcesContext.downloadSource(name, sshKey);
+              await discoverySourcesContext.downloadSource(sshKey);
               toggleDiscoverySourceSetupModal();
-              await discoverySourcesContext.listSources();
+              //await discoverySourcesContext.listSources();
+              await discoverySourcesContext.listAgents();
             }}
           />
         )}

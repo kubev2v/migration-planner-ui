@@ -13,6 +13,12 @@
  */
 
 import { mapValues } from '../runtime';
+import type { VCenter } from './VCenter';
+import {
+    VCenterFromJSON,
+    VCenterFromJSONTyped,
+    VCenterToJSON,
+} from './VCenter';
 import type { Infra } from './Infra';
 import {
     InfraFromJSON,
@@ -34,6 +40,12 @@ import {
 export interface Inventory {
     /**
      * 
+     * @type {VCenter}
+     * @memberof Inventory
+     */
+    vcenter: VCenter;
+    /**
+     * 
      * @type {VMs}
      * @memberof Inventory
      */
@@ -50,6 +62,7 @@ export interface Inventory {
  * Check if a given object implements the Inventory interface.
  */
 export function instanceOfInventory(value: object): value is Inventory {
+    if (!('vcenter' in value) || value['vcenter'] === undefined) return false;
     if (!('vms' in value) || value['vms'] === undefined) return false;
     if (!('infra' in value) || value['infra'] === undefined) return false;
     return true;
@@ -65,6 +78,7 @@ export function InventoryFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
+        'vcenter': json['vcenter'],
         'vms': json['vms'],
         'infra': json['infra'],
     };
@@ -76,6 +90,7 @@ export function InventoryToJSON(value?: Inventory | null): any {
     }
     return {
         
+        'vcenter': value['vcenter'],
         'vms': value['vms'],
         'infra': value['infra'],
     };

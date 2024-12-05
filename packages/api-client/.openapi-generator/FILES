@@ -1,8 +1,10 @@
 README.md
+src/apis/AgentApi.ts
 src/apis/HealthApi.ts
 src/apis/ImageApi.ts
 src/apis/SourceApi.ts
 src/index.ts
+src/models/Agent.ts
 src/models/Infra.ts
 src/models/InfraDatastoresInner.ts
 src/models/InfraNetworksInner.ts
@@ -10,8 +12,10 @@ src/models/Inventory.ts
 src/models/MigrationIssuesInner.ts
 src/models/ModelError.ts
 src/models/Source.ts
+src/models/SourceAgentItem.ts
 src/models/SourceCreate.ts
 src/models/Status.ts
+src/models/VCenter.ts
 src/models/VMResourceBreakdown.ts
 src/models/VMResourceBreakdownHistogram.ts
 src/models/VMs.ts

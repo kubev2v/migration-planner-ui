@@ -16,7 +16,8 @@ export const SourcesTable: React.FC = () => {
 
   useMount(() => {
     if (!discoverySourcesContext.isPolling) {
-      discoverySourcesContext.listSources();
+      //discoverySourcesContext.listSources();
+      discoverySourcesContext.listAgents();
     }
   });
 
@@ -99,9 +100,14 @@ export const SourcesTable: React.FC = () => {
                   isDisabled={discoverySourcesContext.isDeletingSource}
                   onConfirm={async (event) => {
                     event.stopPropagation();
+                    if (src.agents && src.agents.length>1) {
+                      //delete agent
+                      await discoverySourcesContext.deleteAgent(src.id);
+                    }
                     await discoverySourcesContext.deleteSource(src.id);
                     event.dismissConfirmationModal();
-                    await discoverySourcesContext.listSources();
+                    //await discoverySourcesContext.listSources();
+                    await discoverySourcesContext.listAgents();
                   }}
                 />
               </Td>
