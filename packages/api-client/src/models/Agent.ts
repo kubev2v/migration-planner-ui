@@ -13,145 +13,143 @@
  */
 
 import { mapValues } from '../runtime';
-import type { SourceAgentItem } from './SourceAgentItem';
-import {
-    SourceAgentItemFromJSON,
-    SourceAgentItemFromJSONTyped,
-    SourceAgentItemToJSON,
-} from './SourceAgentItem';
-import type { Inventory } from './Inventory';
-import {
-    InventoryFromJSON,
-    InventoryFromJSONTyped,
-    InventoryToJSON,
-} from './Inventory';
-
 /**
  * 
  * @export
- * @interface Source
+ * @interface Agent
  */
-export interface Source {
+export interface Agent {
     /**
      * 
      * @type {string}
-     * @memberof Source
+     * @memberof Agent
      */
     id: string;
     /**
      * 
      * @type {string}
-     * @memberof Source
+     * @memberof Agent
      */
-    name: string;
+    status: AgentStatusEnum;
     /**
      * 
      * @type {string}
-     * @memberof Source
-     */
-    status: SourceStatusEnum;
-    /**
-     * 
-     * @type {string}
-     * @memberof Source
+     * @memberof Agent
      */
     statusInfo: string;
     /**
      * 
-     * @type {Inventory}
-     * @memberof Source
+     * @type {string}
+     * @memberof Agent
      */
-    inventory?: Inventory;
+    credentialUrl: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Agent
+     */
+    sourceId?: string;
     /**
      * 
      * @type {Date}
-     * @memberof Source
+     * @memberof Agent
      */
     createdAt: Date;
     /**
      * 
      * @type {Date}
-     * @memberof Source
+     * @memberof Agent
      */
     updatedAt: Date;
     /**
      * 
-     * @type {string}
-     * @memberof Source
+     * @type {Date}
+     * @memberof Agent
      */
-    sshKey?: string;
+    deletedAt?: Date;
     /**
      * 
-     * @type {Array<SourceAgentItem>}
-     * @memberof Source
+     * @type {boolean}
+     * @memberof Agent
      */
-    agents?: Array<SourceAgentItem>;
+    associated: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof Agent
+     */
+    version: string;
 }
 
 
 /**
  * @export
  */
-export const SourceStatusEnum = {
+export const AgentStatusEnum = {
     NotConnected: 'not-connected',
     WaitingForCredentials: 'waiting-for-credentials',
     Error: 'error',
     GatheringInitialInventory: 'gathering-initial-inventory',
-    UpToDate: 'up-to-date'
+    UpToDate: 'up-to-date',
+    SourceGone: 'source-gone'
 } as const;
-export type SourceStatusEnum = typeof SourceStatusEnum[keyof typeof SourceStatusEnum];
+export type AgentStatusEnum = typeof AgentStatusEnum[keyof typeof AgentStatusEnum];
 
 
 /**
- * Check if a given object implements the Source interface.
+ * Check if a given object implements the Agent interface.
  */
-export function instanceOfSource(value: object): value is Source {
+export function instanceOfAgent(value: object): value is Agent {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
     if (!('statusInfo' in value) || value['statusInfo'] === undefined) return false;
+    if (!('credentialUrl' in value) || value['credentialUrl'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if (!('associated' in value) || value['associated'] === undefined) return false;
+    if (!('version' in value) || value['version'] === undefined) return false;
     return true;
 }
 
-export function SourceFromJSON(json: any): Source {
-    return SourceFromJSONTyped(json, false);
+export function AgentFromJSON(json: any): Agent {
+    return AgentFromJSONTyped(json, false);
 }
 
-export function SourceFromJSONTyped(json: any, ignoreDiscriminator: boolean): Source {
+export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Agent {
     if (json == null) {
         return json;
     }
     return {
         
         'id': json['id'],
-        'name': json['name'],
         'status': json['status'],
         'statusInfo': json['statusInfo'],
-        'inventory': json['inventory'] == null ? undefined : InventoryFromJSON(json['inventory']),
+        'credentialUrl': json['credentialUrl'],
+        'sourceId': json['sourceId'] == null ? undefined : json['sourceId'],
         'createdAt': (new Date(json['createdAt'])),
         'updatedAt': (new Date(json['updatedAt'])),
-        'sshKey': json['sshKey'] == null ? undefined : json['sshKey'],
-        'agents': json['agents'] == null ? undefined : ((json['agents'] as Array<any>).map(SourceAgentItemFromJSON)),
+        'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
+        'associated': json['associated'],
+        'version': json['version'],
     };
 }
 
-export function SourceToJSON(value?: Source | null): any {
+export function AgentToJSON(value?: Agent | null): any {
     if (value == null) {
         return value;
     }
     return {
         
         'id': value['id'],
-        'name': value['name'],
         'status': value['status'],
         'statusInfo': value['statusInfo'],
-        'inventory': InventoryToJSON(value['inventory']),
+        'credentialUrl': value['credentialUrl'],
+        'sourceId': value['sourceId'],
         'createdAt': ((value['createdAt']).toISOString()),
         'updatedAt': ((value['updatedAt']).toISOString()),
-        'sshKey': value['sshKey'],
-        'agents': value['agents'] == null ? undefined : ((value['agents'] as Array<any>).map(SourceAgentItemToJSON)),
+        'deletedAt': value['deletedAt'] == null ? undefined : ((value['deletedAt']).toISOString()),
+        'associated': value['associated'],
+        'version': value['version'],
     };
 }
 

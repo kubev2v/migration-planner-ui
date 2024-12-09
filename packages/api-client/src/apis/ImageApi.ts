@@ -15,8 +15,12 @@
 
 import * as runtime from '../runtime';
 
-export interface GetSourceImageRequest {
-    id: string;
+export interface GetImageRequest {
+    sshKey?: string;
+}
+
+export interface HeadImageRequest {
+    sshKey?: string;
 }
 
 /**
@@ -27,18 +31,32 @@ export interface GetSourceImageRequest {
  */
 export interface ImageApiInterface {
     /**
-     * get the OVA file for the source
-     * @param {string} id ID of the source
+     * get the OVA image
+     * @param {string} [sshKey] public SSH key
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ImageApiInterface
      */
-    getSourceImageRaw(requestParameters: GetSourceImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
+    getImageRaw(requestParameters: GetImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
 
     /**
-     * get the OVA file for the source
+     * get the OVA image
      */
-    getSourceImage(requestParameters: GetSourceImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
+    getImage(requestParameters: GetImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
+
+    /**
+     * head the OVA image
+     * @param {string} [sshKey] public SSH key
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImageApiInterface
+     */
+    headImageRaw(requestParameters: HeadImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * head the OVA image
+     */
+    headImage(requestParameters: HeadImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
 }
 
@@ -48,22 +66,19 @@ export interface ImageApiInterface {
 export class ImageApi extends runtime.BaseAPI implements ImageApiInterface {
 
     /**
-     * get the OVA file for the source
+     * get the OVA image
      */
-    async getSourceImageRaw(requestParameters: GetSourceImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling getSourceImage().'
-            );
-        }
-
+    async getImageRaw(requestParameters: GetImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
         const queryParameters: any = {};
+
+        if (requestParameters['sshKey'] != null) {
+            queryParameters['sshKey'] = requestParameters['sshKey'];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/v1/sources/{id}/image`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/api/v1/image`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -73,11 +88,40 @@ export class ImageApi extends runtime.BaseAPI implements ImageApiInterface {
     }
 
     /**
-     * get the OVA file for the source
+     * get the OVA image
      */
-    async getSourceImage(requestParameters: GetSourceImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
-        const response = await this.getSourceImageRaw(requestParameters, initOverrides);
+    async getImage(requestParameters: GetImageRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+        const response = await this.getImageRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * head the OVA image
+     */
+    async headImageRaw(requestParameters: HeadImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['sshKey'] != null) {
+            queryParameters['sshKey'] = requestParameters['sshKey'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/image`,
+            method: 'HEAD',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * head the OVA image
+     */
+    async headImage(requestParameters: HeadImageRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.headImageRaw(requestParameters, initOverrides);
     }
 
 }
