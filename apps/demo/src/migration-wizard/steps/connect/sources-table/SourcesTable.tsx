@@ -11,8 +11,8 @@ import { Radio } from "@patternfly/react-core";
 
 export const SourcesTable: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
-  const hasSources = discoverySourcesContext.sources.length > 0;
-  const [firstSource, ..._otherSources] = discoverySourcesContext.sources;
+  const hasAgents = discoverySourcesContext.agents && discoverySourcesContext.agents.length > 0;
+  const [firstAgent, ..._otherAgents] = discoverySourcesContext.agents ?? [];
 
   useMount(() => {
     if (!discoverySourcesContext.isPolling) {
@@ -28,7 +28,7 @@ export const SourcesTable: React.FC = () => {
   useEffect(() => {
     if (
       ["error", "up-to-date"].includes(
-        discoverySourcesContext.sourceSelected?.status
+        discoverySourcesContext.agentSelected?.status
       )
     ) {
       discoverySourcesContext.stopPolling();
@@ -37,13 +37,13 @@ export const SourcesTable: React.FC = () => {
       discoverySourcesContext.startPolling(DEFAULT_POLLING_DELAY);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [discoverySourcesContext.sourceSelected?.status]);
+  }, [discoverySourcesContext.agentSelected?.status]);
 
   
   
   return (
     <Table aria-label="Sources table" variant="compact" borders={false}>
-      {hasSources && (
+      {hasAgents && (
         <Thead>
           <Tr>
             <Th>{Columns.Name}</Th>
@@ -57,8 +57,8 @@ export const SourcesTable: React.FC = () => {
         </Thead>
       )}
       <Tbody>
-        {hasSources ? (
-          discoverySourcesContext.sources.map((src) => (
+        {hasAgents ? (
+          discoverySourcesContext.agents && discoverySourcesContext.agents.map((src) => (
             <Tr key={src.id}>
               <Td dataLabel={Columns.Name}>
                 {" "}
@@ -67,11 +67,11 @@ export const SourcesTable: React.FC = () => {
                   name="source-selection"
                   label={src.name}
                   isChecked={
-                    discoverySourcesContext.sourceSelected
-                      ? discoverySourcesContext.sourceSelected?.id === src.id
-                      : firstSource.id === src.id
+                    discoverySourcesContext.agentSelected
+                      ? discoverySourcesContext.agentSelected?.id === src.id
+                      : firstAgent.id === src.id
                   }
-                  onChange={() => discoverySourcesContext.selectSource(src)}
+                  onChange={() => discoverySourcesContext.selectAgent(src)}
                 />
               </Td>
               <Td dataLabel={Columns.Status}>

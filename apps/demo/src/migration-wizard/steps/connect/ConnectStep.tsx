@@ -20,6 +20,7 @@ import { ClusterIcon, PlusCircleIcon } from "@patternfly/react-icons";
 import { SourcesTable } from "#/migration-wizard/steps/connect/sources-table/SourcesTable";
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
 import { DiscoverySourceSetupModal } from "./sources-table/empty-state/DiscoverySourceSetupModal";
+import { Agent } from "@migration-planner-ui/api-client/models";
 
 export const ConnectStep: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
@@ -31,15 +32,18 @@ export const ConnectStep: React.FC = () => {
   const toggleDiscoverySourceSetupModal = useCallback((): void => {
     setShouldShowDiscoverySetupModal((lastState) => !lastState);
   }, []);
-  const hasSources = discoverySourcesContext.sources.length > 0;
-  const [firstSource, ..._otherSources] = discoverySourcesContext.sources;
+  const hasAgents = discoverySourcesContext.agents && discoverySourcesContext.agents.length > 0;
+  const [firstAgent, ..._otherAgents] = discoverySourcesContext.agents || [];
   
   useEffect(() => {
-    if (!discoverySourcesContext.sourceSelected && firstSource) {
-      discoverySourcesContext.selectSource(firstSource);
+    if (!discoverySourcesContext.agentSelected && firstAgent) {
+      if (firstAgent.status === 'up-to-date') {        
+        discoverySourcesContext.selectSourceById((firstAgent as Agent).sourceId ?? '');
+      }
+      discoverySourcesContext.selectAgent(firstAgent);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstSource]);
+  }, [firstAgent]);
 
   return (
     <Stack hasGutter>
@@ -69,7 +73,7 @@ export const ConnectStep: React.FC = () => {
             </ListItem>
           </List>
         </TextContent>
-        {discoverySourcesContext.sourceSelected?.status ===
+        {discoverySourcesContext.agentSelected?.status ===
           "waiting-for-credentials" && (
           <Alert
             isInline
@@ -78,11 +82,11 @@ export const ConnectStep: React.FC = () => {
             actionLinks={
               <AlertActionLink
                 component="a"
-                href={discoverySourcesContext.sourceSelected?.credentialUrl}
+                href={discoverySourcesContext.agentSelected?.credentialUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {discoverySourcesContext.sourceSelected?.credentialUrl}
+                {discoverySourcesContext.agentSelected?.credentialUrl}
               </AlertActionLink>
             }
           >
@@ -113,7 +117,7 @@ export const ConnectStep: React.FC = () => {
         </Panel>
       </StackItem>
       <StackItem>
-        {hasSources && (
+        {hasAgents && (
           <Button
             variant="secondary"
             onClick={toggleDiscoverySourceSetupModal}
