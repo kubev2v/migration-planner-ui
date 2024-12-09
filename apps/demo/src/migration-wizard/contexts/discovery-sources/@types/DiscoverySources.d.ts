@@ -19,8 +19,11 @@ declare namespace DiscoverySources {
     isLoadingAgents: boolean;
     errorLoadingAgents?: Error;
     listAgents: () => Promise<Agent[]>;
-    deleteAgent: (id: string) => Promise<Agent>;
+    deleteAgent: (agent: Agent) => Promise<Agent>;
     isDeletingAgent: boolean;
     errorDeletingAgent?: Error;
+    selectAgent: (agent:Agent) => void;
+    agentSelected: Agent;
+    selectSourceById: (sourceId:string)=>void;
   };
 }

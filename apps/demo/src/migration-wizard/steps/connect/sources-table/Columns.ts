@@ -1,5 +1,5 @@
 export const enum Columns {
-  Name = "Name",
+  CredentialsUrl = "Credentials URL",
   Status = "Status",
   Hosts = "Hosts",
   VMs = "VMs",

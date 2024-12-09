@@ -8,12 +8,14 @@ import { type SourceApiInterface, type AgentApiInterface } from "@migration-plan
 import { useInjection } from "@migration-planner-ui/ioc";
 import { Symbols } from "#/main/Symbols";
 import { Context } from "./Context";
-import { Source } from "@migration-planner-ui/api-client/models";
+import { Agent, Source } from "@migration-planner-ui/api-client/models";
 
 export const Provider: React.FC<PropsWithChildren> = (props) => {
   const { children } = props;
 
   const [sourceSelected, setSourceSelected] = useState<Source | null>(null)
+
+  const [agentSelected, setAgentSelected] = useState<Agent | null>(null)
 
   const sourceApi = useInjection<SourceApiInterface>(Symbols.SourceApi);
   const agentsApi = useInjection<AgentApiInterface>(Symbols.AgentApi);
@@ -39,7 +41,7 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
       const anchor = document.createElement("a");
       const imageUrl = `/planner/api/v1/image${sshKey ? '?sshKey=' + sshKey : ''}`;      
 
-      /*const response = await fetch(imageUrl, { method: 'HEAD' });
+      const response = await fetch(imageUrl, { method: 'HEAD' });
       
       if (!response.ok) {
         const error: Error = new Error(`Error downloading source: ${response.status} ${response.statusText}`);
@@ -49,7 +51,7 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
       }
       else {
         downloadSourceState.loading = true;
-      }*/
+      }
       // TODO(jkilzi): See: ECOPROJECT-2192. 
       // Then don't forget to  remove the '/planner/' prefix in production.
       // const image = await sourceApi.getSourceImage({ id: newSource.id }); // This API is useless in production
@@ -81,18 +83,34 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
   }, [isPolling]);
   useInterval(() => {
     listSources();
-    //listAgents();
+    listAgents();
   }, pollingDelay);
 
-  const selectSource = useCallback((source: Source) => {
+  const selectSource = useCallback((source: Source|null) => {
     setSourceSelected(source);
   }, []);
 
-  const [deleteAgentState, deleteAgent] = useAsyncFn(async (id: string) => {
-    const deletedAgent = await agentsApi.deleteAgent({id});   
+  const selectSourceById = useCallback((sourceId: string) => {
+    const source = listSourcesState.value?.find(source => source.id === sourceId);
+    setSourceSelected(source||null);
+  }, [listSourcesState.value]);
+
+
+  const selectAgent = useCallback((agent: Agent) => {
+    setAgentSelected(agent);
+    if (agent && agent.sourceId!==null) selectSourceById(agent.sourceId ?? '');
+  }, [selectSourceById]);
+
+
+  const [deleteAgentState, deleteAgent] = useAsyncFn(async (agent: Agent) => {
+    if (agent && agent.sourceId !== null) {
+      await deleteSource(agent.sourceId ?? '');
+      selectSource(null);
+    }
+    const deletedAgent = await agentsApi.deleteAgent({id: agent.id});
     return deletedAgent;
   });
-
+  
   const ctx: DiscoverySources.Context = {
     sources: listSourcesState.value ?? [],
     isLoadingSources: listSourcesState.loading,
@@ -109,13 +127,16 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     stopPolling,
     sourceSelected: sourceSelected,
     selectSource,
-    agents: listAgentsState.value,
+    agents: listAgentsState.value ?? [],
     isLoadingAgents: listAgentsState.loading,
     errorLoadingAgents: listAgentsState.error,
     listAgents,
     deleteAgent,
     isDeletingAgent: deleteAgentState.loading,
-    errorDeletingAgent: deleteAgentState.error
+    errorDeletingAgent: deleteAgentState.error,
+    selectAgent,
+    agentSelected: agentSelected,
+    selectSourceById
   };
 
   return <Context.Provider value={ctx}>{children}</Context.Provider>;

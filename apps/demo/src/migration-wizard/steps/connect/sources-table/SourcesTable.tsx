@@ -11,12 +11,12 @@ import { Radio } from "@patternfly/react-core";
 
 export const SourcesTable: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
-  const hasSources = discoverySourcesContext.sources.length > 0;
-  const [firstSource, ..._otherSources] = discoverySourcesContext.sources;
+  const hasAgents = discoverySourcesContext.agents && discoverySourcesContext.agents.length > 0;
+  const [firstAgent, ..._otherAgents] = discoverySourcesContext.agents ?? [];
 
   useMount(() => {
     if (!discoverySourcesContext.isPolling) {
-      //discoverySourcesContext.listSources();
+      discoverySourcesContext.listSources();
       discoverySourcesContext.listAgents();
     }
   });
@@ -28,7 +28,7 @@ export const SourcesTable: React.FC = () => {
   useEffect(() => {
     if (
       ["error", "up-to-date"].includes(
-        discoverySourcesContext.sourceSelected?.status
+        discoverySourcesContext.agentSelected?.status
       )
     ) {
       discoverySourcesContext.stopPolling();
@@ -37,16 +37,16 @@ export const SourcesTable: React.FC = () => {
       discoverySourcesContext.startPolling(DEFAULT_POLLING_DELAY);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [discoverySourcesContext.sourceSelected?.status]);
+  }, [discoverySourcesContext.agentSelected?.status]);
 
   
   
   return (
     <Table aria-label="Sources table" variant="compact" borders={false}>
-      {hasSources && (
+      {hasAgents && (
         <Thead>
           <Tr>
-            <Th>{Columns.Name}</Th>
+            <Th>{Columns.CredentialsUrl}</Th>
             <Th>{Columns.Status}</Th>
             <Th>{Columns.Hosts}</Th>
             <Th>{Columns.VMs}</Th>
@@ -57,62 +57,61 @@ export const SourcesTable: React.FC = () => {
         </Thead>
       )}
       <Tbody>
-        {hasSources ? (
-          discoverySourcesContext.sources.map((src) => (
-            <Tr key={src.id}>
-              <Td dataLabel={Columns.Name}>
+        {hasAgents ? (
+          discoverySourcesContext.agents && discoverySourcesContext.agents.map((agent) => {
+            const source = discoverySourcesContext.sourceSelected;
+            return(
+           
+            <Tr key={agent.id}>
+              <Td dataLabel={Columns.CredentialsUrl}>
                 {" "}
                 <Radio
-                  id={src.id}
+                  id={agent.id}
                   name="source-selection"
-                  label={src.name}
+                  label={agent.credentialUrl}
                   isChecked={
-                    discoverySourcesContext.sourceSelected
-                      ? discoverySourcesContext.sourceSelected?.id === src.id
-                      : firstSource.id === src.id
+                    discoverySourcesContext.agentSelected
+                      ? discoverySourcesContext.agentSelected?.id === agent.id
+                      : firstAgent.id === agent.id
                   }
-                  onChange={() => discoverySourcesContext.selectSource(src)}
+                  onChange={() => discoverySourcesContext.selectAgent(agent)}
                 />
               </Td>
               <Td dataLabel={Columns.Status}>
                 <SourceStatusView
-                  status={src.status}
-                  statusInfo={src.statusInfo}
+                  status={agent.status}
+                  statusInfo={agent.statusInfo}
                 />
               </Td>
               <Td dataLabel={Columns.Hosts}>
-                {src.inventory?.infra.totalHosts || VALUE_NOT_AVAILABLE}
+                {source!==null && source.inventory?.infra.totalHosts || VALUE_NOT_AVAILABLE}
               </Td>
               <Td dataLabel={Columns.VMs}>
-                {src.inventory?.vms.total || VALUE_NOT_AVAILABLE}
+                {source!==null && source.inventory?.vms.total || VALUE_NOT_AVAILABLE}
               </Td>
               <Td dataLabel={Columns.Networks}>
-                {(src.inventory?.infra.networks ?? []).length ||
+                {((source!==null && source.inventory?.infra.networks) ?? []).length ||
                   VALUE_NOT_AVAILABLE}
               </Td>
               <Td dataLabel={Columns.Datastores}>
-                {(src.inventory?.infra.datastores ?? []).length ||
+                {((source!==null && source.inventory?.infra.datastores) ?? []).length ||
                   VALUE_NOT_AVAILABLE}
               </Td>
               <Td dataLabel={Columns.Actions}>
                 <RemoveSourceAction
-                  sourceId={src.id}
+                  sourceId={agent.id}
                   isDisabled={discoverySourcesContext.isDeletingSource}
                   onConfirm={async (event) => {
                     event.stopPropagation();
-                    if (src.agents && src.agents.length>1) {
-                      //delete agent
-                      await discoverySourcesContext.deleteAgent(src.id);
-                    }
-                    await discoverySourcesContext.deleteSource(src.id);
-                    event.dismissConfirmationModal();
-                    //await discoverySourcesContext.listSources();
+                    await discoverySourcesContext.deleteAgent(agent);                   
+                    event.dismissConfirmationModal();                   
                     await discoverySourcesContext.listAgents();
+                    await discoverySourcesContext.listSources();
                   }}
                 />
               </Td>
             </Tr>
-          ))
+          )})
         ) : (
           <Tr>
             <Td colSpan={12}>

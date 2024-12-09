@@ -9,7 +9,7 @@ export default defineConfig((_env) => {
     server: {
       proxy: {
         "/agent/api/v1": {
-          target: "http://127.0.0.1:3333",
+          target: "http://172.17.0.3:3333",
           changeOrigin: true,
           rewrite: (path): string => path.replace(/^\/agent/, ""),
         },
