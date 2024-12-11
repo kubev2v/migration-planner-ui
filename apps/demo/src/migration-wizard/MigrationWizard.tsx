@@ -13,7 +13,7 @@ const openAssistedInstaller = (): void => {
 export const MigrationWizard: React.FC = () => {
   const computedHeight = useComputedHeightFromPageHeader();
   const discoverSourcesContext = useDiscoverySources();
-  const isDiscoverySourceUpToDate = discoverSourcesContext.sourceSelected?.status === "up-to-date";
+  const isDiscoverySourceUpToDate = discoverSourcesContext.agentSelected?.status === "up-to-date";
   
   return (
     <Wizard height={computedHeight}>
@@ -22,7 +22,7 @@ export const MigrationWizard: React.FC = () => {
         id="connect-step"
         footer={{
           isCancelHidden: true,
-          isNextDisabled: !isDiscoverySourceUpToDate,
+          isNextDisabled: (!isDiscoverySourceUpToDate || discoverSourcesContext.sourceSelected===null),
         }}
       >
         <ConnectStep />
@@ -31,7 +31,7 @@ export const MigrationWizard: React.FC = () => {
         name="Discover"
         id="discover-step"
         footer={{ isCancelHidden: true }}
-        isDisabled={discoverSourcesContext.sourceSelected?.status !== 'up-to-date'}
+        isDisabled={discoverSourcesContext.agentSelected?.status !== 'up-to-date'  || discoverSourcesContext.sourceSelected===null}
       >
         <DiscoveryStep />
       </WizardStep>
@@ -42,7 +42,7 @@ export const MigrationWizard: React.FC = () => {
           nextButtonText: "Let's create a new cluster",
           onNext: openAssistedInstaller,
         }}
-        isDisabled={discoverSourcesContext.sourceSelected?.status !== 'up-to-date'}
+        isDisabled={discoverSourcesContext.agentSelected?.status !== 'up-to-date' || discoverSourcesContext.sourceSelected===null}
       >
         <PrepareMigrationStep />
       </WizardStep>

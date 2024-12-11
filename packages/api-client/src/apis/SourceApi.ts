@@ -16,27 +16,16 @@
 import * as runtime from '../runtime';
 import type {
   Source,
-  SourceCreate,
   Status,
 } from '../models/index';
 import {
     SourceFromJSON,
     SourceToJSON,
-    SourceCreateFromJSON,
-    SourceCreateToJSON,
     StatusFromJSON,
     StatusToJSON,
 } from '../models/index';
 
-export interface CreateSourceRequest {
-    sourceCreate: SourceCreate;
-}
-
 export interface DeleteSourceRequest {
-    id: string;
-}
-
-export interface GetSourceImageRequest {
     id: string;
 }
 
@@ -51,20 +40,6 @@ export interface ReadSourceRequest {
  * @interface SourceApiInterface
  */
 export interface SourceApiInterface {
-    /**
-     * create a source
-     * @param {SourceCreate} sourceCreate 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof SourceApiInterface
-     */
-    createSourceRaw(requestParameters: CreateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Source>>;
-
-    /**
-     * create a source
-     */
-    createSource(requestParameters: CreateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source>;
-
     /**
      * delete a source
      * @param {string} id ID of the source
@@ -91,20 +66,6 @@ export interface SourceApiInterface {
      * delete a collection of sources
      */
     deleteSources(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Status>;
-
-    /**
-     * get the OVA file for the source
-     * @param {string} id ID of the source
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof SourceApiInterface
-     */
-    getSourceImageRaw(requestParameters: GetSourceImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
-
-    /**
-     * get the OVA file for the source
-     */
-    getSourceImage(requestParameters: GetSourceImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
 
     /**
      * list sources
@@ -139,42 +100,6 @@ export interface SourceApiInterface {
  * 
  */
 export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
-
-    /**
-     * create a source
-     */
-    async createSourceRaw(requestParameters: CreateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Source>> {
-        if (requestParameters['sourceCreate'] == null) {
-            throw new runtime.RequiredError(
-                'sourceCreate',
-                'Required parameter "sourceCreate" was null or undefined when calling createSource().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        const response = await this.request({
-            path: `/api/v1/sources`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: SourceCreateToJSON(requestParameters['sourceCreate']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => SourceFromJSON(jsonValue));
-    }
-
-    /**
-     * create a source
-     */
-    async createSource(requestParameters: CreateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source> {
-        const response = await this.createSourceRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
 
     /**
      * delete a source
@@ -236,39 +161,6 @@ export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
     }
 
     /**
-     * get the OVA file for the source
-     */
-    async getSourceImageRaw(requestParameters: GetSourceImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling getSourceImage().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/api/v1/sources/{id}/image`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.BlobApiResponse(response);
-    }
-
-    /**
-     * get the OVA file for the source
-     */
-    async getSourceImage(requestParameters: GetSourceImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
-        const response = await this.getSourceImageRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * list sources
      */
     async listSourcesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Source>>> {
@@ -290,7 +182,7 @@ export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
      * list sources
      */
     async listSources(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Source>> {
-        const response = await this.listSourcesRaw(initOverrides);
+        const response = await this.listSourcesRaw(initOverrides); 
         return await response.value();
     }
 

@@ -31,15 +31,17 @@ export const ConnectStep: React.FC = () => {
   const toggleDiscoverySourceSetupModal = useCallback((): void => {
     setShouldShowDiscoverySetupModal((lastState) => !lastState);
   }, []);
-  const hasSources = discoverySourcesContext.sources.length > 0;
-  const [firstSource, ..._otherSources] = discoverySourcesContext.sources;
+  const hasAgents = discoverySourcesContext.agents && discoverySourcesContext.agents.length > 0;
+  const [firstAgent, ..._otherAgents] = discoverySourcesContext.agents || [];
   
   useEffect(() => {
-    if (!discoverySourcesContext.sourceSelected && firstSource) {
-      discoverySourcesContext.selectSource(firstSource);
+    if (!discoverySourcesContext.agentSelected && firstAgent) {
+      if (firstAgent.status === 'up-to-date') {        
+        discoverySourcesContext.selectAgent(firstAgent);
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstSource]);
+  }, [firstAgent]);
 
   return (
     <Stack hasGutter>
@@ -69,7 +71,7 @@ export const ConnectStep: React.FC = () => {
             </ListItem>
           </List>
         </TextContent>
-        {discoverySourcesContext.sourceSelected?.status ===
+        {discoverySourcesContext.agentSelected?.status ===
           "waiting-for-credentials" && (
           <Alert
             isInline
@@ -78,11 +80,11 @@ export const ConnectStep: React.FC = () => {
             actionLinks={
               <AlertActionLink
                 component="a"
-                href={discoverySourcesContext.sourceSelected?.credentialUrl}
+                href={discoverySourcesContext.agentSelected?.credentialUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {discoverySourcesContext.sourceSelected?.credentialUrl}
+                {discoverySourcesContext.agentSelected?.credentialUrl}
               </AlertActionLink>
             }
           >
@@ -113,7 +115,7 @@ export const ConnectStep: React.FC = () => {
         </Panel>
       </StackItem>
       <StackItem>
-        {hasSources && (
+        {hasAgents && (
           <Button
             variant="secondary"
             onClick={toggleDiscoverySourceSetupModal}
@@ -130,11 +132,11 @@ export const ConnectStep: React.FC = () => {
             isDisabled={discoverySourcesContext.isDownloadingSource}
             onSubmit={async (event) => {
               const form = event.currentTarget;
-              const name = form["discoverySourceName"].value as string;
               const sshKey = form["discoverySourceSshKey"].value as string;
-              await discoverySourcesContext.downloadSource(name, sshKey);
+              await discoverySourcesContext.downloadSource(sshKey);
               toggleDiscoverySourceSetupModal();
-              await discoverySourcesContext.listSources();
+              //await discoverySourcesContext.listSources();
+              await discoverySourcesContext.listAgents();
             }}
           />
         )}

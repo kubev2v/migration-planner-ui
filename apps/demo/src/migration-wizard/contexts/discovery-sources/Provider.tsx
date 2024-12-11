@@ -4,18 +4,26 @@ import React, {
   type PropsWithChildren,
 } from "react";
 import { useAsyncFn, useInterval } from "react-use";
-import { type SourceApiInterface } from "@migration-planner-ui/api-client/apis";
+import { type SourceApiInterface, type AgentApiInterface } from "@migration-planner-ui/api-client/apis";
 import { useInjection } from "@migration-planner-ui/ioc";
 import { Symbols } from "#/main/Symbols";
 import { Context } from "./Context";
-import { Source } from "@migration-planner-ui/api-client/models";
+import { Agent, Source } from "@migration-planner-ui/api-client/models";
 
 export const Provider: React.FC<PropsWithChildren> = (props) => {
   const { children } = props;
 
   const [sourceSelected, setSourceSelected] = useState<Source | null>(null)
 
+  const [agentSelected, setAgentSelected] = useState<Agent | null>(null)
+
   const sourceApi = useInjection<SourceApiInterface>(Symbols.SourceApi);
+  const agentsApi = useInjection<AgentApiInterface>(Symbols.AgentApi);
+
+  const [listAgentsState, listAgents] = useAsyncFn(async () => {
+    const agents = await agentsApi.listAgents();
+    return agents;
+  });
 
   const [listSourcesState, listSources] = useAsyncFn(async () => {
     const sources = await sourceApi.listSources();
@@ -27,20 +35,11 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     return deletedSource;
   });
 
-  const [createSourceState, createSource] = useAsyncFn(async (name: string, sshKey: string) => {
-    const createdSource = await sourceApi.createSource({
-      sourceCreate: { name, sshKey },
-    });
-    return createdSource;
-  });
 
   const [downloadSourceState, downloadSource] = useAsyncFn(
-    async (sourceName: string, sourceSshKey: string): Promise<void> => {
+    async (sshKey:string): Promise<void> => {
       const anchor = document.createElement("a");
-      anchor.download = sourceName + ".ova";
-
-      const newSource = await createSource(sourceName, sourceSshKey);
-      const imageUrl = `/planner/api/v1/sources/${newSource.id}/image`;
+      const imageUrl = `/planner/api/v1/image${sshKey ? '?sshKey=' + sshKey : ''}`;      
 
       const response = await fetch(imageUrl, { method: 'HEAD' });
       
@@ -84,31 +83,60 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
   }, [isPolling]);
   useInterval(() => {
     listSources();
+    listAgents();
   }, pollingDelay);
 
-  const selectSource = useCallback((source: Source) => {
+  const selectSource = useCallback((source: Source|null) => {
     setSourceSelected(source);
   }, []);
 
+  const selectSourceById = useCallback((sourceId: string) => {
+    const source = listSourcesState.value?.find(source => source.id === sourceId);
+    setSourceSelected(source||null);
+  }, [listSourcesState.value]);
+
+
+  const selectAgent = useCallback((agent: Agent) => {
+    setAgentSelected(agent);
+    if (agent && agent.sourceId!==null) selectSourceById(agent.sourceId ?? '');
+  }, [selectSourceById]);
+
+
+  const [deleteAgentState, deleteAgent] = useAsyncFn(async (agent: Agent) => {
+    if (agent && agent.sourceId !== null) {
+      await deleteSource(agent.sourceId ?? '');
+      selectSource(null);
+    }
+    const deletedAgent = await agentsApi.deleteAgent({id: agent.id});
+    return deletedAgent;
+  });
+  
   const ctx: DiscoverySources.Context = {
     sources: listSourcesState.value ?? [],
     isLoadingSources: listSourcesState.loading,
     errorLoadingSources: listSourcesState.error,
     isDeletingSource: deleteSourceState.loading,
     errorDeletingSource: deleteSourceState.error,
-    isCreatingSource: createSourceState.loading,
-    errorCreatingSource: createSourceState.error,
     isDownloadingSource: downloadSourceState.loading,
-    errorDownloadingSource: downloadSourceState.error,
+    errorDownloadingSource: downloadSourceState.error,    
     isPolling,
     listSources,
     deleteSource,
-    createSource,
     downloadSource,
     startPolling,
     stopPolling,
     sourceSelected: sourceSelected,
     selectSource,
+    agents: listAgentsState.value ?? [],
+    isLoadingAgents: listAgentsState.loading,
+    errorLoadingAgents: listAgentsState.error,
+    listAgents,
+    deleteAgent,
+    isDeletingAgent: deleteAgentState.loading,
+    errorDeletingAgent: deleteAgentState.error,
+    selectAgent,
+    agentSelected: agentSelected,
+    selectSourceById
   };
 
   return <Context.Provider value={ctx}>{children}</Context.Provider>;
