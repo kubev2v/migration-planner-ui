@@ -8,6 +8,7 @@ import { DEFAULT_POLLING_DELAY, VALUE_NOT_AVAILABLE } from "./Constants";
 import { SourceStatusView } from "./SourceStatusView";
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
 import { Radio } from "@patternfly/react-core";
+import { Link } from "react-router-dom";
 
 export const SourcesTable: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
@@ -68,7 +69,9 @@ export const SourcesTable: React.FC = () => {
                 <Radio
                   id={agent.id}
                   name="source-selection"
-                  label={agent.credentialUrl}
+                  label={<Link to={agent.credentialUrl} target="_blank">
+                    {agent.credentialUrl}
+                  </Link>}
                   isChecked={
                     discoverySourcesContext.agentSelected
                       ? discoverySourcesContext.agentSelected?.id === agent.id
