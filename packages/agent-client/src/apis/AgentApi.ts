@@ -15,7 +15,7 @@ export interface AgentApiInterface {
     options?: RequestInit & { pathParams?: string[] }
   ): Promise<Either<number, CredentialsError>>;
   getStatus(options?: RequestInit): Promise<StatusReply>;
-  getAgentVersion():Promise<StatusReply>;
+  getAgentVersion():Promise<string>;
 }
 
 export class AgentApi implements AgentApiInterface {
@@ -61,13 +61,13 @@ export class AgentApi implements AgentApiInterface {
     }
   }
 
-  async getAgentVersion(): Promise<StatusReply> {
+  async getAgentVersion(): Promise<string> {
     const request = new Request(this.configuration.basePath + "/version", {
       method: "GET"
     });
 
     const response = await fetch(request);
-    const statusReply = (await response.json()) as StatusReply;
-    return statusReply;
+    const statusReply = (await response.json()) as { version: string };
+    return statusReply.version;
   }
 }

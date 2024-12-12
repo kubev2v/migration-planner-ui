@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import type { AgentApiInterface } from "@migration-planner-ui/agent-client/apis";
 import { useInjection } from '@migration-planner-ui/ioc';
 import { Symbols } from '#/main/Symbols';
-import { StatusReply } from '@migration-planner-ui/agent-client/models';
 
 export const AgentUIVersion: React.FC = () => {
     const agentApi = useInjection<AgentApiInterface>(Symbols.AgentApi);
-    const [versionInfo, setVersionInfo] = useState<StatusReply | null>(null);
+    const [versionInfo, setVersionInfo] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -33,7 +32,7 @@ export const AgentUIVersion: React.FC = () => {
 
     return (
         <div data-testid="agent-api-lib-version" hidden>      
-           {versionInfo.statusInfo}
+           {versionInfo}
         </div>
     );
 };
