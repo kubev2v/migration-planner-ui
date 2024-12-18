@@ -39,6 +39,7 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
   const [downloadSourceState, downloadSource] = useAsyncFn(
     async (sshKey:string): Promise<void> => {
       const anchor = document.createElement("a");
+      anchor.download = 'image.ova';
       const imageUrl = `/planner/api/v1/image${sshKey ? '?sshKey=' + sshKey : ''}`;      
 
       const response = await fetch(imageUrl, { method: 'HEAD' });
