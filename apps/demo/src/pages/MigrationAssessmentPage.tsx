@@ -34,9 +34,11 @@ const cards: React.ReactElement[] = [
         <Text>
           Run the discovery process and create a full evaluation report
           including recommendations for your migration journey.
+          <a href="/example_report.pdf"  download>
           <Button size="sm" variant="link">
             See an example report.
           </Button>
+        </a>
         </Text>
       </TextContent>
     </CardBody>
