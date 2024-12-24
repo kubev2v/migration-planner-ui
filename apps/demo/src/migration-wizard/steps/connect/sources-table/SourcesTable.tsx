@@ -7,7 +7,7 @@ import { Columns } from "./Columns";
 import { DEFAULT_POLLING_DELAY, VALUE_NOT_AVAILABLE } from "./Constants";
 import { SourceStatusView } from "./SourceStatusView";
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
-import { Radio } from "@patternfly/react-core";
+import { Radio, Spinner } from "@patternfly/react-core";
 import { Link } from "react-router-dom";
 
 export const SourcesTable: React.FC = () => {
@@ -15,10 +15,12 @@ export const SourcesTable: React.FC = () => {
   const hasAgents = discoverySourcesContext.agents && discoverySourcesContext.agents.length > 0;
   const [firstAgent, ..._otherAgents] = discoverySourcesContext.agents ?? [];
 
-  useMount(() => {
+  useMount(async () => {
     if (!discoverySourcesContext.isPolling) {
-      discoverySourcesContext.listSources();
-      discoverySourcesContext.listAgents();
+      await Promise.all([
+        discoverySourcesContext.listSources(),
+        discoverySourcesContext.listAgents()
+      ]);
     }
   });
 
@@ -40,8 +42,9 @@ export const SourcesTable: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [discoverySourcesContext.agentSelected?.status]);
 
-  
-  
+  if (!discoverySourcesContext.agentSelected && !discoverySourcesContext.sourceSelected) {
+    return <Spinner />; // Loading agent and source
+  }
   return (
     <Table aria-label="Sources table" variant="compact" borders={false}>
       {hasAgents && (
