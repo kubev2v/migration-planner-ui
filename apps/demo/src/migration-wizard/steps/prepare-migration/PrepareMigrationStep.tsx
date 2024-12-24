@@ -26,7 +26,7 @@ export const PrepareMigrationStep: React.FC = () => {
           id="lets-try"
           label="Let's try"
           name="lets-try"
-          description="Starting with a minimal cluster to try our migration flows and Openshift Virtualization. (20 VMs or up to cluster capacity limitations)"
+          description="Starting with a minimal cluster to try our migration flows and OpenShift Virtualization. (20 VMs or up to cluster capacity limitations)"
           checked
         />
       </StackItem>
@@ -67,14 +67,14 @@ export const PrepareMigrationStep: React.FC = () => {
           id="use-existing-cluster"
           label="Use existing cluster"
           name="use-existing-cluster"
-          description="Choose one of your Openshift cluster"
+          description="Choose one of your OpenShift cluster"
           isDisabled
         />
       </StackItem>
       <StackItem>
         <Radio
           id="use-sandbox"
-          label="Use Openshift developer sandbox (Coming Soon)"
+          label="Use OpenShift developer sandbox (Coming Soon)"
           name="use-sandabox"
           description=""
           isDisabled
