@@ -97,9 +97,9 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
   }, [listSourcesState.value]);
 
 
-  const selectAgent = useCallback((agent: Agent) => {
+  const selectAgent = useCallback(async (agent: Agent) => {
     setAgentSelected(agent);
-    if (agent && agent.sourceId!==null) selectSourceById(agent.sourceId ?? '');
+    if (agent && agent.sourceId!==null) await selectSourceById(agent.sourceId ?? '');
   }, [selectSourceById]);
 
 
