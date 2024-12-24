@@ -1,5 +1,11 @@
 import React from "react";
-import { Wizard, WizardStep } from "@patternfly/react-core";
+import {
+  Button,
+  useWizardContext,
+  Wizard,
+  WizardFooterWrapper,
+  WizardStep,
+} from "@patternfly/react-core";
 import { ConnectStep } from "./steps/connect/ConnectStep";
 import { DiscoveryStep } from "./steps/discovery/DiscoveryStep";
 import { useComputedHeightFromPageHeader } from "./hooks/UseComputedHeightFromPageHeader";
@@ -7,42 +13,115 @@ import { useDiscoverySources } from "./contexts/discovery-sources/Context";
 import { PrepareMigrationStep } from "./steps/prepare-migration/PrepareMigrationStep";
 
 const openAssistedInstaller = (): void => {
-  window.open("https://console.dev.redhat.com/openshift/assisted-installer/clusters/~new?source=assisted_migration", "_blank");
+  window.open(
+    "https://console.dev.redhat.com/openshift/assisted-installer/clusters/~new?source=assisted_migration",
+    "_blank"
+  );
+};
+
+type CustomWizardFooterPropType = {
+  isCancelHidden?: boolean;
+  isNextDisabled?: boolean;
+  isBackDisabled?: boolean;
+  nextButtonText?: string;
+  onNext?: () => void;
+};
+
+export const CustomWizardFooter: React.FC<CustomWizardFooterPropType> = ({
+  isCancelHidden,
+  isBackDisabled,
+  isNextDisabled,
+  nextButtonText,
+  onNext,
+}): JSX.Element => {
+  const { goToNextStep, goToPrevStep, goToStepById } = useWizardContext();
+  return (
+    <>
+      <WizardFooterWrapper>
+        <Button
+          ouiaId="wizard-next-btn"
+          variant="primary"
+          onClick={() => {
+            if (onNext) {
+              onNext();
+            } else {
+              goToNextStep();
+            }
+          }}
+          isDisabled={isNextDisabled}
+        >
+          {nextButtonText ?? "Next"}
+        </Button>
+        <Button
+          ouiaId="wizard-back-btn"
+          variant="secondary"
+          onClick={goToPrevStep}
+          isDisabled={isBackDisabled}
+        >
+          Back
+        </Button>
+        {!isCancelHidden && (
+          <Button
+            ouiaId="wizard-cancel-btn"
+            variant="link"
+            onClick={() => goToStepById("connect-step")}
+          >
+            Cancel
+          </Button>
+        )}
+      </WizardFooterWrapper>
+    </>
+  );
 };
 
 export const MigrationWizard: React.FC = () => {
   const computedHeight = useComputedHeightFromPageHeader();
   const discoverSourcesContext = useDiscoverySources();
-  const isDiscoverySourceUpToDate = discoverSourcesContext.agentSelected?.status === "up-to-date";
-  
+  const isDiscoverySourceUpToDate =
+    discoverSourcesContext.agentSelected?.status === "up-to-date";
+
   return (
     <Wizard height={computedHeight}>
       <WizardStep
         name="Connect"
         id="connect-step"
-        footer={{
-          isCancelHidden: true,
-          isNextDisabled: (!isDiscoverySourceUpToDate || discoverSourcesContext.sourceSelected===null),
-        }}
+        footer={
+          <CustomWizardFooter
+            isCancelHidden={true}
+            isNextDisabled={
+              !isDiscoverySourceUpToDate ||
+              discoverSourcesContext.sourceSelected === null
+            }
+            isBackDisabled={true}
+          />
+        }
       >
         <ConnectStep />
       </WizardStep>
       <WizardStep
         name="Discover"
         id="discover-step"
-        footer={{ isCancelHidden: true }}
-        isDisabled={discoverSourcesContext.agentSelected?.status !== 'up-to-date'  || discoverSourcesContext.sourceSelected===null}
+        footer={<CustomWizardFooter isCancelHidden={true} />}
+        isDisabled={
+          discoverSourcesContext.agentSelected?.status !== "up-to-date" ||
+          discoverSourcesContext.sourceSelected === null
+        }
       >
         <DiscoveryStep />
       </WizardStep>
       <WizardStep
         name="Plan"
         id="plan-step"
-        footer={{
-          nextButtonText: "Let's create a new cluster",
-          onNext: openAssistedInstaller,
-        }}
-        isDisabled={discoverSourcesContext.agentSelected?.status !== 'up-to-date' || discoverSourcesContext.sourceSelected===null}
+        footer={
+          <CustomWizardFooter
+            nextButtonText={"Let's create a new cluster"}
+            onNext={openAssistedInstaller}
+          />
+        }
+        isDisabled={
+          discoverSourcesContext.agentSelected?.status !== "up-to-date" ||
+          discoverSourcesContext.sourceSelected === null
+        }
       >
         <PrepareMigrationStep />
       </WizardStep>
