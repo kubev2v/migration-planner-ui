@@ -42,7 +42,12 @@ export const SourcesTable: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [discoverySourcesContext.agentSelected?.status]);
 
-  if (!discoverySourcesContext.agentSelected && !discoverySourcesContext.sourceSelected) {
+  if (
+    (discoverySourcesContext.agentSelected === undefined || 
+     discoverySourcesContext.sourceSelected === undefined) &&
+    !(discoverySourcesContext.agentSelected?.length === 0 || 
+      discoverySourcesContext.sourceSelected?.length === 0)
+  ) {
     return <Spinner />; // Loading agent and source
   }
   return (
