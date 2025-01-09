@@ -62,6 +62,9 @@ export const ConnectStep: React.FC = () => {
             style={{ marginInlineStart: 0 }}
           >
             <ListItem>
+              To add a new source download and import a discovery OVA file to your VMware environment.
+            </ListItem>
+            <ListItem>
               A link will appear below once the VM is running. Use this link to
               enter credentials and connect your environment.
             </ListItem>
