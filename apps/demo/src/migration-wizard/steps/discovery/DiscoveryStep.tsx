@@ -24,7 +24,6 @@ import {
   NetworkIcon,
   VirtualMachineIcon,
 } from "@patternfly/react-icons";
-import { Table, Tbody, Td, Tr } from "@patternfly/react-table";
 import globalWarningColor100 from "@patternfly/react-tokens/dist/esm/global_warning_color_100";
 import globalDangerColor100 from "@patternfly/react-tokens/dist/esm/global_danger_color_100";
 import type {
@@ -44,9 +43,6 @@ export const DiscoveryStep: React.FC = () => {
   const {
     datastores,
     networks,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    vlans,
   } = infra;
   const { cpuCores, ramGB, diskCount, diskGB, os } = vms;
   const operatingSystems = Object.entries(os).map(([name, count]) => ({
@@ -250,33 +246,12 @@ export const DiscoveryStep: React.FC = () => {
         name: (
           <ReportTable<InfraNetworksInner>
             data={networks}
-            columns={["Name", "Type"]}
-            fields={["name", "type"]}
+            columns={["Name", "Type", "VlanId"]}
+            fields={["name", "type", "vlanId"]}
           />
         ),
         id: "networks-details",
-      },
-      {
-        title: "VLANs",
-        name: (
-          <Table
-            variant="compact"
-            borders={true}
-            style={{ border: "1px solid lightgray", borderRight: "none" }}
-          >
-            <Tbody>
-              <Tr>
-                {((vlans as string[]) ?? []).sort().map((vlan) => (
-                  <Td hasRightBorder key={vlan}>
-                    {vlan}
-                  </Td>
-                ))}
-              </Tr>
-            </Tbody>
-          </Table>
-        ),
-        id: "vlans",
-      },
+      }
     ],
   };
 

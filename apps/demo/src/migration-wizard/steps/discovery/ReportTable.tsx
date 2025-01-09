@@ -33,7 +33,7 @@ export function ReportTable<DataItem>(
         {data.map((item, idx) => (
           <Tr key={idx}>
             {fields.map((f) => (
-              <Td hasRightBorder>{item[f] as React.ReactNode}</Td>
+              <Td hasRightBorder> {item[f] === "" ? "-" : (item[f] as React.ReactNode)}</Td>
             ))}
           </Tr>
         ))}
