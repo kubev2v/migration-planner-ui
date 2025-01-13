@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGISTRY: quay.io
-      # Set tag 'latest' on main branch
-      REGISTRY_TAG: ${{ (github.head_ref||github.ref_name)=='main' && 'latest' || (github.head_ref||github.ref_name) }}
+      # Set tag to the last commit sha on main branch, otherwise tag will be the branch name
+      REGISTRY_TAG: ${{ (github.head_ref||github.ref_name)=='main' && github.sha || (github.head_ref||github.ref_name) }}
+
       REGISTRY_ORG: kubev2v
     steps:
       - name: Checkout forklift
@@ -28,5 +29,8 @@ jobs:
       - name: Build and push images to quay.io
         run: |
           cd ${GITHUB_WORKSPACE}
-          podman build . -f Containerfile -t quay.io/kubev2v/migration-planner-ui
-          podman push quay.io/kubev2v/migration-planner-ui
+          podman build . -f Containerfile -t $REGISTRY/kubev2v/migration-planner-ui
+          podman build . -f Containerfile --label "quay.expires-after=10d" -t $REGISTRY/kubev2v/migration-planner-ui:$REGISTRY_TAG
+          
+          podman push $REGISTRY/kubev2v/migration-planner-ui
+          podman push $REGISTRY/kubev2v/migration-planner-ui:$REGISTRY_TAG       
