@@ -5,7 +5,7 @@
     "version": "7.8.0",
     "generators": {
       "api-client": {
-        "inputSpec": "https://raw.githubusercontent.com/kubev2v/migration-planner/main/api/v1alpha1/openapi.yaml",
+        "inputSpec": "https://raw.githubusercontent.com/kubev2v/migration-planner/41c138c994c82262aef827a322dbc480f5d840f2/api/v1alpha1/openapi.yaml",
         "output": "packages/api-client",
         "generatorName": "typescript-fetch",
         "additionalProperties": {
