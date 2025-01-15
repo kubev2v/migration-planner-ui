@@ -39,7 +39,7 @@ import { ReportPieChart } from "./ReportPieChart";
 export const DiscoveryStep: React.FC = () => {
   const discoverSourcesContext = useDiscoverySources();
   const { inventory } = discoverSourcesContext.sourceSelected as Source;
-  const { infra, vms } = inventory!;
+  const { infra, vms, smartState } = inventory!;
   const {
     datastores,
     networks,
@@ -301,6 +301,24 @@ export const DiscoveryStep: React.FC = () => {
     ],
   };
 
+  const smartStateViewData: TreeViewDataItem = {
+    title: "Smart State POC",
+    icon: <CogsIcon />,
+    name: <>This is the collected Smart State data</>,
+    id: "smarts",
+    children: [
+      {
+        title: "Details",
+        name: (
+            <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", maxWidth: "100%" }}>
+          {smartState ? JSON.stringify(smartState, null, 2) : "No data available"}
+        </pre>
+        ),
+        id: "os-details",
+      },
+    ],
+  };
+
   const operatingSystemsViewData: TreeViewDataItem = {
     title: "Operating systems",
     icon: <CogsIcon />,
@@ -330,6 +348,7 @@ export const DiscoveryStep: React.FC = () => {
     networksViewData,
     storageViewData,
     operatingSystemsViewData,
+    smartStateViewData,
   ];
 
   return (

@@ -56,6 +56,12 @@ export interface Inventory {
      * @memberof Inventory
      */
     infra: Infra;
+    /**
+     * 
+     * @type {Array<{ [key: string]: any; }>}
+     * @memberof Inventory
+     */
+    smartState?: Array<{ [key: string]: any; }>;
 }
 
 /**
@@ -81,6 +87,7 @@ export function InventoryFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'vcenter': json['vcenter'],
         'vms': json['vms'],
         'infra': json['infra'],
+        'smartState': json['smartState'] == null ? undefined : json['smartState'],
     };
 }
 
@@ -93,6 +100,7 @@ export function InventoryToJSON(value?: Inventory | null): any {
         'vcenter': value['vcenter'],
         'vms': value['vms'],
         'infra': value['infra'],
+        'smartState': value['smartState'],
     };
 }
 
