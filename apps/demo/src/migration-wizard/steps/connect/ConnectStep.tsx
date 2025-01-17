@@ -36,9 +36,7 @@ export const ConnectStep: React.FC = () => {
   
   useEffect(() => {
     if (!discoverySourcesContext.agentSelected && firstAgent) {
-      if (firstAgent.status === 'up-to-date') {        
-        discoverySourcesContext.selectAgent(firstAgent);
-      }
+      discoverySourcesContext.selectAgent(firstAgent);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstAgent]);
