@@ -22,10 +22,14 @@ import {
   SplitItem,
   Split,
   Icon,
+  Divider,
 } from "@patternfly/react-core";
 import { LoginFormViewModelInterface } from "./hooks/UseViewModel";
 import { FormStates } from "./FormStates";
-import { CheckCircleIcon } from "@patternfly/react-icons";
+import {
+  CheckCircleIcon,
+  InfoCircleIcon
+} from "@patternfly/react-icons";
 import { getConfigurationBasePath } from "#/main/Root";
 import globalSuccessColor100 from "@patternfly/react-tokens/dist/esm/global_success_color_100";
 
@@ -60,6 +64,22 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
           </Text>
         </TextContent>
       </CardHeader>
+
+      <Divider style={{ backgroundColor: "#f5f5f5", height: "10px", border: "none" }} />
+
+      <CardBody id="card-body-note" style={{ backgroundColor: "#ffffff", border: "1px solid #d2d2d2", padding: "1rem" }}>
+        <TextContent style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <InfoCircleIcon color="#007bff" />
+          <Text component="p" style={{ color: "#002952", fontWeight: "bold" }}>
+            Access control
+          </Text>
+        </TextContent>
+        <Text component="p" style={{ marginTop: "0.5rem", marginLeft: "1.5rem" }}>
+          To ensure secure access during the discovery process, we recommend creating a dedicated VMware user account with read-only permissions.
+        </Text>
+      </CardBody>
+
+      <Divider style={{ backgroundColor: "#f5f5f5", height: "10px", border: "none" }} />
 
       <CardBody
         id="card-body-description"
