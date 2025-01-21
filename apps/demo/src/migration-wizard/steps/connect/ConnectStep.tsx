@@ -12,7 +12,6 @@ import {
   ListItem,
   Icon,
   Alert,
-  AlertActionLink,
   Button,
 } from "@patternfly/react-core";
 import { chart_color_blue_300 as blueColor } from "@patternfly/react-tokens/dist/esm/chart_color_blue_300";
@@ -71,32 +70,7 @@ export const ConnectStep: React.FC = () => {
               and see the discovery report.
             </ListItem>
           </List>
-        </TextContent>
-        {discoverySourcesContext.agentSelected?.status ===
-          "waiting-for-credentials" && (
-          <Alert
-            isInline
-            variant="custom"
-            title="Discovery VM"
-            actionLinks={
-              <AlertActionLink
-                component="a"
-                href={discoverySourcesContext.agentSelected?.credentialUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {discoverySourcesContext.agentSelected?.credentialUrl}
-              </AlertActionLink>
-            }
-          >
-            <TextContent>
-              <Text>
-                Click the link below to connect the Discovery Source to your
-                VMware environment.
-              </Text>
-            </TextContent>
-          </Alert>
-        )}
+        </TextContent>        
       </StackItem>
       <StackItem>
         <Panel variant="bordered">
