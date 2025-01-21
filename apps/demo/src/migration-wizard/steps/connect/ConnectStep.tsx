@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Stack,
   StackItem,
@@ -102,7 +102,6 @@ export const ConnectStep: React.FC = () => {
               const sshKey = form["discoverySourceSshKey"].value as string;
               await discoverySourcesContext.downloadSource(sshKey);
               toggleDiscoverySourceSetupModal();
-              //await discoverySourcesContext.listSources();
               await discoverySourcesContext.listAgents();
             }}
           />

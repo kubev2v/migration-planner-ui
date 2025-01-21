@@ -27,7 +27,6 @@ export const EmptyState: React.FC = () => {
 
   const handleTryAgain = useCallback(() => {
     if (!discoverySourcesContext.isLoadingAgents) {
-      //discoverySourcesContext.listSources();
       discoverySourcesContext.listAgents();
     }
   }, [discoverySourcesContext]);

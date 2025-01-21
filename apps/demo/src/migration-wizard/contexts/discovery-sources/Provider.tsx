@@ -17,16 +17,20 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
 
   const [agentSelected, setAgentSelected] = useState<Agent | null>(null)
 
+  const [sourcesLoaded, setSourcesLoaded] = useState(false);
+
   const sourceApi = useInjection<SourceApiInterface>(Symbols.SourceApi);
   const agentsApi = useInjection<AgentApiInterface>(Symbols.AgentApi);
 
   const [listAgentsState, listAgents] = useAsyncFn(async () => {
+    if (!sourcesLoaded) return;
     const agents = await agentsApi.listAgents();
     return agents;
-  });
+  },[sourcesLoaded]);
 
   const [listSourcesState, listSources] = useAsyncFn(async () => {
     const sources = await sourceApi.listSources();
+    setSourcesLoaded(true);
     return sources;
   });
 
@@ -82,9 +86,15 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
       setIsPolling(false);
     }
   }, [isPolling]);
+
   useInterval(() => {
-    listSources();
-    listAgents();
+    if (!listSourcesState.loading){
+      listSources().then(() => {
+        if (sourcesLoaded) {
+          listAgents();
+        }
+      });
+    }
   }, pollingDelay);
 
   const selectSource = useCallback((source: Source|null) => {
@@ -92,13 +102,22 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
   }, []);
 
   const selectSourceById = useCallback((sourceId: string) => {
-    const source = listSourcesState.value?.find(source => source.id === sourceId);
-    setSourceSelected(source||null);
-  }, [listSourcesState.value]);
+     if (!listSourcesState.loading){
+      const source = listSourcesState.value?.find(source => source.id === sourceId);
+      setSourceSelected(source||null);    
+    }
+    else {
+      listSources().then((_sources)=>{
+        const source = _sources.find(source => source.id === sourceId);
+        setSourceSelected(source||null);    
+      })
+    }
+    
+  }, [listSources, listSourcesState]);
 
 
   const selectAgent = useCallback(async (agent: Agent) => {
-    setAgentSelected(agent);
+    setAgentSelected(agent);    
     if (agent && agent.sourceId!==null) await selectSourceById(agent.sourceId ?? '');
   }, [selectSourceById]);
 
@@ -111,6 +130,11 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     const deletedAgent = await agentsApi.deleteAgent({id: agent.id});
     return deletedAgent;
   });
+
+  const getSourceById = useCallback((sourceId: string) => {
+    const source = listSourcesState.value?.find(source => source.id === sourceId);
+    return source;
+  }, [listSourcesState.value]);
   
   const ctx: DiscoverySources.Context = {
     sources: listSourcesState.value ?? [],
@@ -137,7 +161,8 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     errorDeletingAgent: deleteAgentState.error,
     selectAgent,
     agentSelected: agentSelected,
-    selectSourceById
+    selectSourceById,
+    getSourceById
   };
 
   return <Context.Provider value={ctx}>{children}</Context.Provider>;
