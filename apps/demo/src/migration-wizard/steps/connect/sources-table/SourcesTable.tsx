@@ -77,9 +77,15 @@ export const SourcesTable: React.FC = () => {
                 <Radio
                   id={agent.id}
                   name="source-selection"
-                  label={<Link to={agent.credentialUrl} target="_blank">
-                    {agent.credentialUrl}
-                  </Link>}
+                  label={
+                    agent.credentialUrl !== "Example report" ? (
+                      <Link to={agent.credentialUrl} target="_blank">
+                        {agent.credentialUrl}
+                      </Link>
+                    ) : (
+                      agent.credentialUrl
+                    )
+                  }
                   isChecked={
                     discoverySourcesContext.agentSelected
                       ? discoverySourcesContext.agentSelected?.id === agent.id
@@ -109,7 +115,7 @@ export const SourcesTable: React.FC = () => {
                   VALUE_NOT_AVAILABLE}
               </Td>
               <Td dataLabel={Columns.Actions}>
-                <RemoveSourceAction
+              {agent.credentialUrl !== "Example report" && (<RemoveSourceAction
                   sourceId={agent.id}
                   isDisabled={discoverySourcesContext.isDeletingSource}
                   onConfirm={async (event) => {
@@ -119,7 +125,7 @@ export const SourcesTable: React.FC = () => {
                     await discoverySourcesContext.listAgents();
                     await discoverySourcesContext.listSources();
                   }}
-                />
+                />)}
               </Td>
             </Tr>
           )})
