@@ -37,7 +37,15 @@ export const CustomWizardFooter: React.FC<CustomWizardFooterPropType> = ({
   const { goToNextStep, goToPrevStep, goToStepById } = useWizardContext();
   return (
     <>
-      <WizardFooterWrapper>
+      <WizardFooterWrapper>        
+        <Button
+          ouiaId="wizard-back-btn"
+          variant="secondary"
+          onClick={goToPrevStep}
+          isDisabled={isBackDisabled}
+        >
+          Back
+        </Button>
         <Button
           ouiaId="wizard-next-btn"
           variant="primary"
@@ -51,14 +59,6 @@ export const CustomWizardFooter: React.FC<CustomWizardFooterPropType> = ({
           isDisabled={isNextDisabled}
         >
           {nextButtonText ?? "Next"}
-        </Button>
-        <Button
-          ouiaId="wizard-back-btn"
-          variant="secondary"
-          onClick={goToPrevStep}
-          isDisabled={isBackDisabled}
-        >
-          Back
         </Button>
         {!isCancelHidden && (
           <Button
