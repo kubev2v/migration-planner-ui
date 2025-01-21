@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useMount, useUnmount } from "react-use";
 import { Table, Thead, Tr, Th, Tbody, Td } from "@patternfly/react-table";
 import { EmptyState } from "./empty-state/EmptyState";
@@ -9,18 +9,35 @@ import { SourceStatusView } from "./SourceStatusView";
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
 import { Radio, Spinner } from "@patternfly/react-core";
 import { Link } from "react-router-dom";
+import { Agent } from "@migration-planner-ui/api-client/models";
 
 export const SourcesTable: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
-  const hasAgents = discoverySourcesContext.agents && discoverySourcesContext.agents.length > 0;
-  const [firstAgent, ..._otherAgents] = discoverySourcesContext.agents ?? [];
+  const prevAgentsRef = useRef<typeof discoverySourcesContext.agents>([]);
+  const memoizedAgents = useMemo(() => {
+    const areAgentsEqual = (prevAgents: typeof discoverySourcesContext.agents, newAgents: typeof discoverySourcesContext.agents) => {
+      if (!prevAgents || !newAgents || prevAgents.length !== newAgents.length) return false;
+      return prevAgents.every((agent, index) => agent.id === newAgents[index].id);
+    };
 
+    if (!areAgentsEqual(prevAgentsRef.current, discoverySourcesContext.agents)) {
+      prevAgentsRef.current = discoverySourcesContext.agents;
+      return discoverySourcesContext.agents ? discoverySourcesContext.agents.sort((a:Agent, b:Agent) => a.id.localeCompare(b.id)):[];
+    }
+    return prevAgentsRef.current;
+  }, [discoverySourcesContext]);
+  const hasAgents = memoizedAgents && memoizedAgents.length > 0;
+  const [firstAgent, ..._otherAgents] = memoizedAgents ?? [];
+  const [isLoading, setIsLoading] = useState(true);
+  
   useMount(async () => {
     if (!discoverySourcesContext.isPolling) {
+      setIsLoading(true);
       await Promise.all([
         discoverySourcesContext.listSources(),
         discoverySourcesContext.listAgents()
       ]);
+      setIsLoading(false);
     }
   });
 
@@ -42,13 +59,24 @@ export const SourcesTable: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [discoverySourcesContext.agentSelected?.status]);
 
-  if (
-    (discoverySourcesContext.agentSelected === undefined || 
-     discoverySourcesContext.sourceSelected === undefined) &&
-    !(discoverySourcesContext.agentSelected?.length === 0 || 
-      discoverySourcesContext.sourceSelected?.length === 0)
-  ) {
-    return <Spinner />; // Loading agent and source
+  useEffect(() => {
+    if (hasAgents && !discoverySourcesContext.agentSelected) {
+      discoverySourcesContext.selectAgent(firstAgent);
+    }
+  }, [hasAgents, firstAgent, discoverySourcesContext]);
+
+  if (isLoading) {
+    return (
+      <Table aria-label="Sources table" variant="compact" borders={false}>
+        <Tbody>
+          <Tr>
+            <Td colSpan={7}>
+              <Spinner size="xl" />
+            </Td>
+          </Tr>
+        </Tbody>
+      </Table>
+    );
   }
   return (
     <Table aria-label="Sources table" variant="compact" borders={false}>
@@ -67,7 +95,7 @@ export const SourcesTable: React.FC = () => {
       )}
       <Tbody>
         {hasAgents ? (
-          discoverySourcesContext.agents && discoverySourcesContext.agents.map((agent) => {
+          memoizedAgents && memoizedAgents.map((agent) => {
             const source = discoverySourcesContext.sourceSelected;
             return(
            
