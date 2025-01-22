@@ -1,7 +1,9 @@
 // import { sleep, Time } from "#/common/Time";
 import {
+  CreateSourceRequest,
   DeleteSourceRequest,
   GetImageRequest,
+  ListSourcesRequest,
   ReadSourceRequest,
   SourceApiInterface,
 } from "@migration-planner-ui/api-client/apis";
@@ -15,6 +17,15 @@ import {
 export class MockSourceApi implements SourceApiInterface {
   constructor(_configuration: ConfigurationParameters) {
     console.warn("#### CAUTION: Using MockSourceApi ####");
+  }
+
+  async createSourceRaw(_requestParameters: CreateSourceRequest, _initOverrides?: RequestInit | InitOverrideFunction):Promise<ApiResponse<Source>>{
+    throw new Error("Method not implemented.");
+  }
+
+ 
+  async createSource(_requestParameters: CreateSourceRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<Source>{
+    throw new Error("Method not implemented.");
   }
 
   async deleteSourceRaw(
@@ -52,11 +63,13 @@ export class MockSourceApi implements SourceApiInterface {
     throw new Error("Method not implemented.");
   }
   async listSourcesRaw(
+    _requestParameters: ListSourcesRequest,
     _initOverrides?: RequestInit | InitOverrideFunction
   ): Promise<ApiResponse<Array<Source>>> {
     throw new Error("Method not implemented.");
   }
   async listSources(
+    _requestParameters: ListSourcesRequest,
     _initOverrides?: RequestInit | InitOverrideFunction
   ): Promise<Array<Source>> {
     // await sleep(3 * Time.Second);

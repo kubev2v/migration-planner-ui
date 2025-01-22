@@ -5,7 +5,7 @@ import { EmptyState } from "./empty-state/EmptyState";
 import { RemoveSourceAction } from "./actions/RemoveSourceAction";
 import { Columns } from "./Columns";
 import { DEFAULT_POLLING_DELAY, VALUE_NOT_AVAILABLE } from "./Constants";
-import { SourceStatusView } from "./SourceStatusView";
+import { AgentStatusView } from "./AgentStatusView";
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
 import { Radio, Spinner } from "@patternfly/react-core";
 import { Link } from "react-router-dom";
@@ -161,7 +161,7 @@ export const SourcesTable: React.FC = () => {
                     />
                   </Td>
                   <Td dataLabel={Columns.Status}>
-                    <SourceStatusView status={agent.status} statusInfo={agent.statusInfo} />
+                    <AgentStatusView status={agent.status} statusInfo={agent.statusInfo} />
                   </Td>
                   <Td dataLabel={Columns.Hosts}>
                     {(source?.inventory?.infra.totalHosts ?? VALUE_NOT_AVAILABLE)}

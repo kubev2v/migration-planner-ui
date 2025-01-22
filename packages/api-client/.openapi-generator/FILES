@@ -3,8 +3,11 @@ src/apis/AgentApi.ts
 src/apis/HealthApi.ts
 src/apis/ImageApi.ts
 src/apis/SourceApi.ts
+src/apis/UiEventsApi.ts
 src/index.ts
 src/models/Agent.ts
+src/models/Event.ts
+src/models/EventData.ts
 src/models/Infra.ts
 src/models/InfraDatastoresInner.ts
 src/models/InfraNetworksInner.ts

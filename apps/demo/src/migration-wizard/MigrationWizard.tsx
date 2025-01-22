@@ -116,11 +116,12 @@ export const MigrationWizard: React.FC = () => {
           <CustomWizardFooter
             nextButtonText={"Let's create a new cluster"}
             onNext={openAssistedInstaller}
+            isNextDisabled={discoverSourcesContext.agentSelected?.credentialUrl === 'Example report'}
           />
         }
         isDisabled={
           discoverSourcesContext.agentSelected?.status !== "up-to-date" ||
-          discoverSourcesContext.sourceSelected === null
+          discoverSourcesContext.sourceSelected === null 
         }
       >
         <PrepareMigrationStep />

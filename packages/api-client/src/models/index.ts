@@ -1,6 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export * from './Agent';
+export * from './Event';
+export * from './EventData';
 export * from './Infra';
 export * from './InfraDatastoresInner';
 export * from './InfraNetworksInner';

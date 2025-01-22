@@ -12,7 +12,12 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import type { Inventory } from './Inventory';
+import {
+    InventoryFromJSON,
+    InventoryToJSON,
+} from './Inventory';
+
 /**
  * 
  * @export
@@ -21,17 +26,17 @@ import { mapValues } from '../runtime';
 export interface SourceCreate {
     /**
      * 
-     * @type {string}
+     * @type {Inventory}
      * @memberof SourceCreate
      */
-    name: string;
+    inventory: Inventory;
 }
 
 /**
  * Check if a given object implements the SourceCreate interface.
  */
 export function instanceOfSourceCreate(value: object): value is SourceCreate {
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('inventory' in value) || value['inventory'] === undefined) return false;
     return true;
 }
 
@@ -45,7 +50,7 @@ export function SourceCreateFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'name': json['name'],
+        'inventory': InventoryFromJSON(json['inventory']),
     };
 }
 
@@ -55,7 +60,7 @@ export function SourceCreateToJSON(value?: SourceCreate | null): any {
     }
     return {
         
-        'name': value['name'],
+        'inventory': InventoryToJSON(value['inventory']),
     };
 }
 

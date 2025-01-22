@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import type { Source } from "@migration-planner-ui/api-client/models";
+import type { Agent } from "@migration-planner-ui/api-client/models";
 import {
   Button,
   Icon,
@@ -21,19 +21,19 @@ import globalInfoColor100 from "@patternfly/react-tokens/dist/esm/global_info_co
 import globalSuccessColor100 from "@patternfly/react-tokens/dist/esm/global_success_color_100";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace SourceStatusView {
+export namespace AgentStatusView {
   export type Props = {
-    status: Source["status"];
-    statusInfo?: Source["statusInfo"];
+    status: Agent["status"];
+    statusInfo?: Agent["statusInfo"];
   };
 }
 
-export const SourceStatusView: React.FC<SourceStatusView.Props> = (props) => {
+export const AgentStatusView: React.FC<AgentStatusView.Props> = (props) => {
   const { status, statusInfo } = props;
 
   const statusView = useMemo(() => {
     // eslint-disable-next-line prefer-const
-    let fake: Source['status'] | null = null;
+    let fake: Agent['status'] | null = null;
     // fake = "not-connected";
     // fake = "waiting-for-credentials";
     // fake = "gathering-initial-inventory";
@@ -90,12 +90,12 @@ export const SourceStatusView: React.FC<SourceStatusView.Props> = (props) => {
 
   return (
     <Split hasGutter style={{ gap: "0.66rem" }}>
-      <SplitItem>{statusView.icon}</SplitItem>
+      <SplitItem>{statusView && statusView.icon}</SplitItem>
       <SplitItem>
         {statusInfo ? (
           <Popover
-            aria-label={statusView.text}
-            headerContent={statusView.text}
+            aria-label={statusView && statusView.text}
+            headerContent={statusView && statusView.text}
             headerComponent="h1"
             bodyContent={
               <TextContent>
@@ -104,15 +104,15 @@ export const SourceStatusView: React.FC<SourceStatusView.Props> = (props) => {
             }
           >
             <Button variant="link" isInline>
-              {statusView.text}
+              {statusView && statusView.text}
             </Button>
           </Popover>
         ) : (
-          statusView.text
+          statusView && statusView.text
         )}
       </SplitItem>
     </Split>
   );
 };
 
-SourceStatusView.displayName = "SourceStatusView";
+AgentStatusView.displayName = "AgentStatusView";

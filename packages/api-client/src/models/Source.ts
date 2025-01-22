@@ -12,17 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 import type { SourceAgentItem } from './SourceAgentItem';
 import {
     SourceAgentItemFromJSON,
-    SourceAgentItemFromJSONTyped,
     SourceAgentItemToJSON,
 } from './SourceAgentItem';
 import type { Inventory } from './Inventory';
 import {
     InventoryFromJSON,
-    InventoryFromJSONTyped,
     InventoryToJSON,
 } from './Inventory';
 
@@ -38,24 +35,6 @@ export interface Source {
      * @memberof Source
      */
     id: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Source
-     */
-    name: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Source
-     */
-    status: SourceStatusEnum;
-    /**
-     * 
-     * @type {string}
-     * @memberof Source
-     */
-    statusInfo: string;
     /**
      * 
      * @type {Inventory}
@@ -79,7 +58,13 @@ export interface Source {
      * @type {string}
      * @memberof Source
      */
-    sshKey?: string;
+    name?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Source
+     */
+    onPremises: boolean;
     /**
      * 
      * @type {Array<SourceAgentItem>}
@@ -88,30 +73,14 @@ export interface Source {
     agents?: Array<SourceAgentItem>;
 }
 
-
-/**
- * @export
- */
-export const SourceStatusEnum = {
-    NotConnected: 'not-connected',
-    WaitingForCredentials: 'waiting-for-credentials',
-    Error: 'error',
-    GatheringInitialInventory: 'gathering-initial-inventory',
-    UpToDate: 'up-to-date'
-} as const;
-export type SourceStatusEnum = typeof SourceStatusEnum[keyof typeof SourceStatusEnum];
-
-
 /**
  * Check if a given object implements the Source interface.
  */
 export function instanceOfSource(value: object): value is Source {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('status' in value) || value['status'] === undefined) return false;
-    if (!('statusInfo' in value) || value['statusInfo'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if (!('onPremises' in value) || value['onPremises'] === undefined) return false;
     return true;
 }
 
@@ -126,13 +95,11 @@ export function SourceFromJSONTyped(json: any, ignoreDiscriminator: boolean): So
     return {
         
         'id': json['id'],
-        'name': json['name'],
-        'status': json['status'],
-        'statusInfo': json['statusInfo'],
         'inventory': json['inventory'] == null ? undefined : InventoryFromJSON(json['inventory']),
         'createdAt': (new Date(json['createdAt'])),
         'updatedAt': (new Date(json['updatedAt'])),
-        'sshKey': json['sshKey'] == null ? undefined : json['sshKey'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'onPremises': json['onPremises'],
         'agents': json['agents'] == null ? undefined : ((json['agents'] as Array<any>).map(SourceAgentItemFromJSON)),
     };
 }
@@ -144,13 +111,11 @@ export function SourceToJSON(value?: Source | null): any {
     return {
         
         'id': value['id'],
-        'name': value['name'],
-        'status': value['status'],
-        'statusInfo': value['statusInfo'],
         'inventory': InventoryToJSON(value['inventory']),
         'createdAt': ((value['createdAt']).toISOString()),
         'updatedAt': ((value['updatedAt']).toISOString()),
-        'sshKey': value['sshKey'],
+        'name': value['name'],
+        'onPremises': value['onPremises'],
         'agents': value['agents'] == null ? undefined : ((value['agents'] as Array<any>).map(SourceAgentItemToJSON)),
     };
 }

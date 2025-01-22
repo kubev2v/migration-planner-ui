@@ -16,17 +16,25 @@
 import * as runtime from '../runtime';
 import type {
   Source,
+  SourceCreate,
   Status,
 } from '../models/index';
 import {
     SourceFromJSON,
-    SourceToJSON,
+    SourceCreateToJSON,
     StatusFromJSON,
-    StatusToJSON,
 } from '../models/index';
+
+export interface CreateSourceRequest {
+    sourceCreate: SourceCreate;
+}
 
 export interface DeleteSourceRequest {
     id: string;
+}
+
+export interface ListSourcesRequest {
+    includeDefault?: boolean;
 }
 
 export interface ReadSourceRequest {
@@ -40,6 +48,20 @@ export interface ReadSourceRequest {
  * @interface SourceApiInterface
  */
 export interface SourceApiInterface {
+    /**
+     * create a source from inventory file
+     * @param {SourceCreate} sourceCreate 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SourceApiInterface
+     */
+    createSourceRaw(requestParameters: CreateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Source>>;
+
+    /**
+     * create a source from inventory file
+     */
+    createSource(requestParameters: CreateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source>;
+
     /**
      * delete a source
      * @param {string} id ID of the source
@@ -69,16 +91,17 @@ export interface SourceApiInterface {
 
     /**
      * list sources
+     * @param {boolean} [includeDefault] control whatever the default report should be added to the result
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SourceApiInterface
      */
-    listSourcesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Source>>>;
+    listSourcesRaw(requestParameters: ListSourcesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Source>>>;
 
     /**
      * list sources
      */
-    listSources(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Source>>;
+    listSources(requestParameters: ListSourcesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Source>>;
 
     /**
      * read the specified source
@@ -100,6 +123,42 @@ export interface SourceApiInterface {
  * 
  */
 export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
+
+    /**
+     * create a source from inventory file
+     */
+    async createSourceRaw(requestParameters: CreateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Source>> {
+        if (requestParameters['sourceCreate'] == null) {
+            throw new runtime.RequiredError(
+                'sourceCreate',
+                'Required parameter "sourceCreate" was null or undefined when calling createSource().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/v1/sources`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: SourceCreateToJSON(requestParameters['sourceCreate']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SourceFromJSON(jsonValue));
+    }
+
+    /**
+     * create a source from inventory file
+     */
+    async createSource(requestParameters: CreateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source> {
+        const response = await this.createSourceRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * delete a source
@@ -163,8 +222,12 @@ export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
     /**
      * list sources
      */
-    async listSourcesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Source>>> {
+    async listSourcesRaw(requestParameters: ListSourcesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Source>>> {
         const queryParameters: any = {};
+
+        if (requestParameters['includeDefault'] != null) {
+            queryParameters['include_default'] = requestParameters['includeDefault'];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -181,8 +244,8 @@ export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
     /**
      * list sources
      */
-    async listSources(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Source>> {
-        const response = await this.listSourcesRaw(initOverrides); 
+    async listSources(requestParameters: ListSourcesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Source>> {
+        const response = await this.listSourcesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -24,12 +24,12 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
 
   const [listAgentsState, listAgents] = useAsyncFn(async () => {
     if (!sourcesLoaded) return;
-    const agents = await agentsApi.listAgents();
+    const agents = await agentsApi.listAgents({includeDefault: true});
     return agents;
   },[sourcesLoaded]);
 
   const [listSourcesState, listSources] = useAsyncFn(async () => {
-    const sources = await sourceApi.listSources();
+    const sources = await sourceApi.listSources({includeDefault: true});
     setSourcesLoaded(true);
     return sources;
   });
