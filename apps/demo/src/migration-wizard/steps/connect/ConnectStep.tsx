@@ -19,6 +19,7 @@ import { ClusterIcon, PlusCircleIcon } from "@patternfly/react-icons";
 import { SourcesTable } from "#/migration-wizard/steps/connect/sources-table/SourcesTable";
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
 import { DiscoverySourceSetupModal } from "./sources-table/empty-state/DiscoverySourceSetupModal";
+import { UploadSourceButton } from "../components/UploadSourceComponent";
 
 export const ConnectStep: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
@@ -83,7 +84,7 @@ export const ConnectStep: React.FC = () => {
       </StackItem>
       <StackItem>
         {hasAgents && (
-          <Button
+          <><Button
             variant="secondary"
             onClick={toggleDiscoverySourceSetupModal}
             style={{ marginTop: "1rem" }}
@@ -91,6 +92,7 @@ export const ConnectStep: React.FC = () => {
           >
             Add source
           </Button>
+          <UploadSourceButton discoverySourcesContext={discoverySourcesContext}/></>
         )}
         {shouldShowDiscoverySourceSetupModal && (
           <DiscoverySourceSetupModal

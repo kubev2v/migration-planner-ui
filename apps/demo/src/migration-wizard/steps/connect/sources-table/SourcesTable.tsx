@@ -1,4 +1,4 @@
-import React, {  useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useMount, useUnmount } from "react-use";
 import { Table, Thead, Tr, Th, Tbody, Td } from "@patternfly/react-table";
 import { EmptyState } from "./empty-state/EmptyState";
@@ -7,45 +7,59 @@ import { Columns } from "./Columns";
 import { DEFAULT_POLLING_DELAY, VALUE_NOT_AVAILABLE } from "./Constants";
 import { AgentStatusView } from "./AgentStatusView";
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
-import { Radio, Spinner } from "@patternfly/react-core";
+import { Button, Icon, Popover, Radio, Spinner, Text, TextContent } from "@patternfly/react-core";
 import { Link } from "react-router-dom";
 import { Agent, Source } from "@migration-planner-ui/api-client/models";
+import { CheckCircleIcon } from "@patternfly/react-icons";
+import globalSuccessColor100 from "@patternfly/react-tokens/dist/esm/global_success_color_100";
+
 
 export const SourcesTable: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
   const prevAgentsRef = useRef<typeof discoverySourcesContext.agents>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [relatedSources, setRelatedSources] = useState<Record<string, Source | null>>({}); // Mapping between agentId -> source
+  const [relatedSources, setRelatedSources] = useState<
+    Record<string, Source | null>
+  >({}); // Mapping between agentId -> source
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Memorize ordered agents
   const memoizedAgents = useMemo(() => {
-    const areAgentsEqual = (prevAgents: typeof discoverySourcesContext.agents, newAgents: typeof discoverySourcesContext.agents): boolean => {
-      if (!prevAgents || !newAgents || prevAgents.length !== newAgents.length) return false;
-      return prevAgents.every((agent, index) => agent.id === newAgents[index].id);
+    const areAgentsEqual = (
+      prevAgents: typeof discoverySourcesContext.agents,
+      newAgents: typeof discoverySourcesContext.agents
+    ): boolean => {
+      if (!prevAgents || !newAgents || prevAgents.length !== newAgents.length)
+        return false;
+      return prevAgents.every(
+        (agent, index) => agent.id === newAgents[index].id
+      );
     };
 
-    if (!areAgentsEqual(prevAgentsRef.current, discoverySourcesContext.agents)) {
+    if (
+      !areAgentsEqual(prevAgentsRef.current, discoverySourcesContext.agents)
+    ) {
       prevAgentsRef.current = discoverySourcesContext.agents;
       return discoverySourcesContext.agents
-        ? discoverySourcesContext.agents.sort((a: Agent, b: Agent) => a.id.localeCompare(b.id))
+        ? discoverySourcesContext.agents.sort((a: Agent, b: Agent) =>
+            a.id.localeCompare(b.id)
+          )
         : [];
     }
     return prevAgentsRef.current;
   }, [discoverySourcesContext]);
 
-  const [firstAgent, ..._otherAgents] = memoizedAgents ?? [];  
-  const hasAgents = memoizedAgents && memoizedAgents.length>0;  
+  const [firstAgent, ..._otherAgents] = memoizedAgents ?? [];
+  const hasAgents = memoizedAgents && memoizedAgents.length > 0;
 
   useMount(async () => {
-    discoverySourcesContext.startPolling(DEFAULT_POLLING_DELAY); 
+    discoverySourcesContext.startPolling(DEFAULT_POLLING_DELAY);
     if (!discoverySourcesContext.isPolling) {
-        await Promise.all([
-          discoverySourcesContext.listSources(),
-          discoverySourcesContext.listAgents()
-        ]);       
-      }
-      
+      await Promise.all([
+        discoverySourcesContext.listSources(),
+        discoverySourcesContext.listAgents(),
+      ]);
+    }
   });
 
   useUnmount(() => {
@@ -56,7 +70,7 @@ export const SourcesTable: React.FC = () => {
     // Use timeout to verify memoizedAgents variable
     timeoutRef.current = setTimeout(() => {
       if (memoizedAgents && memoizedAgents.length === 0) {
-       setIsLoading(false);
+        setIsLoading(false);
       }
     }, 3000); // Timeout in milisecons (3 seconds here)
 
@@ -69,17 +83,17 @@ export const SourcesTable: React.FC = () => {
     };
   }, [memoizedAgents]);
 
-
   // Load the sources related to each agent
   useEffect(() => {
-    
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const fetchRelatedSources = async () => {
       if (memoizedAgents && memoizedAgents.length > 0) {
         const sourcesMap: Record<string, Source | null> = {};
         for (const agent of memoizedAgents) {
           if (agent.sourceId) {
-            const source = await discoverySourcesContext.getSourceById(agent.sourceId); 
+            const source = await discoverySourcesContext.getSourceById(
+              agent.sourceId
+            );
             sourcesMap[agent.id] = source ?? null;
           }
         }
@@ -87,24 +101,18 @@ export const SourcesTable: React.FC = () => {
       }
     };
 
-   
-    if (hasAgents) {    
-      fetchRelatedSources().finally(() =>{               
+    if (hasAgents) {
+      fetchRelatedSources().finally(() => {
         if (!discoverySourcesContext.agentSelected) {
           discoverySourcesContext.selectAgent(firstAgent);
         }
         setIsLoading(false);
-      });      
-    }  
-    
+      });
+    }
   }, [memoizedAgents, hasAgents, discoverySourcesContext, firstAgent]);
 
-
-  console.log("---------");
-  console.log(hasAgents);
-  console.log("----------");
   // Show spinner until all data is loaded
-  if ((isLoading) ) {
+  if (isLoading) {
     return (
       <Table aria-label="Loading table" variant="compact" borders={false}>
         <Tbody>
@@ -116,95 +124,173 @@ export const SourcesTable: React.FC = () => {
         </Tbody>
       </Table>
     );
-  }
-  else {
+  } else {
+    const onPremisesSources = discoverySourcesContext.sources?.filter(
+      (source: Source) => source.onPremises === true
+    );
+    console.log(discoverySourcesContext);
+    console.log(onPremisesSources);
+
     return (
       <Table aria-label="Sources table" variant="compact" borders={false}>
-        {memoizedAgents && memoizedAgents.length>0 && (
-          <Thead>
-            <Tr>
-              <Th>{Columns.CredentialsUrl}</Th>
-              <Th>{Columns.Status}</Th>
-              <Th>{Columns.Hosts}</Th>
-              <Th>{Columns.VMs}</Th>
-              <Th>{Columns.Networks}</Th>
-              <Th>{Columns.Datastores}</Th>
-              <Th>{Columns.Actions}</Th>
-            </Tr>
-          </Thead>
-        )}
+        <Thead>
+          <Tr>
+            <Th>{Columns.CredentialsUrl}</Th>
+            <Th>{Columns.Status}</Th>
+            <Th>{Columns.Hosts}</Th>
+            <Th>{Columns.VMs}</Th>
+            <Th>{Columns.Networks}</Th>
+            <Th>{Columns.Datastores}</Th>
+            <Th>{Columns.Actions}</Th>
+          </Tr>
+        </Thead>
         <Tbody>
-          {memoizedAgents && memoizedAgents.length>0 ? (
-            memoizedAgents.map((agent) => {
-              const source = relatedSources[agent.id]; // Get the source related to this agent
-              return (
-                <Tr key={agent.id}>
-                  <Td dataLabel={Columns.CredentialsUrl}>
-                    <Radio
-                      id={agent.id}
-                      name="source-selection"
-                      label={
-                        agent.credentialUrl !== "Example report" ? (
-                          <Link to={agent.credentialUrl} target="_blank">
-                            {agent.credentialUrl}
-                          </Link>
-                        ) : (
-                          agent.credentialUrl
-                        )
-                      }
-                      isChecked={
-                        discoverySourcesContext.agentSelected
-                          ? discoverySourcesContext.agentSelected.id === agent.id
-                          : false
-                      }
-                      onChange={() => discoverySourcesContext.selectAgent(agent)}
-                    />
-                  </Td>
-                  <Td dataLabel={Columns.Status}>
-                    <AgentStatusView status={agent.status} statusInfo={agent.statusInfo} />
-                  </Td>
-                  <Td dataLabel={Columns.Hosts}>
-                    {(source?.inventory?.infra.totalHosts ?? VALUE_NOT_AVAILABLE)}
-                  </Td>
-                  <Td dataLabel={Columns.VMs}>
-                    {(source?.inventory?.vms.total ?? VALUE_NOT_AVAILABLE)}
-                  </Td>
-                  <Td dataLabel={Columns.Networks}>
-                    {(source?.inventory?.infra.networks?.length ?? VALUE_NOT_AVAILABLE)}
-                  </Td>
-                  <Td dataLabel={Columns.Datastores}>
-                    {(source?.inventory?.infra.datastores?.length ?? VALUE_NOT_AVAILABLE)}
-                  </Td>
-                  <Td dataLabel={Columns.Actions}>
-                    {agent.credentialUrl !== "Example report" && (
-                      <RemoveSourceAction
-                        sourceId={agent.id}
-                        isDisabled={discoverySourcesContext.isDeletingSource}
-                        onConfirm={async (event) => {
-                          event.stopPropagation();
-                          await discoverySourcesContext.deleteAgent(agent);
-                          event.dismissConfirmationModal();
-                          await Promise.all([
-                            discoverySourcesContext.listAgents(),
-                            discoverySourcesContext.listSources(),
-                          ]);
-                        }}
+          {/* Renderizar agentes */}
+          {memoizedAgents && memoizedAgents.length > 0
+            ? memoizedAgents.map((agent) => {
+                const source = relatedSources[agent.id]; // Get the source related to this agent
+                return (
+                  <Tr key={`agent-${agent.id}`}>
+                    <Td dataLabel={Columns.CredentialsUrl}>
+                      <Radio
+                        id={agent.id}
+                        name="source-selection"
+                        label={
+                          agent.credentialUrl !== "Example report" ? (
+                            <Link to={agent.credentialUrl} target="_blank">
+                              {agent.credentialUrl}
+                            </Link>
+                          ) : (
+                            agent.credentialUrl
+                          )
+                        }
+                        isChecked={
+                          discoverySourcesContext.agentSelected
+                            ? discoverySourcesContext.agentSelected.id ===
+                              agent.id
+                            : false
+                        }
+                        onChange={() =>
+                          discoverySourcesContext.selectAgent(agent)
+                        }
                       />
-                    )}
-                  </Td>
-                </Tr>
-              );
-            })
-          ) : (
-            <Tr>
-              <Td colSpan={12}>
-                <EmptyState />
+                    </Td>
+                    <Td dataLabel={Columns.Status}>
+                      <AgentStatusView
+                        status={agent.status}
+                        statusInfo={agent.statusInfo}
+                      />
+                    </Td>
+                    <Td dataLabel={Columns.Hosts}>
+                      {source?.inventory?.infra.totalHosts ??
+                        VALUE_NOT_AVAILABLE}
+                    </Td>
+                    <Td dataLabel={Columns.VMs}>
+                      {source?.inventory?.vms.total ?? VALUE_NOT_AVAILABLE}
+                    </Td>
+                    <Td dataLabel={Columns.Networks}>
+                      {source?.inventory?.infra.networks?.length ??
+                        VALUE_NOT_AVAILABLE}
+                    </Td>
+                    <Td dataLabel={Columns.Datastores}>
+                      {source?.inventory?.infra.datastores?.length ??
+                        VALUE_NOT_AVAILABLE}
+                    </Td>
+                    <Td dataLabel={Columns.Actions}>
+                      {agent.credentialUrl !== "Example report" && (
+                        <RemoveSourceAction
+                          sourceId={agent.id}
+                          isDisabled={discoverySourcesContext.isDeletingSource}
+                          onConfirm={async (event) => {
+                            event.stopPropagation();
+                            await discoverySourcesContext.deleteAgent(agent);
+                            event.dismissConfirmationModal();
+                            await Promise.all([
+                              discoverySourcesContext.listAgents(),
+                              discoverySourcesContext.listSources(),
+                            ]);
+                          }}
+                        />
+                      )}
+                    </Td>
+                  </Tr>
+                );
+              })
+            : null}
+
+          {/* Renderizar fuentes onPremises */}
+          {onPremisesSources.map((source) => (
+            <Tr key={`source-${source.id}`}>
+              <Td dataLabel={Columns.CredentialsUrl}>
+                {" "}
+                <Radio
+                  id={source.id}
+                  name="source-selection"
+                  label="Onpremise source"
+                  isChecked={
+                    discoverySourcesContext.sourceSelected
+                      ? discoverySourcesContext.sourceSelected.id === source.id
+                      : false
+                  }
+                  onChange={() => discoverySourcesContext.selectSource(source)}
+                />
+              </Td>
+              <Td dataLabel={Columns.Status}><Icon size="md" isInline>
+              <CheckCircleIcon color={globalSuccessColor100.value} />
+            </Icon> <Popover
+            aria-label="Up to date"
+            headerContent="Up to date"
+            headerComponent="h1"
+            bodyContent={
+              <TextContent>
+                <Text> Inventory successfully uploaded</Text>
+              </TextContent>
+            }
+          >
+            <Button variant="link" isInline style={{marginLeft: "0.5rem"}}>
+            Up to date
+            </Button>
+          </Popover></Td>
+              <Td dataLabel={Columns.Hosts}>
+                {source.inventory?.infra.totalHosts ?? VALUE_NOT_AVAILABLE}
+              </Td>
+              <Td dataLabel={Columns.VMs}>
+                {source.inventory?.vms.total ?? VALUE_NOT_AVAILABLE}
+              </Td>
+              <Td dataLabel={Columns.Networks}>
+                {source.inventory?.infra.networks?.length ??
+                  VALUE_NOT_AVAILABLE}
+              </Td>
+              <Td dataLabel={Columns.Datastores}>
+                {source.inventory?.infra.datastores?.length ??
+                  VALUE_NOT_AVAILABLE}
+              </Td>
+              <Td dataLabel={Columns.Actions}>
+                <RemoveSourceAction
+                  sourceId={source.id}
+                  isDisabled={discoverySourcesContext.isDeletingSource}
+                  onConfirm={async (event) => {
+                    event.stopPropagation();
+                    await discoverySourcesContext.deleteSource(source);
+                    event.dismissConfirmationModal();
+                    await Promise.all([discoverySourcesContext.listSources()]);
+                  }}
+                />
               </Td>
             </Tr>
-          )}
+          ))}
+
+          {memoizedAgents &&
+            memoizedAgents.length === 0 &&
+            onPremisesSources.length === 0 && (
+              <Tr>
+                <Td colSpan={12}>
+                  <EmptyState />
+                </Td>
+              </Tr>
+            )}
         </Tbody>
       </Table>
     );
   }
- 
 };

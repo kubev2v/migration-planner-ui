@@ -12,6 +12,7 @@ import { ExclamationCircleIcon, SearchIcon } from "@patternfly/react-icons";
 import globalDangerColor200 from "@patternfly/react-tokens/dist/esm/global_danger_color_200";
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
 import { DiscoverySourceSetupModal } from "./DiscoverySourceSetupModal";
+import { UploadSourceButton } from "#/migration-wizard/steps/components/UploadSourceComponent";
 
 export const EmptyState: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
@@ -31,6 +32,7 @@ export const EmptyState: React.FC = () => {
     }
   }, [discoverySourcesContext]);
 
+
   let emptyStateNode: React.ReactNode = (
     <PFEmptyState variant="sm">
       <EmptyStateHeader
@@ -44,12 +46,10 @@ export const EmptyState: React.FC = () => {
       </EmptyStateBody>
       <EmptyStateFooter>
         <EmptyStateActions>
-          <Button
-            variant="secondary"
-            onClick={toggleDiscoverySourceSetupModal}
-          >
-            Create
+          <Button variant="secondary" onClick={toggleDiscoverySourceSetupModal}>
+            Create source
           </Button>
+          <UploadSourceButton discoverySourcesContext={discoverySourcesContext}/>
         </EmptyStateActions>
       </EmptyStateFooter>
     </PFEmptyState>
