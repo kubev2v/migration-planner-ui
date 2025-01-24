@@ -33,12 +33,24 @@ jobs:
 
       - name: Rename bundle
         run: mv apps/agent/dist/*.tgz apps/agent/dist/agent-${{ github.sha }}.tgz
+      
+      - name: Create a copy with the name 'agent-latest.tgz'
+        run: cp apps/agent/dist/agent-${{ github.sha }}.tgz apps/agent/dist/agent-latest.tgz
 
-      - name: Upload artifact
+      - name: Upload artifact with SHA
         uses: actions/upload-artifact@v4
         with:
           name: agent-${{ github.sha }}.tgz
           path: apps/agent/dist/agent-${{ github.sha }}.tgz
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+
+      - name: Upload artifact 'agent-latest.tgz'
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-latest.tgz
+          path: apps/agent/dist/agent-latest.tgz
           if-no-files-found: error
           retention-days: 1
           compression-level: 0
