@@ -27,3 +27,6 @@ yarn-error.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 .idea
+
+# CI temp directory
+docker-config/
