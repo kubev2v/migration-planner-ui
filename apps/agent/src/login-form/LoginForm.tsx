@@ -75,7 +75,7 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
           </Text>
         </TextContent>
         <Text component="p" style={{ marginTop: "0.5rem", marginLeft: "1.5rem" }}>
-          To ensure secure access during the discovery process, we recommend creating a dedicated VMware user account with read-only permissions.
+          A VMware user account with read-only permissions is sufficient for secure access during the discovery process.
         </Text>
       </CardBody>
 
