@@ -35,8 +35,10 @@ import type {
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
 import { ReportTable } from "./ReportTable";
 import { ReportPieChart } from "./ReportPieChart";
+import DownloadPDFButton from "./DownloadPDFButton";
 
 export const DiscoveryStep: React.FC = () => {
+  const [forceExpand, setForceExpand] = React.useState(false);
   const discoverSourcesContext = useDiscoverySources();
   const { inventory } = discoverSourcesContext.sourceSelected as Source;
   const { infra, vms } = inventory!;
@@ -48,7 +50,8 @@ export const DiscoveryStep: React.FC = () => {
   const operatingSystems = Object.entries(os).map(([name, count]) => ({
     name,
     count,
-  }));
+  })); 
+
   const totalDistributedSwitches = networks.filter(
     (net) => net.type === "distributed"
   ).length;
@@ -332,11 +335,28 @@ export const DiscoveryStep: React.FC = () => {
     operatingSystemsViewData,
   ];
 
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const handleForceExpand = async (callback: () => Promise<void>) => {
+    setForceExpand(true); // Forzar la expansión
+    await new Promise((resolve) => setTimeout(resolve, 100)); // Espera que React renderice
+    await callback(); // Llama al callback para generar el PDF
+    setForceExpand(false); // Restaura el estado
+  };
+
   return (
-    <Stack hasGutter>
+    <Stack hasGutter id="discovery-report">
       <StackItem>
         <TextContent>
-          <Text component="h2">Discovery report</Text>
+        <Flex alignItems={{ default: "alignItemsCenter" }} justifyContent={{ default: "justifyContentSpaceBetween" }}>
+          <FlexItem>
+            <TextContent>
+              <Text component="h2">Discovery report</Text>
+            </TextContent>
+          </FlexItem>
+          <FlexItem spacer={{ default: "spacerMd" }}>
+            <DownloadPDFButton elementId="discovery-report" onBeforeDownload={(callback) => handleForceExpand(callback)}/>
+          </FlexItem>
+        </Flex>
           <Text component="p">
             Review the information collected during the discovery process
           </Text>
@@ -344,9 +364,11 @@ export const DiscoveryStep: React.FC = () => {
       </StackItem>
       <StackItem>
         <TreeView
+          id="discovery-tree-view"
           aria-label="Discovery report"
           variant="compactNoBackground"
           data={treeViewData}
+          allExpanded={forceExpand}
         />
       </StackItem>
     </Stack>
