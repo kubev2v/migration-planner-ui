@@ -26,5 +26,6 @@ declare namespace DiscoverySources {
     agentSelected: Agent;
     selectSourceById: (sourceId:string)=>void;
     getSourceById: (sourceId: string) => Source;
+    createSourceFromJson: (jsonContent:string)=>Promise<Source>;
   };
 }

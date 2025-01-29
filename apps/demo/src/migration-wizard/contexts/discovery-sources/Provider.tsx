@@ -8,7 +8,7 @@ import { type SourceApiInterface, type AgentApiInterface } from "@migration-plan
 import { useInjection } from "@migration-planner-ui/ioc";
 import { Symbols } from "#/main/Symbols";
 import { Context } from "./Context";
-import { Agent, Source } from "@migration-planner-ui/api-client/models";
+import { Agent, Source, SourceCreateFromJSON } from "@migration-planner-ui/api-client/models";
 
 export const Provider: React.FC<PropsWithChildren> = (props) => {
   const { children } = props;
@@ -135,6 +135,11 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     const source = listSourcesState.value?.find(source => source.id === sourceId);
     return source;
   }, [listSourcesState.value]);
+
+  const createSourceFromJson = useCallback((jsonContent: string) => {
+    const source = sourceApi.createSource({sourceCreate:SourceCreateFromJSON(jsonContent) });
+    return source;
+  }, [sourceApi]);
   
   const ctx: DiscoverySources.Context = {
     sources: listSourcesState.value ?? [],
@@ -162,7 +167,8 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     selectAgent,
     agentSelected: agentSelected,
     selectSourceById,
-    getSourceById
+    getSourceById,
+    createSourceFromJson
   };
 
   return <Context.Provider value={ctx}>{children}</Context.Provider>;
