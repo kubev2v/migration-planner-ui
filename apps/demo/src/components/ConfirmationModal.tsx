@@ -48,7 +48,7 @@ export const ConfirmationModal: React.FC<
 
   return (
     <Modal
-      width="24rem"
+      width="44rem"
       isOpen={isOpen}
       variant={variant}
       aria-describedby="modal-title-icon-description"
@@ -68,7 +68,7 @@ export const ConfirmationModal: React.FC<
           isDisabled={isDisabled}
           onClick={onConfirm}
         >
-          Confirm
+          Delete
         </Button>
         {onCancel && (
           <Button key="cancel" variant="link" onClick={onCancel}>

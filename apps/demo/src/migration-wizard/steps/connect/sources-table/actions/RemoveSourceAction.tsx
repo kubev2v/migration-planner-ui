@@ -64,17 +64,18 @@ export const RemoveSourceAction: React.FC<RemoveSourceAction.Props> = (
       </Tooltip>
       {onConfirm && shouldShowConfirmationModal && (
         <ConfirmationModal
-          title="Remove discovery source?"
+          title="Delete Environment"
           titleIconVariant="warning"
-          primaryButtonVariant="danger"
           isOpen={shouldShowConfirmationModal}
           isDisabled={isDisabled}
           onCancel={dismissConfirmationModal}
           onConfirm={handleConfirm}
+          onClose={dismissConfirmationModal}
         >
           <TextContent>
             <Text id="confirmation-modal-description">
-              The discovery information will be lost.
+            Are you sure you want to delete this environment? 
+            <br/>To use it again, create a new discovery image and redeploy it.
             </Text>
           </TextContent>
         </ConfirmationModal>
