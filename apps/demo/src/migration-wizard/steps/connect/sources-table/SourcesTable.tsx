@@ -157,7 +157,7 @@ export const SourcesTable: React.FC = () => {
                     />
                   </Td>
                   <Td dataLabel={Columns.Status}>
-                    <AgentStatusView status={agent.status} statusInfo={agent.statusInfo} />
+                    <AgentStatusView status={agent.status} statusInfo={agent.statusInfo} credentialUrl={agent.credentialUrl}/>
                   </Td>
                   <Td dataLabel={Columns.Hosts}>
                     {(source?.inventory?.infra.totalHosts ?? VALUE_NOT_AVAILABLE)}
@@ -184,6 +184,7 @@ export const SourcesTable: React.FC = () => {
                             discoverySourcesContext.listAgents(),
                             discoverySourcesContext.listSources(),
                           ]);
+                          discoverySourcesContext.selectAgent(firstAgent);
                         }}
                       />
                     )}

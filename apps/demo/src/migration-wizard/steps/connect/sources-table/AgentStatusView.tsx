@@ -19,21 +19,43 @@ import {
 import globalDangerColor200 from "@patternfly/react-tokens/dist/esm/global_danger_color_200";
 import globalInfoColor100 from "@patternfly/react-tokens/dist/esm/global_info_color_100";
 import globalSuccessColor100 from "@patternfly/react-tokens/dist/esm/global_success_color_100";
+import { Link } from "react-router-dom";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace AgentStatusView {
   export type Props = {
     status: Agent["status"];
     statusInfo?: Agent["statusInfo"];
+    credentialUrl?: Agent["credentialUrl"];
   };
 }
 
+const StatusInfoWaitingForCredentials: React.FC<{
+  credentialUrl?: Agent["credentialUrl"];
+}> = ({ credentialUrl }) => {
+  return (
+    <>
+      <TextContent>
+        <Text>
+          Click the link below to connect the Discovery Source to your VMware
+          environment.
+        </Text>
+      </TextContent>
+      {credentialUrl && (
+        <Link to={credentialUrl} target="_blank">
+          {credentialUrl}
+        </Link>
+      )}
+    </>
+  );
+};
+
 export const AgentStatusView: React.FC<AgentStatusView.Props> = (props) => {
-  const { status, statusInfo } = props;
+  const { status, statusInfo, credentialUrl } = props;
 
   const statusView = useMemo(() => {
     // eslint-disable-next-line prefer-const
-    let fake: Agent['status'] | null = null;
+    let fake: Agent["status"] | null = null;
     // fake = "not-connected";
     // fake = "waiting-for-credentials";
     // fake = "gathering-initial-inventory";
@@ -92,15 +114,21 @@ export const AgentStatusView: React.FC<AgentStatusView.Props> = (props) => {
     <Split hasGutter style={{ gap: "0.66rem" }}>
       <SplitItem>{statusView && statusView.icon}</SplitItem>
       <SplitItem>
-        {statusInfo ? (
+        {statusInfo || statusView && statusView.text==='Waiting for credentials' ? (
           <Popover
             aria-label={statusView && statusView.text}
             headerContent={statusView && statusView.text}
             headerComponent="h1"
             bodyContent={
-              <TextContent>
-                <Text>{statusInfo}</Text>
-              </TextContent>
+              statusView && statusView.text !== "Waiting for credentials" ? (
+                <TextContent>
+                  <Text>{statusInfo}</Text>
+                </TextContent>
+              ) : (
+                <StatusInfoWaitingForCredentials
+                  credentialUrl={credentialUrl}
+                />
+              )
             }
           >
             <Button variant="link" isInline>
