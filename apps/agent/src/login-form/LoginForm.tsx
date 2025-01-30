@@ -26,10 +26,7 @@ import {
 } from "@patternfly/react-core";
 import { LoginFormViewModelInterface } from "./hooks/UseViewModel";
 import { FormStates } from "./FormStates";
-import {
-  CheckCircleIcon,
-  InfoCircleIcon
-} from "@patternfly/react-icons";
+import { CheckCircleIcon, InfoCircleIcon } from "@patternfly/react-icons";
 import { getConfigurationBasePath } from "#/main/Root";
 import globalSuccessColor100 from "@patternfly/react-tokens/dist/esm/global_success_color_100";
 
@@ -45,7 +42,7 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
   console.log(vm.formState);
   return (
     <Card
-      style={{ width: "36rem" }}
+      style={{ maxWidth: "36rem", width: "100%",  maxHeight: "90vh", overflowY: "auto" }}
       isFlat
       isRounded
       aria-labelledby="card-header-title"
@@ -65,26 +62,40 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
         </TextContent>
       </CardHeader>
 
-      <Divider style={{ backgroundColor: "#f5f5f5", height: "10px", border: "none" }} />
+      <Divider
+        style={{ backgroundColor: "#f5f5f5", height: "10px", border: "none" }}
+      />
 
-      <CardBody id="card-body-note" style={{ backgroundColor: "#ffffff", border: "1px solid #d2d2d2", padding: "1rem" }}>
-        <TextContent style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+      <CardBody
+        id="card-body-note"
+        style={{
+          backgroundColor: "#ffffff",
+          border: "1px solid #d2d2d2",
+          padding: "1rem",
+        }}
+      >
+        <TextContent
+          style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+        >
           <InfoCircleIcon color="#007bff" />
           <Text component="p" style={{ color: "#002952", fontWeight: "bold" }}>
             Access control
           </Text>
         </TextContent>
-        <Text component="p" style={{ marginTop: "0.5rem", marginLeft: "1.5rem" }}>
-          A VMware user account with read-only permissions is sufficient for secure access during the discovery process.
+        <Text
+          component="p"
+          style={{ marginTop: "0.5rem", marginLeft: "1.5rem" }}
+        >
+          A VMware user account with read-only permissions is sufficient for
+          secure access during the discovery process.
         </Text>
       </CardBody>
 
-      <Divider style={{ backgroundColor: "#f5f5f5", height: "10px", border: "none" }} />
+      <Divider
+        style={{ backgroundColor: "#f5f5f5", height: "10px", border: "none" }}
+      />
 
-      <CardBody
-        id="card-body-description"
-       
-      >
+      <CardBody id="card-body-description">
         <Form ref={vm.formRef} onSubmit={vm.handleSubmit} id="login-form">
           <FormGroup
             label="Environment URL"
@@ -185,21 +196,26 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
             )}
           </FormGroup>
 
-          <FormGroup fieldId="checkbox-form-control"  hidden={
-          vm.formState === FormStates.GatheringInventory ||
-          vm.formState === FormStates.CredentialsAccepted
-        }>
+          <FormGroup
+            fieldId="checkbox-form-control"
+            hidden={
+              vm.formState === FormStates.GatheringInventory ||
+              vm.formState === FormStates.CredentialsAccepted
+            }
+          >
             <Checkbox
               isDisabled={vm.shouldDisableFormControl}
               id="checkbox-form-control"
               name="isDataSharingAllowed"
               label="I agree to share aggregated data about my environment with Red Hat."
               aria-label="Share aggregated data"
-              onChange={(_event,checked)=>vm.handleChangeDataSharingAllowed(checked)}
+              onChange={(_event, checked) =>
+                vm.handleChangeDataSharingAllowed(checked)
+              }
               isChecked={vm.isDataSharingChecked}
             />
           </FormGroup>
-          
+
           {vm.shouldDisplayAlert && (
             <FormGroup>
               <Alert
@@ -235,36 +251,41 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
       >
         {vm.formState === FormStates.GatheringInventory && (
           <Text component="p" style={{ textAlign: "center" }}>
-          <Icon size="xl" >
-            <Spinner />
-          </Icon>
-          <br/>Gathering inventory...
-        </Text>
-          
+            <Icon size="xl">
+              <Spinner />
+            </Icon>
+            <br />
+            Gathering inventory...
+          </Text>
         )}
         {vm.formState === FormStates.CredentialsAccepted && (
           <Text component="p" style={{ textAlign: "center" }}>
-          <Icon size="xl" isInline>
-            <CheckCircleIcon color={globalSuccessColor100.value} />
-          </Icon>
-          <br/>Discovery completed
-        </Text>
-          
+            <Icon size="xl" isInline>
+              <CheckCircleIcon color={globalSuccessColor100.value} />
+            </Icon>
+            <br />
+            Discovery completed
+          </Text>
         )}
       </CardBody>
       <CardFooter>
         <Split style={{ alignItems: "flex-end" }}>
           <SplitItem>
-          {vm.formState !== FormStates.CredentialsAccepted && vm.formState !== FormStates.GatheringInventory && (
-            <Button
-              type="submit"
-              variant="primary"
-              isDisabled={vm.shouldDisableFormControl || !vm.isDataSharingChecked}
-              form="login-form"
-            >
-              Log in
-            </Button>)}
-            {(vm.formState === FormStates.CredentialsAccepted || vm.formState === FormStates.GatheringInventory) && (
+            {vm.formState !== FormStates.CredentialsAccepted &&
+              vm.formState !== FormStates.GatheringInventory && (
+                <Button
+                  type="submit"
+                  variant="primary"
+                  isDisabled={
+                    vm.shouldDisableFormControl || !vm.isDataSharingChecked
+                  }
+                  form="login-form"
+                >
+                  Log in
+                </Button>
+              )}
+            {(vm.formState === FormStates.CredentialsAccepted ||
+              vm.formState === FormStates.GatheringInventory) && (
               <>
                 <Button
                   variant="primary"
@@ -275,7 +296,12 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
                 </Button>
                 <Button
                   variant="secondary"
-                  onClick={() => window.open(getConfigurationBasePath() + "/inventory", "_blank")}
+                  onClick={() =>
+                    window.open(
+                      getConfigurationBasePath() + "/inventory",
+                      "_blank"
+                    )
+                  }
                   style={{ marginLeft: "16px" }}
                 >
                   Download Inventory
