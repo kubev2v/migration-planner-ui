@@ -38,7 +38,6 @@ import { ReportPieChart } from "./ReportPieChart";
 import DownloadPDFButton from "./DownloadPDFButton";
 
 export const DiscoveryStep: React.FC = () => {
-  const [forceExpand, setForceExpand] = React.useState(false);
   const discoverSourcesContext = useDiscoverySources();
   const { inventory } = discoverSourcesContext.sourceSelected as Source;
   const { infra, vms } = inventory!;
@@ -333,18 +332,10 @@ export const DiscoveryStep: React.FC = () => {
     networksViewData,
     storageViewData,
     operatingSystemsViewData,
-  ];
-
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleForceExpand = async (callback: () => Promise<void>) => {
-    setForceExpand(true); // Forzar la expansión
-    await new Promise((resolve) => setTimeout(resolve, 100)); // Espera que React renderice
-    await callback(); // Llama al callback para generar el PDF
-    setForceExpand(false); // Restaura el estado
-  };
+  ];  
 
   return (
-    <Stack hasGutter id="discovery-report">
+    <Stack hasGutter id="discovery-report" >
       <StackItem>
         <TextContent>
         <Flex alignItems={{ default: "alignItemsCenter" }} justifyContent={{ default: "justifyContentSpaceBetween" }}>
@@ -354,7 +345,7 @@ export const DiscoveryStep: React.FC = () => {
             </TextContent>
           </FlexItem>
           <FlexItem spacer={{ default: "spacerMd" }}>
-            <DownloadPDFButton elementId="discovery-report" onBeforeDownload={(callback) => handleForceExpand(callback)}/>
+            <DownloadPDFButton elementId="discovery-report" treeViewData={treeViewData}/>
           </FlexItem>
         </Flex>
           <Text component="p">
@@ -368,7 +359,6 @@ export const DiscoveryStep: React.FC = () => {
           aria-label="Discovery report"
           variant="compactNoBackground"
           data={treeViewData}
-          allExpanded={forceExpand}
         />
       </StackItem>
     </Stack>

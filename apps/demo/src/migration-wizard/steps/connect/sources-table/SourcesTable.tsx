@@ -99,10 +99,6 @@ export const SourcesTable: React.FC = () => {
     
   }, [memoizedAgents, hasAgents, discoverySourcesContext, firstAgent]);
 
-
-  console.log("---------");
-  console.log(hasAgents);
-  console.log("----------");
   // Show spinner until all data is loaded
   if ((isLoading) ) {
     return (

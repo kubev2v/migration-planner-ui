@@ -81,7 +81,7 @@ export const MigrationWizard: React.FC = () => {
     discoverSourcesContext.agentSelected?.status === "up-to-date";
 
   return (
-    <Wizard height={computedHeight}>
+    <Wizard height={computedHeight} style={{ overflow: "hidden" }}>
       <WizardStep
         name="Connect"
         id="connect-step"

@@ -24,16 +24,16 @@ export function ReportTable<DataItem>(
     >
       <Thead>
         <Tr>
-          {columns.map((name) => (
-            <Th hasRightBorder>{name}</Th>
+          {columns.map((name,index) => (
+            <Th key={index} hasRightBorder>{name}</Th>
           ))}
         </Tr>
       </Thead>
       <Tbody>
         {data.map((item, idx) => (
           <Tr key={idx}>
-            {fields.map((f) => (
-              <Td hasRightBorder> {item[f] === "" ? "-" : (item[f] as React.ReactNode)}</Td>
+            {fields.map((f,fieldIdx) => (
+              <Td key={fieldIdx} hasRightBorder> {item[f] === "" ? "-" : (item[f] as React.ReactNode)}</Td>
             ))}
           </Tr>
         ))}
