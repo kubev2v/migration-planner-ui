@@ -4,7 +4,6 @@ import {
   DeleteSourceRequest,
   GetImageRequest,
   ListSourcesRequest,
-  ReadSourceRequest,
   SourceApiInterface,
 } from "@migration-planner-ui/api-client/apis";
 import { Source, Status } from "@migration-planner-ui/api-client/models";
@@ -13,6 +12,7 @@ import {
   ApiResponse,
   ConfigurationParameters,
 } from "@migration-planner-ui/api-client/runtime";
+import { GetSourceRequest, UpdateSourceRequest } from "../../../../packages/api-client/src/apis/SourceApi";
 
 export class MockSourceApi implements SourceApiInterface {
   constructor(_configuration: ConfigurationParameters) {
@@ -76,18 +76,7 @@ export class MockSourceApi implements SourceApiInterface {
     const { default: json } = await import("./responses/up-to-date.json");
     return json as unknown as Array<Source>;
   }
-  async readSourceRaw(
-    _requestParameters: ReadSourceRequest,
-    _initOverrides?: RequestInit | InitOverrideFunction
-  ): Promise<ApiResponse<Source>> {
-    throw new Error("Method not implemented.");
-  }
-  async readSource(
-    _requestParameters: ReadSourceRequest,
-    _initOverrides?: RequestInit | InitOverrideFunction
-  ): Promise<Source> {
-    throw new Error("Method not implemented.");
-  }
+ 
   async headSourceImage(
     _requestParameters: { id: string },
     _initOverrides?: RequestInit | InitOverrideFunction
@@ -109,4 +98,25 @@ export class MockSourceApi implements SourceApiInterface {
       statusText: randomError.statusText,
     });
   }
+  async getSourceRaw(_requestParameters: GetSourceRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<ApiResponse<Source>>
+  {
+    throw new Error("Method not implemented.");
+  }
+
+  async getSource(_requestParameters: GetSourceRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<Source>
+  {
+    throw new Error("Method not implemented.");
+  }
+
+  async updateSourceRaw(_requestParameters: UpdateSourceRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<ApiResponse<Source>>
+  {
+    throw new Error("Method not implemented.");
+  }
+
+  async updateSource(_requestParameters: UpdateSourceRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<Source>
+  {
+    throw new Error("Method not implemented.");
+  }
+
+
 }

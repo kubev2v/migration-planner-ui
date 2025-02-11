@@ -105,7 +105,7 @@ export const AgentStatusView: React.FC<AgentStatusView.Props> = (props) => {
               <CheckCircleIcon color={globalSuccessColor100.value} />
             </Icon>
           ),
-          text: "Up to date",
+          text: "Ready",
         };
     }
   }, [status]);

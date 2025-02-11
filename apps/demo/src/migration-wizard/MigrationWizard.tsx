@@ -78,7 +78,7 @@ export const MigrationWizard: React.FC = () => {
   const computedHeight = useComputedHeightFromPageHeader();
   const discoverSourcesContext = useDiscoverySources();
   const isDiscoverySourceUpToDate =
-    discoverSourcesContext.agentSelected?.status === "up-to-date";
+  (discoverSourcesContext.sourceSelected?.agent && discoverSourcesContext.sourceSelected?.agent.status === "up-to-date") || discoverSourcesContext.sourceSelected?.name === 'Example';
 
   return (
     <Wizard height={computedHeight} style={{ overflow: "hidden" }}>
@@ -103,7 +103,7 @@ export const MigrationWizard: React.FC = () => {
         id="discover-step"
         footer={<CustomWizardFooter isCancelHidden={true} />}
         isDisabled={
-          discoverSourcesContext.agentSelected?.status !== "up-to-date" ||
+          (discoverSourcesContext.sourceSelected?.agent && discoverSourcesContext.sourceSelected?.agent.status !== "up-to-date") ||
           discoverSourcesContext.sourceSelected === null
         }
       >
@@ -116,11 +116,11 @@ export const MigrationWizard: React.FC = () => {
           <CustomWizardFooter
             nextButtonText={"Let's create a new cluster"}
             onNext={openAssistedInstaller}
-            isNextDisabled={discoverSourcesContext.agentSelected?.credentialUrl === 'Example report'}
+            isNextDisabled={discoverSourcesContext.sourceSelected?.name === 'Example'}
           />
         }
         isDisabled={
-          discoverSourcesContext.agentSelected?.status !== "up-to-date" ||
+          (discoverSourcesContext.sourceSelected?.agent && discoverSourcesContext.sourceSelected?.agent.status !== "up-to-date") ||
           discoverSourcesContext.sourceSelected === null 
         }
       >

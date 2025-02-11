@@ -24,7 +24,7 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
 
   const [listAgentsState, listAgents] = useAsyncFn(async () => {
     if (!sourcesLoaded) return;
-    const agents = await agentsApi.listAgents({includeDefault: true});
+    const agents = await agentsApi.listAgents();
     return agents;
   },[sourcesLoaded]);
 
@@ -39,12 +39,20 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     return deletedSource;
   });
 
+  const [createSourceState, createSource] = useAsyncFn(async (name: string, sshPublicKey: string) => {
+    const createdSource = await sourceApi.createSource({
+      sourceCreate: { name, sshPublicKey },
+    });
+    return createdSource;
+  });
 
   const [downloadSourceState, downloadSource] = useAsyncFn(
-    async (sshKey:string): Promise<void> => {
+    async (sourceName: string,sourceSshKey:string): Promise<void> => {
       const anchor = document.createElement("a");
-      anchor.download = 'image.ova';
-      const imageUrl = `/planner/api/v1/image${sshKey ? '?sshKey=' + sshKey : ''}`;      
+      anchor.download = sourceName + ".ova";
+
+      const newSource = await createSource(sourceName, sourceSshKey);
+      const imageUrl = `/planner/api/v1/sources/${newSource.id}/image`;
 
       const response = await fetch(imageUrl, { method: 'HEAD' });
       
@@ -89,11 +97,7 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
 
   useInterval(() => {
     if (!listSourcesState.loading){
-      listSources().then(() => {
-        if (sourcesLoaded) {
-          listAgents();
-        }
-      });
+      listSources();      
     }
   }, pollingDelay);
 
@@ -118,15 +122,10 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
 
   const selectAgent = useCallback(async (agent: Agent) => {
     setAgentSelected(agent);    
-    if (agent && agent.sourceId!==null) await selectSourceById(agent.sourceId ?? '');
-  }, [selectSourceById]);
+  }, []);
 
 
-  const [deleteAgentState, deleteAgent] = useAsyncFn(async (agent: Agent) => {
-    if (agent && agent.sourceId !== null) {
-      await deleteSource(agent.sourceId ?? '');
-      selectSource(null);
-    }
+  const [deleteAgentState, deleteAgent] = useAsyncFn(async (agent: Agent) => {    
     const deletedAgent = await agentsApi.deleteAgent({id: agent.id});
     return deletedAgent;
   });
@@ -142,6 +141,8 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     errorLoadingSources: listSourcesState.error,
     isDeletingSource: deleteSourceState.loading,
     errorDeletingSource: deleteSourceState.error,
+    isCreatingSource: createSourceState.loading,
+    errorCreatingSource: createSourceState.error,
     isDownloadingSource: downloadSourceState.loading,
     errorDownloadingSource: downloadSourceState.error,    
     isPolling,

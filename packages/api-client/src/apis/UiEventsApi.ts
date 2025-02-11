@@ -37,7 +37,7 @@ export interface PushEventsRequest {
  */
 export interface UiEventsApiInterface {
     /**
-     * pass events from ui to kafka
+     * Pass events from ui to kafka
      * @param {Event} event 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -46,7 +46,7 @@ export interface UiEventsApiInterface {
     pushEventsRaw(requestParameters: PushEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Source>>;
 
     /**
-     * pass events from ui to kafka
+     * Pass events from ui to kafka
      */
     pushEvents(requestParameters: PushEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source>;
 
@@ -58,7 +58,7 @@ export interface UiEventsApiInterface {
 export class UiEventsApi extends runtime.BaseAPI implements UiEventsApiInterface {
 
     /**
-     * pass events from ui to kafka
+     * Pass events from ui to kafka
      */
     async pushEventsRaw(requestParameters: PushEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Source>> {
         if (requestParameters['event'] == null) {
@@ -86,7 +86,7 @@ export class UiEventsApi extends runtime.BaseAPI implements UiEventsApiInterface
     }
 
     /**
-     * pass events from ui to kafka
+     * Pass events from ui to kafka
      */
     async pushEvents(requestParameters: PushEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source> {
         const response = await this.pushEventsRaw(requestParameters, initOverrides);

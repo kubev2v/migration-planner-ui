@@ -45,12 +45,6 @@ export interface Agent {
     credentialUrl: string;
     /**
      * 
-     * @type {string}
-     * @memberof Agent
-     */
-    sourceId?: string;
-    /**
-     * 
      * @type {Date}
      * @memberof Agent
      */
@@ -61,18 +55,6 @@ export interface Agent {
      * @memberof Agent
      */
     updatedAt: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof Agent
-     */
-    deletedAt?: Date;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Agent
-     */
-    associated: boolean;
     /**
      * 
      * @type {string}
@@ -106,7 +88,6 @@ export function instanceOfAgent(value: object): value is Agent {
     if (!('credentialUrl' in value) || value['credentialUrl'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
-    if (!('associated' in value) || value['associated'] === undefined) return false;
     if (!('version' in value) || value['version'] === undefined) return false;
     return true;
 }
@@ -125,11 +106,8 @@ export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Age
         'status': json['status'],
         'statusInfo': json['statusInfo'],
         'credentialUrl': json['credentialUrl'],
-        'sourceId': json['sourceId'] == null ? undefined : json['sourceId'],
         'createdAt': (new Date(json['createdAt'])),
         'updatedAt': (new Date(json['updatedAt'])),
-        'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
-        'associated': json['associated'],
         'version': json['version'],
     };
 }
@@ -144,11 +122,8 @@ export function AgentToJSON(value?: Agent | null): any {
         'status': value['status'],
         'statusInfo': value['statusInfo'],
         'credentialUrl': value['credentialUrl'],
-        'sourceId': value['sourceId'],
         'createdAt': ((value['createdAt']).toISOString()),
         'updatedAt': ((value['updatedAt']).toISOString()),
-        'deletedAt': value['deletedAt'] == null ? undefined : ((value['deletedAt']).toISOString()),
-        'associated': value['associated'],
         'version': value['version'],
     };
 }

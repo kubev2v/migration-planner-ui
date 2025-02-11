@@ -25,9 +25,7 @@ export interface DeleteAgentRequest {
     id: string;
 }
 
-export interface ListAgentsRequest {
-    includeDefault?: boolean;
-}
+
 
 /**
  * AgentApi - interface
@@ -57,12 +55,12 @@ export interface AgentApiInterface {
      * @throws {RequiredError}
      * @memberof AgentApiInterface
      */
-    listAgentsRaw(requestParameters: ListAgentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Agent>>>;
+    listAgentsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Agent>>>;
 
     /**
      * list agents
      */
-    listAgents(requestParameters: ListAgentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Agent>>;
+    listAgents( initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Agent>>;
 
 }
 
@@ -107,12 +105,8 @@ export class AgentApi extends runtime.BaseAPI implements AgentApiInterface {
     /**
      * list agents
      */
-    async listAgentsRaw(requestParameters: ListAgentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Agent>>> {
-        const queryParameters: any = {};
-
-        if (requestParameters['includeDefault'] != null) {
-            queryParameters['include_default'] = requestParameters['includeDefault'];
-        }
+    async listAgentsRaw( initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Agent>>> {
+        const queryParameters: any = {};     
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -129,8 +123,8 @@ export class AgentApi extends runtime.BaseAPI implements AgentApiInterface {
     /**
      * list agents
      */
-    async listAgents(requestParameters: ListAgentsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Agent>> {
-        const response = await this.listAgentsRaw(requestParameters, initOverrides);
+    async listAgents( initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Agent>> {
+        const response = await this.listAgentsRaw(initOverrides);
         return await response.value();
     }
 

@@ -21,13 +21,14 @@ export namespace RemoveSourceAction {
     sourceId: string;
     isDisabled: boolean;
     onConfirm?: ConfirmEventHandler;
+    sourceName?: string;
   };
 }
 
 export const RemoveSourceAction: React.FC<RemoveSourceAction.Props> = (
   props
 ) => {
-  const { sourceId, isDisabled = false, onConfirm } = props;
+  const { sourceId, isDisabled = false, onConfirm, sourceName } = props;
 
   const [shouldShowConfirmationModal, setShouldShowConfirmationModal] =
     useState(false);
@@ -46,8 +47,8 @@ export const RemoveSourceAction: React.FC<RemoveSourceAction.Props> = (
       }
     },
     [dismissConfirmationModal, onConfirm]
-  );
-
+  );   
+  
   return (
     <>
       <Tooltip content="Remove">
@@ -74,8 +75,8 @@ export const RemoveSourceAction: React.FC<RemoveSourceAction.Props> = (
         >
           <TextContent>
             <Text id="confirmation-modal-description">
-            Are you sure you want to delete this environment? 
-            <br/>To use it again, create a new discovery image and redeploy it.
+            Are you sure you want to delete <b>{sourceName ? sourceName : "this environment"}</b>?
+  <br/>To use it again, create a new discovery image and redeploy it.
             </Text>
           </TextContent>
         </ConfirmationModal>

@@ -39,7 +39,6 @@ export namespace LoginForm {
 
 export const LoginForm: React.FC<LoginForm.Props> = (props) => {
   const { vm } = props;
-  console.log(vm.formState);
   return (
     <Card
       style={{ maxWidth: "36rem", width: "100%",  maxHeight: "90vh", overflowY: "auto" }}

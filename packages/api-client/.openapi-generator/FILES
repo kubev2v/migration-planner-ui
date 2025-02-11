@@ -1,5 +1,4 @@
 README.md
-src/apis/AgentApi.ts
 src/apis/HealthApi.ts
 src/apis/ImageApi.ts
 src/apis/SourceApi.ts
@@ -15,8 +14,8 @@ src/models/Inventory.ts
 src/models/MigrationIssuesInner.ts
 src/models/ModelError.ts
 src/models/Source.ts
-src/models/SourceAgentItem.ts
 src/models/SourceCreate.ts
+src/models/SourceUpdateOnPrem.ts
 src/models/Status.ts
 src/models/VCenter.ts
 src/models/VMResourceBreakdown.ts

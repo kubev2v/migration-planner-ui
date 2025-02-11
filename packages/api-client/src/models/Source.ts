@@ -12,14 +12,17 @@
  * Do not edit the class manually.
  */
 
-import type { SourceAgentItem } from './SourceAgentItem';
+import { mapValues } from '../runtime';
+import type { Agent } from './Agent';
 import {
-    SourceAgentItemFromJSON,
-    SourceAgentItemToJSON,
-} from './SourceAgentItem';
+    AgentFromJSON,
+    AgentFromJSONTyped,
+    AgentToJSON,
+} from './Agent';
 import type { Inventory } from './Inventory';
 import {
     InventoryFromJSON,
+    InventoryFromJSONTyped,
     InventoryToJSON,
 } from './Inventory';
 
@@ -35,6 +38,12 @@ export interface Source {
      * @memberof Source
      */
     id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Source
+     */
+    name: string;
     /**
      * 
      * @type {Inventory}
@@ -55,22 +64,16 @@ export interface Source {
     updatedAt: Date;
     /**
      * 
-     * @type {string}
-     * @memberof Source
-     */
-    name?: string;
-    /**
-     * 
      * @type {boolean}
      * @memberof Source
      */
     onPremises: boolean;
     /**
      * 
-     * @type {Array<SourceAgentItem>}
+     * @type {Agent}
      * @memberof Source
      */
-    agents?: Array<SourceAgentItem>;
+    agent?: Agent;
 }
 
 /**
@@ -78,6 +81,7 @@ export interface Source {
  */
 export function instanceOfSource(value: object): value is Source {
     if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     if (!('onPremises' in value) || value['onPremises'] === undefined) return false;
@@ -95,12 +99,12 @@ export function SourceFromJSONTyped(json: any, ignoreDiscriminator: boolean): So
     return {
         
         'id': json['id'],
+        'name': json['name'],
         'inventory': json['inventory'] == null ? undefined : InventoryFromJSON(json['inventory']),
         'createdAt': (new Date(json['createdAt'])),
         'updatedAt': (new Date(json['updatedAt'])),
-        'name': json['name'] == null ? undefined : json['name'],
         'onPremises': json['onPremises'],
-        'agents': json['agents'] == null ? undefined : ((json['agents'] as Array<any>).map(SourceAgentItemFromJSON)),
+        'agent': json['agent'] == null ? undefined : AgentFromJSON(json['agent']),
     };
 }
 
@@ -111,12 +115,12 @@ export function SourceToJSON(value?: Source | null): any {
     return {
         
         'id': value['id'],
+        'name': value['name'],
         'inventory': InventoryToJSON(value['inventory']),
         'createdAt': ((value['createdAt']).toISOString()),
         'updatedAt': ((value['updatedAt']).toISOString()),
-        'name': value['name'],
         'onPremises': value['onPremises'],
-        'agents': value['agents'] == null ? undefined : ((value['agents'] as Array<any>).map(SourceAgentItemToJSON)),
+        'agent': AgentToJSON(value['agent']),
     };
 }
 

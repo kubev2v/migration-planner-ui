@@ -151,7 +151,7 @@
         "totalMigratableWithWarnings": 55
       }
     },
-    "name": "ams-vcenter-prod-1",
+    "name": "ams-vcenter-prod-4",
     "status": "gathering-initial-inventory",
     "statusInfo": "Inventory successfully collected",
     "updatedAt": "2024-08-29T12:10:47.917317Z"
@@ -304,9 +304,350 @@
         "totalMigratableWithWarnings": 45
       }
     },
-    "name": "ams-vcenter-prod-2",
+    "name": "ams-vcenter-prod-3",
     "status": "up-to-date",
     "statusInfo": "Inventory successfully collected",
     "updatedAt": "2024-08-29T12:10:47.917317Z"
-  }
+  },  
+    {
+      "agent": {
+        "createdAt": "2025-02-11T14:41:52.414048+01:00",
+        "credentialUrl": "https://127.0.0.1:3333",
+        "id": "40a3084c-809e-431a-892c-6d9f37222b79",
+        "status": "up-to-date",
+        "statusInfo": "Inventory successfully collected",
+        "updatedAt": "2025-02-11T14:43:44.578976+01:00",
+        "version": "ed3cd3a"
+      },
+      "createdAt": "2025-02-07T13:31:50.854014+01:00",
+      "id": "07a3e10e-cd7d-4d96-bb7f-793d40a7974b",
+      "inventory": {
+        "infra": {
+          "datastores": [
+            {
+              "freeCapacityGB": 615,
+              "totalCapacityGB": 766,
+              "type": "VMFS"
+            },
+            {
+              "freeCapacityGB": 650,
+              "totalCapacityGB": 766,
+              "type": "VMFS"
+            },
+            {
+              "freeCapacityGB": 360,
+              "totalCapacityGB": 766,
+              "type": "VMFS"
+            },
+            {
+              "freeCapacityGB": 748,
+              "totalCapacityGB": 3321,
+              "type": "VMFS"
+            },
+            {
+              "freeCapacityGB": 312,
+              "totalCapacityGB": 489,
+              "type": "VMFS"
+            },
+            {
+              "freeCapacityGB": 1003,
+              "totalCapacityGB": 3071,
+              "type": "VMFS"
+            },
+            {
+              "freeCapacityGB": 415,
+              "totalCapacityGB": 766,
+              "type": "VMFS"
+            },
+            {
+              "freeCapacityGB": 588,
+              "totalCapacityGB": 766,
+              "type": "VMFS"
+            },
+            {
+              "freeCapacityGB": 158,
+              "totalCapacityGB": 196,
+              "type": "NFS"
+            },
+            {
+              "freeCapacityGB": 602,
+              "totalCapacityGB": 766,
+              "type": "VMFS"
+            },
+            {
+              "freeCapacityGB": 740,
+              "totalCapacityGB": 766,
+              "type": "VMFS"
+            }
+          ],
+          "hostPowerStates": {
+            "green": 7,
+            "yellow": 1
+          },
+          "hostsPerCluster": [
+            7,
+            1
+          ],
+          "networks": [
+            {
+              "dvswitch": "",
+              "name": "vDSwitch0",
+              "type": "dvswitch",
+              "vlanId": ""
+            },
+            {
+              "dvswitch": "vDSwitch0",
+              "name": "TestNetwork",
+              "type": "distributed",
+              "vlanId": "341"
+            },
+            {
+              "dvswitch": "vDSwitch0",
+              "name": "vMotion",
+              "type": "distributed",
+              "vlanId": "375"
+            },
+            {
+              "dvswitch": "vDSwitch0",
+              "name": "vDSwitch0-DVUplinks",
+              "type": "distributed",
+              "vlanId": "0-4094"
+            },
+            {
+              "dvswitch": "vDSwitch0",
+              "name": "v375_10.46.52.x",
+              "type": "distributed",
+              "vlanId": "375"
+            },
+            {
+              "dvswitch": "vDSwitch0",
+              "name": "VM Network",
+              "type": "distributed",
+              "vlanId": "341"
+            },
+            {
+              "dvswitch": "vDSwitch0",
+              "name": "Management Network",
+              "type": "distributed",
+              "vlanId": "341"
+            },
+            {
+              "dvswitch": "vDSwitch0",
+              "name": "v370_10.46.48.x",
+              "type": "distributed",
+              "vlanId": "370"
+            },
+            {
+              "dvswitch": "vDSwitch0",
+              "name": "v371_10.46.49.x",
+              "type": "distributed",
+              "vlanId": "371"
+            },
+            {
+              "dvswitch": "",
+              "name": "test-dummy-dswitch",
+              "type": "dvswitch",
+              "vlanId": ""
+            },
+            {
+              "dvswitch": "test-dummy-dswitch",
+              "name": "test-dummy-dswit-DVUplinks-52745",
+              "type": "distributed",
+              "vlanId": "0-4094"
+            },
+            {
+              "dvswitch": "test-dummy-dswitch",
+              "name": "DPortGroup",
+              "type": "distributed",
+              "vlanId": ""
+            }
+          ],
+          "totalClusters": 2,
+          "totalHosts": 8
+        },
+        "vcenter": {
+          "id": "502d878c-af91-4a6f-93e9-61c4a1986172"
+        },
+        "vms": {
+          "cpuCores": {
+            "histogram": {
+              "data": [
+                69,
+                0,
+                39,
+                5,
+                0,
+                14,
+                0,
+                0,
+                0,
+                0,
+                10
+              ],
+              "minValue": 1,
+              "step": 1
+            },
+            "total": 561,
+            "totalForMigratable": 0,
+            "totalForMigratableWithWarnings": 561,
+            "totalForNotMigratable": 0
+          },
+          "diskCount": {
+            "histogram": {
+              "data": [
+                13,
+                113,
+                5,
+                0,
+                3,
+                2,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "minValue": 0,
+              "step": 1
+            },
+            "total": 148,
+            "totalForMigratable": 0,
+            "totalForMigratableWithWarnings": 148,
+            "totalForNotMigratable": 0
+          },
+          "diskGB": {
+            "histogram": {
+              "data": [
+                55,
+                23,
+                30,
+                15,
+                8,
+                2,
+                0,
+                2,
+                0,
+                0,
+                2
+              ],
+              "minValue": 0,
+              "step": 35
+            },
+            "total": 8976,
+            "totalForMigratable": 0,
+            "totalForMigratableWithWarnings": 8976,
+            "totalForNotMigratable": 0
+          },
+          "migrationWarnings": [
+            {
+              "assessment": "Changed Block Tracking (CBT) has not been enabled on this VM. This feature is a prerequisite for VM warm migration.",
+              "count": 135,
+              "label": "Changed Block Tracking (CBT) not enabled"
+            },
+            {
+              "assessment": "UEFI secure boot will be disabled on OpenShift Virtualization. If the VM was set with UEFI secure boot, manual steps within the guest would be needed for the guest operating system to boot.",
+              "count": 86,
+              "label": "UEFI detected"
+            },
+            {
+              "assessment": "The VM name must comply with the DNS subdomain name format defined in RFC 1123. The name can contain lowercase letters (a-z), numbers (0-9), and hyphens (-), up to a maximum of 63 characters. The first and last characters must be alphanumeric. The name must not contain uppercase letters, spaces, periods (.), or special characters. The VM will be renamed automatically during the migration to meet the RFC convention.",
+              "count": 46,
+              "label": "Invalid VM Name"
+            },
+            {
+              "assessment": "The VM is configured with a TPM device. TPM data is not transferred during the migration.",
+              "count": 3,
+              "label": "VM configured with a TPM device"
+            },
+            {
+              "assessment": "Hot pluggable CPU or memory is not currently supported by OpenShift Virtualization. Review CPU or memory configuration after migration.",
+              "count": 1,
+              "label": "CPU/Memory hotplug detected"
+            },
+            {
+              "assessment": "Independent disks cannot be transferred using recent versions of VDDK. It is recommended to change them in vSphere to 'Dependent' mode, or alternatively, to export the VM to an OVA.",
+              "count": 3,
+              "label": "Independent disk detected"
+            }
+          ],
+          "notMigratableReasons": [],
+          "os": {
+            "Amazon Linux 2 (64-bit)": 2,
+            "CentOS 7 (64-bit)": 1,
+            "CentOS 8 (64-bit)": 1,
+            "Debian GNU/Linux 12 (64-bit)": 1,
+            "FreeBSD (64-bit)": 2,
+            "Microsoft Windows 10 (64-bit)": 2,
+            "Microsoft Windows 11 (64-bit)": 2,
+            "Microsoft Windows Server 2019 (64-bit)": 7,
+            "Microsoft Windows Server 2022 (64-bit)": 3,
+            "Microsoft Windows Server 2025 (64-bit)": 2,
+            "Other (32-bit)": 16,
+            "Other (64-bit)": 1,
+            "Other 2.6.x Linux (64-bit)": 15,
+            "Other 6.x or later Linux (64-bit)": 1,
+            "Other Linux (64-bit)": 1,
+            "Red Hat Enterprise Linux 7 (64-bit)": 1,
+            "Red Hat Enterprise Linux 8 (64-bit)": 6,
+            "Red Hat Enterprise Linux 9 (64-bit)": 57,
+            "Red Hat Fedora (64-bit)": 3,
+            "Ubuntu Linux (64-bit)": 3,
+            "VMware ESXi 8.0 or later": 8,
+            "VMware Photon OS (64-bit)": 2
+          },
+          "powerStates": {
+            "poweredOff": 78,
+            "poweredOn": 59
+          },
+          "ramGB": {
+            "histogram": {
+              "data": [
+                73,
+                34,
+                0,
+                16,
+                0,
+                1,
+                0,
+                11,
+                0,
+                0,
+                2
+              ],
+              "minValue": 1,
+              "step": 4
+            },
+            "total": 1241,
+            "totalForMigratable": 0,
+            "totalForMigratableWithWarnings": 1241,
+            "totalForNotMigratable": 0
+          },
+          "total": 137,
+          "totalMigratable": 137,
+          "totalMigratableWithWarnings": 137
+        }
+      },
+      "name": "ams-vcenter-prod-1",
+      "onPremises": false,
+      "updatedAt": "2025-02-11T14:43:44.583786+01:00"
+    },
+    
+      {
+        "agent": {
+          "createdAt": "2025-02-11T14:41:52.414048+01:00",
+          "credentialUrl": "https://127.0.0.1:3333",
+          "id": "40a3084c-809e-431a-892c-6d9f37222c79",
+          "status": "waiting-for-credentials",
+          "statusInfo": "Waiting for credentials",
+          "updatedAt": "2025-02-11T14:42:22.484889+01:00",
+          "version": "ed3cd3a"
+        },
+        "createdAt": "2025-02-07T13:31:50.854014+01:00",
+        "id": "07a3e10e-cd7d-4d96-bb7f-793d41a7974b",
+        "name": "ams-vcenter-prod-2",
+        "onPremises": false,
+        "updatedAt": "2025-02-07T13:31:50.854014+01:00"
+      }
+    
+  
 ]

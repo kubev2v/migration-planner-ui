@@ -26,8 +26,8 @@ export const EmptyState: React.FC = () => {
   }, []);
 
   const handleTryAgain = useCallback(() => {
-    if (!discoverySourcesContext.isLoadingAgents) {
-      discoverySourcesContext.listAgents();
+    if (!discoverySourcesContext.isLoadingSources) {
+      discoverySourcesContext.listSources();
     }
   }, [discoverySourcesContext]);
 
@@ -93,10 +93,11 @@ export const EmptyState: React.FC = () => {
           isDisabled={discoverySourcesContext.isDownloadingSource}
           onSubmit={async (event) => {
             const form = event.currentTarget;
+            const environmentName = form["discoveryEnvironmentName"].value as string;
             const sshKey = form["discoverySourceSshKey"].value as string;
-            await discoverySourcesContext.downloadSource(sshKey);
+            await discoverySourcesContext.downloadSource(environmentName,sshKey);
             toggleDiscoverySourceSetupModal();
-            await discoverySourcesContext.listAgents();
+            await discoverySourcesContext.listSources();
           }}
         />
       )}

@@ -1,48 +1,46 @@
-import React, {  useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useMount, useUnmount } from "react-use";
 import { Table, Thead, Tr, Th, Tbody, Td } from "@patternfly/react-table";
 import { EmptyState } from "./empty-state/EmptyState";
 import { RemoveSourceAction } from "./actions/RemoveSourceAction";
 import { Columns } from "./Columns";
 import { DEFAULT_POLLING_DELAY, VALUE_NOT_AVAILABLE } from "./Constants";
-import { AgentStatusView } from "./AgentStatusView";
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
 import { Radio, Spinner } from "@patternfly/react-core";
 import { Link } from "react-router-dom";
-import { Agent, Source } from "@migration-planner-ui/api-client/models";
+import { Source } from "@migration-planner-ui/api-client/models";
+import { AgentStatusView } from "./AgentStatusView";
 
 export const SourcesTable: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
-  const prevAgentsRef = useRef<typeof discoverySourcesContext.agents>([]);
+  const prevSourcesRef = useRef<typeof discoverySourcesContext.sources>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [relatedSources, setRelatedSources] = useState<Record<string, Source | null>>({}); // Mapping between agentId -> source
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Memorize ordered agents
-  const memoizedAgents = useMemo(() => {
-    const areAgentsEqual = (prevAgents: typeof discoverySourcesContext.agents, newAgents: typeof discoverySourcesContext.agents): boolean => {
-      if (!prevAgents || !newAgents || prevAgents.length !== newAgents.length) return false;
-      return prevAgents.every((agent, index) => agent.id === newAgents[index].id);
+  const memoizedSources = useMemo(() => {
+    const areSourcesEquals = (prevSources: typeof discoverySourcesContext.sources, newSources: typeof discoverySourcesContext.sources): boolean => {
+      if (!prevSources || !newSources || prevSources.length !== newSources.length) return false;
+      return prevSources.every((agent, index) => agent.id === newSources[index].id);
     };
 
-    if (!areAgentsEqual(prevAgentsRef.current, discoverySourcesContext.agents)) {
-      prevAgentsRef.current = discoverySourcesContext.agents;
-      return discoverySourcesContext.agents
-        ? discoverySourcesContext.agents.sort((a: Agent, b: Agent) => a.id.localeCompare(b.id))
+    if (!areSourcesEquals(prevSourcesRef.current, discoverySourcesContext.sources)) {
+      prevSourcesRef.current = discoverySourcesContext.sources;
+      return discoverySourcesContext.sources
+        ? discoverySourcesContext.sources.sort((a: Source, b: Source) => a.id.localeCompare(b.id))
         : [];
     }
-    return prevAgentsRef.current;
+    return prevSourcesRef.current;
   }, [discoverySourcesContext]);
 
-  const [firstAgent, ..._otherAgents] = memoizedAgents ?? [];  
-  const hasAgents = memoizedAgents && memoizedAgents.length>0;  
+  const [firstSource, ..._otherSources] = memoizedSources ?? [];  
+  const hasSources = memoizedSources && memoizedSources.length>0;
 
   useMount(async () => {
     discoverySourcesContext.startPolling(DEFAULT_POLLING_DELAY); 
     if (!discoverySourcesContext.isPolling) {
         await Promise.all([
-          discoverySourcesContext.listSources(),
-          discoverySourcesContext.listAgents()
+          discoverySourcesContext.listSources()
         ]);       
       }
       
@@ -52,10 +50,16 @@ export const SourcesTable: React.FC = () => {
     discoverySourcesContext.stopPolling();
   });
 
+  useEffect(()=>{
+    if (!discoverySourcesContext.sourceSelected) {
+      discoverySourcesContext.selectSource(firstSource);
+    }
+  },[discoverySourcesContext, firstSource]);
+
   useEffect(() => {
-    // Use timeout to verify memoizedAgents variable
+    // Use timeout to verify memoizedSources variable
     timeoutRef.current = setTimeout(() => {
-      if (memoizedAgents && memoizedAgents.length === 0) {
+      if (memoizedSources && memoizedSources.length === 0) {
        setIsLoading(false);
       }
     }, 3000); // Timeout in milisecons (3 seconds here)
@@ -67,40 +71,10 @@ export const SourcesTable: React.FC = () => {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [memoizedAgents]);
-
-
-  // Load the sources related to each agent
-  useEffect(() => {
-    
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const fetchRelatedSources = async () => {
-      if (memoizedAgents && memoizedAgents.length > 0) {
-        const sourcesMap: Record<string, Source | null> = {};
-        for (const agent of memoizedAgents) {
-          if (agent.sourceId) {
-            const source = await discoverySourcesContext.getSourceById(agent.sourceId); 
-            sourcesMap[agent.id] = source ?? null;
-          }
-        }
-        setRelatedSources(sourcesMap);
-      }
-    };
-
-   
-    if (hasAgents) {    
-      fetchRelatedSources().finally(() =>{               
-        if (!discoverySourcesContext.agentSelected) {
-          discoverySourcesContext.selectAgent(firstAgent);
-        }
-        setIsLoading(false);
-      });      
-    }  
-    
-  }, [memoizedAgents, hasAgents, discoverySourcesContext, firstAgent]);
+  }, [memoizedSources]);
 
   // Show spinner until all data is loaded
-  if ((isLoading) ) {
+  if ((isLoading && !hasSources) ) {
     return (
       <Table aria-label="Loading table" variant="compact" borders={false}>
         <Tbody>
@@ -116,9 +90,10 @@ export const SourcesTable: React.FC = () => {
   else {
     return (
       <Table aria-label="Sources table" variant="compact" borders={false}>
-        {memoizedAgents && memoizedAgents.length>0 && (
+        {memoizedSources && memoizedSources.length>0 && (
           <Thead>
             <Tr>
+              <Th>{Columns.Name}</Th>
               <Th>{Columns.CredentialsUrl}</Th>
               <Th>{Columns.Status}</Th>
               <Th>{Columns.Hosts}</Th>
@@ -130,34 +105,37 @@ export const SourcesTable: React.FC = () => {
           </Thead>
         )}
         <Tbody>
-          {memoizedAgents && memoizedAgents.length>0 ? (
-            memoizedAgents.map((agent) => {
-              const source = relatedSources[agent.id]; // Get the source related to this agent
+          {memoizedSources && memoizedSources.length>0 ? (
+            memoizedSources.map((source) => { 
+              // Get the agent related to this source
+              const agent = source.agent;
               return (
-                <Tr key={agent.id}>
-                  <Td dataLabel={Columns.CredentialsUrl}>
+                <Tr key={source.id}>
+                   <Td dataLabel={Columns.Name}>
                     <Radio
-                      id={agent.id}
+                      id={source.id}
                       name="source-selection"
-                      label={
-                        agent.credentialUrl !== "Example report" ? (
+                      label={source.name}
+                      isChecked={
+                        discoverySourcesContext.sourceSelected
+                          ? discoverySourcesContext.sourceSelected.id === source.id
+                          : false
+                      }
+                      onChange={() => discoverySourcesContext.selectSource(source)}
+                    />
+                  </Td>
+                  <Td dataLabel={Columns.CredentialsUrl}>
+                     {agent!==undefined ? (
                           <Link to={agent.credentialUrl} target="_blank">
                             {agent.credentialUrl}
                           </Link>
                         ) : (
-                          agent.credentialUrl
+                          '-'
                         )
                       }
-                      isChecked={
-                        discoverySourcesContext.agentSelected
-                          ? discoverySourcesContext.agentSelected.id === agent.id
-                          : false
-                      }
-                      onChange={() => discoverySourcesContext.selectAgent(agent)}
-                    />
                   </Td>
                   <Td dataLabel={Columns.Status}>
-                    <AgentStatusView status={agent.status} statusInfo={agent.statusInfo} credentialUrl={agent.credentialUrl}/>
+                    <AgentStatusView status={agent ? agent.status : 'not-connected'} statusInfo={agent ? agent.statusInfo: 'Not connected'} credentialUrl={agent ? agent.credentialUrl:''}/>
                   </Td>
                   <Td dataLabel={Columns.Hosts}>
                     {(source?.inventory?.infra.totalHosts ?? VALUE_NOT_AVAILABLE)}
@@ -172,19 +150,19 @@ export const SourcesTable: React.FC = () => {
                     {(source?.inventory?.infra.datastores?.length ?? VALUE_NOT_AVAILABLE)}
                   </Td>
                   <Td dataLabel={Columns.Actions}>
-                    {agent.credentialUrl !== "Example report" && (
+                    {source.name !== "Example" && (
                       <RemoveSourceAction
-                        sourceId={agent.id}
+                        sourceId={source.id}
+                        sourceName={source.name}
                         isDisabled={discoverySourcesContext.isDeletingSource}
                         onConfirm={async (event) => {
                           event.stopPropagation();
-                          await discoverySourcesContext.deleteAgent(agent);
+                          await discoverySourcesContext.deleteSource(source.id);
                           event.dismissConfirmationModal();
                           await Promise.all([
-                            discoverySourcesContext.listAgents(),
                             discoverySourcesContext.listSources(),
+                            firstSource && discoverySourcesContext.selectSource(firstSource)
                           ]);
-                          discoverySourcesContext.selectAgent(firstAgent);
                         }}
                       />
                     )}

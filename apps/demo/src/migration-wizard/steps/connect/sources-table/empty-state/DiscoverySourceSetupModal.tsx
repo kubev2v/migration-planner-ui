@@ -7,6 +7,7 @@ import {
   HelperText,
   HelperTextItem,
   TextArea,
+  TextInput,
 } from "@patternfly/react-core";
 import {
   Modal,
@@ -82,8 +83,9 @@ export const DiscoverySourceSetupModal: React.FC<
       aria-describedby="modal-box-body-discovery-source-setup"
     >
       <ModalHeader
-        title="Discovery source setup"
+        title="Add Environment"
         labelId="discovery-source-setup-modal-title"
+        description="To add a new environment create a discovery OVA image. Then download and import the OVA file into your VMWare environment"
       />
       <ModalBody id="modal-box-body-discovery-source-setup">
         <Form
@@ -91,6 +93,30 @@ export const DiscoverySourceSetupModal: React.FC<
           id="discovery-source-setup-form"
           onSubmit={handleSubmit}
         >
+          <FormGroup
+            label="Name"
+            isRequired
+            fieldId="discovery-source-name-form-control"
+          >
+            <TextInput
+              id="discovery-source-name-form-control"
+              name="discoveryEnvironmentName"
+              type="text"
+              placeholder="Example: ams-vcenter-prod-1"
+              pattern="^[a-zA-Z][a-zA-Z0-9_\-]*$"
+              maxLength={50}
+              minLength={1}
+              isRequired
+              aria-describedby="name-helper-text"
+            />
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="default" id="name-helper-text">
+                  Name your environment.
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          </FormGroup>
           <FormGroup
             label="SSH Key"
             fieldId="discovery-source-sshkey-form-control"
@@ -108,7 +134,7 @@ export const DiscoverySourceSetupModal: React.FC<
             <FormHelperText>
               <HelperText>
                 <HelperTextItem variant={sshKeyError ? 'error' : 'default'} id="sshkey-helper-text">
-                  {sshKeyError || "Enter your SSH public key for the 'core' user to enable SSH access to the OVA image."}
+                  {sshKeyError || "Paste the content of a public ssh key you want to connect to your discovery VM."}
                 </HelperTextItem>
               </HelperText>
             </FormHelperText>
@@ -123,7 +149,7 @@ export const DiscoverySourceSetupModal: React.FC<
           variant="primary"
           isDisabled={isDisabled || !!sshKeyError}
         >
-          Download OVA Image
+          Download OVA
         </Button>
       </ModalFooter>
     </Modal>

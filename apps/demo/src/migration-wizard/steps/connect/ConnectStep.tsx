@@ -31,8 +31,7 @@ export const ConnectStep: React.FC = () => {
   const toggleDiscoverySourceSetupModal = useCallback((): void => {
     setShouldShowDiscoverySetupModal((lastState) => !lastState);
   }, []);
-  const hasAgents = discoverySourcesContext.agents && discoverySourcesContext.agents.length > 0;
-
+  const hasSources = discoverySourcesContext.sources && discoverySourcesContext.sources.length > 0;
   return (
     <Stack hasGutter>
       <StackItem>
@@ -83,7 +82,7 @@ export const ConnectStep: React.FC = () => {
         </Panel>
       </StackItem>
       <StackItem>
-        {hasAgents && (
+        {hasSources && (
           <Button
             variant="secondary"
             onClick={toggleDiscoverySourceSetupModal}
@@ -100,10 +99,11 @@ export const ConnectStep: React.FC = () => {
             isDisabled={discoverySourcesContext.isDownloadingSource}
             onSubmit={async (event) => {
               const form = event.currentTarget;
+              const environmentName = form["discoveryEnvironmentName"].value as string;
               const sshKey = form["discoverySourceSshKey"].value as string;
-              await discoverySourcesContext.downloadSource(sshKey);
+              await discoverySourcesContext.downloadSource(environmentName,sshKey);
               toggleDiscoverySourceSetupModal();
-              await discoverySourcesContext.listAgents();
+              await discoverySourcesContext.listSources();
             }}
           />
         )}
@@ -123,7 +123,7 @@ export const ConnectStep: React.FC = () => {
         )}
       </StackItem>
       <StackItem>
-      {discoverySourcesContext.agentSelected?.status ===
+      {discoverySourcesContext.sourceSelected?.agent && discoverySourcesContext.sourceSelected?.agent.status ===
           "waiting-for-credentials" && (
           <Alert
             isInline
@@ -132,11 +132,11 @@ export const ConnectStep: React.FC = () => {
             actionLinks={
               <AlertActionLink
                 component="a"
-                href={discoverySourcesContext.agentSelected?.credentialUrl}
+                href={discoverySourcesContext.sourceSelected?.agent.credentialUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {discoverySourcesContext.agentSelected?.credentialUrl}
+                {discoverySourcesContext.sourceSelected?.agent.credentialUrl}
               </AlertActionLink>
             }
           >
