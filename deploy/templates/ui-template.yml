@@ -1,0 +1,47 @@
+---
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: assisted-migration-ui
+parameters:
+  - name: MIGRATION_PLANNER_UI_IMAGE
+    required: true
+  - name: IMAGE_TAG
+    value: latest
+  - name: MIGRATION_PLANNER_REPLICAS
+    description: Number of replicas of the service to run.
+    value: "3"
+
+objects:
+  - kind: Deployment
+    apiVersion: apps/v1
+    metadata:
+      name: migration-planner-ui
+    spec:
+      replicas: ${{MIGRATION_PLANNER_REPLICAS}}
+      selector:
+        matchLabels:
+          app: migration-planner-ui
+      template:
+        metadata:
+          labels:
+            app: migration-planner-ui
+        spec:
+          containers:
+            - name: migration-planner-ui
+              image: ${MIGRATION_PLANNER_UI_IMAGE}:${IMAGE_TAG}
+              imagePullPolicy: Always
+              ports:
+                - containerPort: 8080
+          restartPolicy: Always
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: migration-planner-ui
+    spec:
+      ports:
+        - port: 8080
+          targetPort: 8080
+          protocol: TCP
+      selector:
+        app: migration-planner-ui
