@@ -34,3 +34,28 @@ jobs:
           
           podman push $REGISTRY/kubev2v/migration-planner-ui
           podman push $REGISTRY/kubev2v/migration-planner-ui:$REGISTRY_TAG       
+  publish_npm:
+    runs-on: ubuntu-latest
+    needs: build_push
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare yarn@4.5.0 --activate
+
+      - run: yarn install --immutable
+      - run: yarn all:lint
+      - run: yarn all:build
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
