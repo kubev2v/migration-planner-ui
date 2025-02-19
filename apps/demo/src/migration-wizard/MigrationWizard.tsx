@@ -104,7 +104,7 @@ export const MigrationWizard: React.FC = () => {
         footer={<CustomWizardFooter isCancelHidden={true} />}
         isDisabled={
           (discoverSourcesContext.sourceSelected?.agent && discoverSourcesContext.sourceSelected?.agent.status !== "up-to-date") ||
-          discoverSourcesContext.sourceSelected === null
+          discoverSourcesContext.sourceSelected === null  || discoverSourcesContext.sourceSelected?.agent === undefined
         }
       >
         <DiscoveryStep />
@@ -121,7 +121,7 @@ export const MigrationWizard: React.FC = () => {
         }
         isDisabled={
           (discoverSourcesContext.sourceSelected?.agent && discoverSourcesContext.sourceSelected?.agent.status !== "up-to-date") ||
-          discoverSourcesContext.sourceSelected === null 
+          discoverSourcesContext.sourceSelected === null || discoverSourcesContext.sourceSelected?.agent === undefined
         }
       >
         <PrepareMigrationStep />
