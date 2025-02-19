@@ -50,11 +50,11 @@ export const SourcesTable: React.FC = () => {
     discoverySourcesContext.stopPolling();
   });
 
-  useEffect(()=>{
-    if (!discoverySourcesContext.sourceSelected) {
+  useEffect(() => {
+    if (!discoverySourcesContext.sourceSelected && firstSource) {
       discoverySourcesContext.selectSource(firstSource);
-    }
-  },[discoverySourcesContext, firstSource]);
+    }   
+  }, [discoverySourcesContext, firstSource, discoverySourcesContext.sourceSelected]);
 
   useEffect(() => {
     // Use timeout to verify memoizedSources variable
@@ -89,6 +89,7 @@ export const SourcesTable: React.FC = () => {
   }
   else {
     return (
+      <div style={{ maxHeight: "300px", overflowY: "auto", overflowX: "auto" }}>
       <Table aria-label="Sources table" variant="compact" borders={false}>
         {memoizedSources && memoizedSources.length>0 && (
           <Thead>
@@ -179,6 +180,7 @@ export const SourcesTable: React.FC = () => {
           )}
         </Tbody>
       </Table>
+      </div>
     );
   }
  
