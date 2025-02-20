@@ -1,5 +1,5 @@
 {
-  "name": "migration-planner-ui",
+  "name": "@assisted-migration/migration-planner-ui",
   "private": true,
   "packageManager": "yarn@4.5.0",
   "type": "module",
@@ -34,5 +34,6 @@
   "dependencies": {
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.2"
-  }
+  },
+  "version": "0.0.1-beta"
 }
