@@ -1,6 +1,5 @@
 {
   "name": "@assisted-migration/migration-planner-ui",
-  "private": true,
   "packageManager": "yarn@4.5.0",
   "type": "module",
   "workspaces": [
