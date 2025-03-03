@@ -75,7 +75,7 @@ export const ConnectStep: React.FC = () => {
             style={{ marginInlineStart: 0 }}
           >
             <ListItem>
-              To add a new source download and import a discovery OVA file to your VMware environment.
+              To add a new environment download and import a discovery OVA file to your VMware environment.
             </ListItem>
             <ListItem>
               A link will appear below once the VM is running. Use this link to
@@ -113,7 +113,7 @@ export const ConnectStep: React.FC = () => {
             style={{ marginTop: "1rem" }}
             icon={<PlusCircleIcon color={blueColor.value} />}
           >
-            Add source
+            Add environment
           </Button>
         )}
         {shouldShowDiscoverySourceSetupModal && (
@@ -141,7 +141,7 @@ export const ConnectStep: React.FC = () => {
       </StackItem>
       <StackItem>
         {discoverySourcesContext.errorDownloadingSource && (
-          <Alert isInline variant="danger" title="Download Source error">
+          <Alert isInline variant="danger" title="Download Environment error">
             {discoverySourcesContext.errorDownloadingSource.message}
             </Alert>
         )}

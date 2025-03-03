@@ -37,7 +37,7 @@ const StatusInfoWaitingForCredentials: React.FC<{
     <>
       <TextContent>
         <Text>
-          Click the link below to connect the Discovery Source to your VMware
+          Click the link below to connect the Discovery Environment to your VMware
           environment.
         </Text>
       </TextContent>
