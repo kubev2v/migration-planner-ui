@@ -10,6 +10,7 @@ import { Radio, Spinner } from "@patternfly/react-core";
 import { Link } from "react-router-dom";
 import { Source } from "@migration-planner-ui/api-client/models";
 import { AgentStatusView } from "./AgentStatusView";
+import { UploadInventoryAction } from "./actions/UploadInventoryAction";
 
 export const SourcesTable: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
@@ -167,6 +168,12 @@ export const SourcesTable: React.FC = () => {
                         }}
                       />
                     )}
+                     {!source?.agent && source?.name !== "Example"   && (
+                      <UploadInventoryAction
+                      sourceId={source.id}
+                      discoverySourcesContext={discoverySourcesContext}
+                    />
+                     )}
                   </Td>
                 </Tr>
               );

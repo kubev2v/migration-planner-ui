@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { AgentProxy } from './AgentProxy';
+import {
+    AgentProxyFromJSON,
+    AgentProxyFromJSONTyped,
+    AgentProxyToJSON,
+} from './AgentProxy';
+
 /**
  * 
  * @export
@@ -31,6 +38,18 @@ export interface SourceCreate {
      * @memberof SourceCreate
      */
     sshPublicKey?: string;
+    /**
+     * 
+     * @type {AgentProxy}
+     * @memberof SourceCreate
+     */
+    proxy?: AgentProxy;
+    /**
+     * 
+     * @type {string}
+     * @memberof SourceCreate
+     */
+    certificateChain?: string;
 }
 
 /**
@@ -53,6 +72,8 @@ export function SourceCreateFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'name': json['name'],
         'sshPublicKey': json['sshPublicKey'] == null ? undefined : json['sshPublicKey'],
+        'proxy': json['proxy'] == null ? undefined : AgentProxyFromJSON(json['proxy']),
+        'certificateChain': json['certificateChain'] == null ? undefined : json['certificateChain'],
     };
 }
 
@@ -64,6 +85,8 @@ export function SourceCreateToJSON(value?: SourceCreate | null): any {
         
         'name': value['name'],
         'sshPublicKey': value['sshPublicKey'],
+        'proxy': AgentProxyToJSON(value['proxy']),
+        'certificateChain': value['certificateChain'],
     };
 }
 

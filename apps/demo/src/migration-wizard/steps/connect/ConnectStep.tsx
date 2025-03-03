@@ -21,6 +21,7 @@ import { SourcesTable } from "#/migration-wizard/steps/connect/sources-table/Sou
 import { useDiscoverySources } from "#/migration-wizard/contexts/discovery-sources/Context";
 import { DiscoverySourceSetupModal } from "./sources-table/empty-state/DiscoverySourceSetupModal";
 import { Source } from "@migration-planner-ui/api-client/models";
+import { UploadInventoryAction } from "./sources-table/actions/UploadInventoryAction";
 
 export const ConnectStep: React.FC = () => {
   const discoverySourcesContext = useDiscoverySources();
@@ -170,6 +171,27 @@ export const ConnectStep: React.FC = () => {
                 VMware environment.
               </Text>
             </TextContent>
+          </Alert>
+        )}
+      </StackItem>
+      <StackItem>
+      {!sourceSelected?.agent && sourceSelected?.name !== "Example"   && (
+          <Alert
+            isInline
+            variant="custom"
+            title="Environment not connected"
+            
+          >
+            <TextContent>
+              <Text>
+                The selected environment is not connected, if you have a discovery file click the link below to upload it.
+              </Text>
+            </TextContent>
+            <UploadInventoryAction
+                discoverySourcesContext={discoverySourcesContext}
+                sourceId={sourceSelected?.id ?? ""}
+                asLink
+              />
           </Alert>
         )}
       </StackItem>

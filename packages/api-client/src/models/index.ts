@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * from './Agent';
+export * from './AgentProxy';
 export * from './Event';
 export * from './EventData';
 export * from './Infra';
@@ -9,6 +10,7 @@ export * from './InfraNetworksInner';
 export * from './Inventory';
 export * from './MigrationIssuesInner';
 export * from './ModelError';
+export * from './PresignedUrl';
 export * from './Source';
 export * from './SourceCreate';
 export * from './SourceUpdateOnPrem';

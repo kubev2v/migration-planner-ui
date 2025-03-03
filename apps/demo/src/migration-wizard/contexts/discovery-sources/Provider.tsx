@@ -1,21 +1,24 @@
-import React, {
-  useCallback,
-  useState,
-  type PropsWithChildren,
-} from "react";
+import React, { useCallback, useState, type PropsWithChildren } from "react";
 import { useAsyncFn, useInterval } from "react-use";
-import { type SourceApiInterface, type AgentApiInterface } from "@migration-planner-ui/api-client/apis";
+import {
+  type SourceApiInterface,
+  type AgentApiInterface,
+} from "@migration-planner-ui/api-client/apis";
 import { useInjection } from "@migration-planner-ui/ioc";
 import { Symbols } from "#/main/Symbols";
 import { Context } from "./Context";
-import { Agent, Source } from "@migration-planner-ui/api-client/models";
+import {
+  Agent,
+  Source,
+  SourceUpdateOnPremFromJSON
+} from "@migration-planner-ui/api-client/models";
 
 export const Provider: React.FC<PropsWithChildren> = (props) => {
   const { children } = props;
 
-  const [sourceSelected, setSourceSelected] = useState<Source | null>(null)
+  const [sourceSelected, setSourceSelected] = useState<Source | null>(null);
 
-  const [agentSelected, setAgentSelected] = useState<Agent | null>(null)
+  const [agentSelected, setAgentSelected] = useState<Agent | null>(null);
 
   const [sourcesLoaded, setSourcesLoaded] = useState(false);
 
@@ -26,10 +29,10 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     if (!sourcesLoaded) return;
     const agents = await agentsApi.listAgents();
     return agents;
-  },[sourcesLoaded]);
+  }, [sourcesLoaded]);
 
   const [listSourcesState, listSources] = useAsyncFn(async () => {
-    const sources = await sourceApi.listSources({includeDefault: true});
+    const sources = await sourceApi.listSources({ includeDefault: true });
     setSourcesLoaded(true);
     return sources;
   });
@@ -39,33 +42,36 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     return deletedSource;
   });
 
-  const [createSourceState, createSource] = useAsyncFn(async (name: string, sshPublicKey: string) => {
-    const createdSource = await sourceApi.createSource({
-      sourceCreate: { name, sshPublicKey },
-    });
-    return createdSource;
-  });
+  const [createSourceState, createSource] = useAsyncFn(
+    async (name: string, sshPublicKey: string) => {
+      const createdSource = await sourceApi.createSource({
+        sourceCreate: { name, sshPublicKey },
+      });
+      return createdSource;
+    }
+  );
 
   const [downloadSourceState, downloadSource] = useAsyncFn(
-    async (sourceName: string,sourceSshKey:string): Promise<void> => {
+    async (sourceName: string, sourceSshKey: string): Promise<void> => {
       const anchor = document.createElement("a");
       anchor.download = sourceName + ".ova";
 
       const newSource = await createSource(sourceName, sourceSshKey);
       const imageUrl = `/planner/api/v1/sources/${newSource.id}/image`;
 
-      const response = await fetch(imageUrl, { method: 'HEAD' });
-      
+      const response = await fetch(imageUrl, { method: "HEAD" });
+
       if (!response.ok) {
-        const error: Error = new Error(`Error downloading source: ${response.status} ${response.statusText}`);
+        const error: Error = new Error(
+          `Error downloading source: ${response.status} ${response.statusText}`
+        );
         downloadSourceState.error = error;
         console.error("Error downloading source:", error);
         throw error;
-      }
-      else {
+      } else {
         downloadSourceState.loading = true;
       }
-      // TODO(jkilzi): See: ECOPROJECT-2192. 
+      // TODO(jkilzi): See: ECOPROJECT-2192.
       // Then don't forget to  remove the '/planner/' prefix in production.
       // const image = await sourceApi.getSourceImage({ id: newSource.id }); // This API is useless in production
       // anchor.href = URL.createObjectURL(image); // Don't do this...
@@ -96,45 +102,64 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
   }, [isPolling]);
 
   useInterval(() => {
-    if (!listSourcesState.loading){
-      listSources();      
+    if (!listSourcesState.loading) {
+      listSources();
     }
   }, pollingDelay);
 
-  const selectSource = useCallback((source: Source|null) => {
+  const selectSource = useCallback((source: Source | null) => {
     setSourceSelected(source);
   }, []);
 
-  const selectSourceById = useCallback((sourceId: string) => {
-     if (!listSourcesState.loading){
-      const source = listSourcesState.value?.find(source => source.id === sourceId);
-      setSourceSelected(source||null);    
-    }
-    else {
-      listSources().then((_sources)=>{
-        const source = _sources.find(source => source.id === sourceId);
-        setSourceSelected(source||null);    
-      })
-    }
-    
-  }, [listSources, listSourcesState]);
-
+  const selectSourceById = useCallback(
+    (sourceId: string) => {
+      if (!listSourcesState.loading) {
+        const source = listSourcesState.value?.find(
+          (source) => source.id === sourceId
+        );
+        setSourceSelected(source || null);
+      } else {
+        listSources().then((_sources) => {
+          const source = _sources.find((source) => source.id === sourceId);
+          setSourceSelected(source || null);
+        });
+      }
+    },
+    [listSources, listSourcesState]
+  );
 
   const selectAgent = useCallback(async (agent: Agent) => {
-    setAgentSelected(agent);    
+    setAgentSelected(agent);
   }, []);
 
-
-  const [deleteAgentState, deleteAgent] = useAsyncFn(async (agent: Agent) => {    
-    const deletedAgent = await agentsApi.deleteAgent({id: agent.id});
+  const [deleteAgentState, deleteAgent] = useAsyncFn(async (agent: Agent) => {
+    const deletedAgent = await agentsApi.deleteAgent({ id: agent.id });
     return deletedAgent;
   });
 
-  const getSourceById = useCallback((sourceId: string) => {
-    const source = listSourcesState.value?.find(source => source.id === sourceId);
-    return source;
-  }, [listSourcesState.value]);
-  
+  const getSourceById = useCallback(
+    (sourceId: string) => {
+      const source = listSourcesState.value?.find(
+        (source) => source.id === sourceId
+      );
+      return source;
+    },
+    [listSourcesState.value]
+  );
+
+  const [updateSourceState, updateSource] = useAsyncFn(
+    async (sourceId: string, jsonValue: string) => {
+      console.log(jsonValue);
+      const updatedSource = sourceApi.updateSource({
+        id: sourceId,
+        sourceUpdateOnPrem: 
+          SourceUpdateOnPremFromJSON(jsonValue)
+        ,
+      });
+      return updatedSource;
+    }
+  );
+
   const ctx: DiscoverySources.Context = {
     sources: listSourcesState.value ?? [],
     isLoadingSources: listSourcesState.loading,
@@ -144,7 +169,7 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     isCreatingSource: createSourceState.loading,
     errorCreatingSource: createSourceState.error,
     isDownloadingSource: downloadSourceState.loading,
-    errorDownloadingSource: downloadSourceState.error,    
+    errorDownloadingSource: downloadSourceState.error,
     isPolling,
     listSources,
     deleteSource,
@@ -163,7 +188,10 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     selectAgent,
     agentSelected: agentSelected,
     selectSourceById,
-    getSourceById
+    getSourceById,
+    updateSource,
+    isUpdatingSource: updateSourceState.loading,
+    errorUpdatingSource: updateSourceState.error,    
   };
 
   return <Context.Provider value={ctx}>{children}</Context.Provider>;

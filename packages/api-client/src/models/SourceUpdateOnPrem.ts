@@ -59,7 +59,7 @@ export function SourceUpdateOnPremFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'agentId': json['agent_id'],
+        'agentId': json['agentId'],
         'inventory': InventoryFromJSON(json['inventory']),
     };
 }
@@ -70,7 +70,7 @@ export function SourceUpdateOnPremToJSON(value?: SourceUpdateOnPrem | null): any
     }
     return {
         
-        'agent_id': value['agentId'],
+        'agentId': value['agentId'],
         'inventory': InventoryToJSON(value['inventory']),
     };
 }
