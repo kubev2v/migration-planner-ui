@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   useWizardContext,
@@ -11,6 +11,7 @@ import { DiscoveryStep } from "./steps/discovery/DiscoveryStep";
 import { useComputedHeightFromPageHeader } from "./hooks/UseComputedHeightFromPageHeader";
 import { useDiscoverySources } from "./contexts/discovery-sources/Context";
 import { PrepareMigrationStep } from "./steps/prepare-migration/PrepareMigrationStep";
+import { Source } from "@migration-planner-ui/api-client/models";
 
 const openAssistedInstaller = (): void => {
   window.open(
@@ -77,9 +78,33 @@ export const CustomWizardFooter: React.FC<CustomWizardFooterPropType> = ({
 export const MigrationWizard: React.FC = () => {
   const computedHeight = useComputedHeightFromPageHeader();
   const discoverSourcesContext = useDiscoverySources();
-  const isDiscoverySourceUpToDate =
-  (discoverSourcesContext.sourceSelected?.agent && discoverSourcesContext.sourceSelected?.agent.status === "up-to-date") || discoverSourcesContext.sourceSelected?.name === 'Example';
+  const [firstSource, ..._otherSources] = discoverSourcesContext.sources ?? [];  
+  const [sourceSelected,setSourceSelected] = React.useState<Source>();
+  const [isDiscoverySourceUpToDate,setIsDiscoverySourceUpToDate] = React.useState<boolean>(false);
 
+  useEffect(() => {
+    if (discoverSourcesContext.sourceSelected) {
+      const foundSource:Source = discoverSourcesContext.sources.find(
+        (source) => source.id === discoverSourcesContext.sourceSelected?.id
+      );
+      if (foundSource) {
+        setSourceSelected(foundSource);
+        setIsDiscoverySourceUpToDate( 
+          foundSource.agent && foundSource.agent.status === "up-to-date" || foundSource.name === 'Example');      
+      } else {
+        if (firstSource) {
+          setSourceSelected(firstSource);
+          setIsDiscoverySourceUpToDate( 
+            firstSource.agent && firstSource.agent.status === "up-to-date" || firstSource.name === 'Example');     
+        }  
+        else {
+          setSourceSelected(undefined);
+          setIsDiscoverySourceUpToDate(false);
+        }
+      }
+    }
+  }, [discoverSourcesContext.sourceSelected, discoverSourcesContext.sources, firstSource]);
+  
   return (
     <Wizard height={computedHeight} style={{ overflow: "hidden" }}>
       <WizardStep
@@ -90,7 +115,7 @@ export const MigrationWizard: React.FC = () => {
             isCancelHidden={true}
             isNextDisabled={
               !isDiscoverySourceUpToDate ||
-              discoverSourcesContext.sourceSelected === null
+              sourceSelected === null
             }
             isBackDisabled={true}
           />
@@ -103,8 +128,8 @@ export const MigrationWizard: React.FC = () => {
         id="discover-step"
         footer={<CustomWizardFooter isCancelHidden={true} />}
         isDisabled={
-          (discoverSourcesContext.sourceSelected?.agent && discoverSourcesContext.sourceSelected?.agent.status !== "up-to-date") ||
-          discoverSourcesContext.sourceSelected === null  || discoverSourcesContext.sourceSelected?.agent === undefined
+          (sourceSelected?.agent && sourceSelected?.agent.status !== "up-to-date") ||
+          sourceSelected === null  || sourceSelected?.agent === undefined
         }
       >
         <DiscoveryStep />
@@ -116,12 +141,12 @@ export const MigrationWizard: React.FC = () => {
           <CustomWizardFooter
             nextButtonText={"Let's create a new cluster"}
             onNext={openAssistedInstaller}
-            isNextDisabled={discoverSourcesContext.sourceSelected?.name === 'Example'}
+            isNextDisabled={sourceSelected?.name === 'Example'}
           />
         }
         isDisabled={
-          (discoverSourcesContext.sourceSelected?.agent && discoverSourcesContext.sourceSelected?.agent.status !== "up-to-date") ||
-          discoverSourcesContext.sourceSelected === null || discoverSourcesContext.sourceSelected?.agent === undefined
+          (sourceSelected?.agent && sourceSelected?.agent.status !== "up-to-date") ||
+          sourceSelected === null || sourceSelected?.agent === undefined
         }
       >
         <PrepareMigrationStep />
