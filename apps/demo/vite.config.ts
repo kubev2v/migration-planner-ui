@@ -13,9 +13,10 @@ export default defineConfig((_env) => {
     server: {
       proxy: {
         "/planner/api": {
-          target: "http://172.17.0.3:3443",
+          target: "https://planner-assisted-migration.apps.cnv2.engineering.redhat.com/planner",
           changeOrigin: true,
           rewrite: (path): string => path.replace(/^\/planner/, ""),
+          secure:false
         },
         "/agent/api/v1": {
           target: "http://172.17.0.3:3333",
