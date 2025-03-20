@@ -51,10 +51,6 @@ export const DiscoveryStep: React.FC = () => {
     count,
   })); 
 
-  const totalDistributedSwitches = networks.filter(
-    (net) => net.type === "distributed"
-  ).length;
-
   const infrastructureViewData: TreeViewDataItem = {
     title: "Infrastructure",
     icon: <InfrastructureIcon />,
@@ -229,17 +225,22 @@ export const DiscoveryStep: React.FC = () => {
     ].filter(Boolean) as TreeViewDataItem[],
   };
 
+  const distributedSwitchNetworks = networks.filter(n => n.type === "distributed");
+  const standardNetworks = networks.filter(n => n.type === "standard");
+
+  const uniqueDistributedSwitches = new Set(
+    distributedSwitchNetworks.map(n => n.dvswitch).filter(Boolean) // Remove empty values
+  ).size;
+
   const networksViewData: TreeViewDataItem = {
     title: "Networks",
     icon: <NetworkIcon />,
     name: (
       <>
-        We found {networks.length} networks.{" "}
-        {networks.length === totalDistributedSwitches
-          ? "All"
-          : totalDistributedSwitches}{" "}
-        of them are connected to a distibuted switch.
-      </>
+      We found {networks.length} networks:{" "}
+      {distributedSwitchNetworks.length} connected to {uniqueDistributedSwitches} distributed switches,{" "}
+      and {standardNetworks.length} standard network{standardNetworks.length !== 1 ? "s" : ""}.
+    </>
     ),
     id: "networks",
     children: [
