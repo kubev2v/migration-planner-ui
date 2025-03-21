@@ -1,13 +1,29 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import tsconfigPaths from "vite-tsconfig-paths";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 // https://vitejs.dev/config/
 export default defineConfig((_env) => {
   return {
+    build: {
+      lib: {
+        entry: "src/main/MigrationPlannerApp.tsx",
+        name: "MigrationPlannerUI",
+        fileName: (format) => `migration-planner-ui.${format}.js`,
+      },
+      rollupOptions: {
+        external: ["react", "react-dom"],
+        output: {
+          globals: {
+            react: "React",
+            "react-dom": "ReactDOM",
+          },
+        },
+      },
+    },
     define: {
-      'process.env': dotenv.config().parsed
+      "process.env": dotenv.config().parsed,
     },
     plugins: [tsconfigPaths(), react()],
     server: {
