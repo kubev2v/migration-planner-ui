@@ -83,7 +83,7 @@ jobs:
 
       - name: Publish to npm
           run: |
-          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
-          npm publish --access public
+            npm version ${{ github.event.release.tag_name }} --no-git-tag-version
+            npm publish --access public
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
