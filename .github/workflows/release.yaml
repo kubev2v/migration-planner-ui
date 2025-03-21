@@ -81,9 +81,25 @@ jobs:
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-      - name: Publish to npm
+      - name: Publish all packages
         run: |
-          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
-          npm publish --access public
+          for package in packages/*; do
+            if [ -f "$package/package.json" ]; then
+              cd $package
+
+              PACKAGE_NAME=$(jq -r .name package.json)
+              PACKAGE_VERSION=$(jq -r .version package.json)
+              EXISTS=$(npm view $PACKAGE_NAME@$PACKAGE_VERSION version || echo "not_found")
+
+              if [[ "$EXISTS" == "not_found" ]]; then
+                echo "Publishing $PACKAGE_NAME@$PACKAGE_VERSION"
+                npm publish --access public
+              else
+                echo "Skipping $PACKAGE_NAME@$PACKAGE_VERSION (already exists)"
+              fi
+
+              cd - > /dev/null
+            fi
+          done
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
