@@ -5,7 +5,7 @@
   "author": "Jonathan Kilzi <jkilzi@redhat.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jkilzi/migration-planner-ui.git",
+    "url": "https://github.com/kubev2v/migration-planner-ui.git",
     "directory": "packages/ioc"
   },
   "exports": {
