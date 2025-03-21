@@ -1,5 +1,5 @@
 {
-  "name": "@migration-planner-ui/ioc",
+  "name": "@assisted-migration/migration-planner-ui-ioc",
   "version": "1.0.0-alpha",
   "description": "A basic IoC solution for React apps (inspired by InversifyJs)",
   "author": "Jonathan Kilzi <jkilzi@redhat.com>",

@@ -1,5 +1,6 @@
 {
-  "name": "@migration-planner-ui/api-client",
+  "name": "@assisted-migration/migration-planner-ui-api-client",
+  "publishConfig": { "access": "public" },
   "version": "1.0.0-alpha",
   "description": "OpenAPI client for the Migration Planner API",
   "author": "OpenAPI-Generator",
