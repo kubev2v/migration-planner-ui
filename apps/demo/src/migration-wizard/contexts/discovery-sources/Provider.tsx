@@ -44,10 +44,22 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
 
   const [createSourceState, createSource] = useAsyncFn(
     async (name: string, sshPublicKey: string) => {
-      const createdSource = await sourceApi.createSource({
-        sourceCreate: { name, sshPublicKey },
-      });
-      return createdSource;
+      try {
+        return await sourceApi.createSource({ sourceCreate: { name, sshPublicKey } });
+      } catch (error: any) {
+        console.error("Error creating source:", error);
+  
+        if (error.response) {
+          try {
+            const errorData = await error.response.json();
+            return errorData?.message || "API error occurred.";
+          } catch {
+            return "Failed to parse API error response.";
+          }
+        }
+  
+        return "Unexpected error occurred while creating the source.";
+      }
     }
   );
 
@@ -57,6 +69,13 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
       anchor.download = sourceName + ".ova";
 
       const newSource = await createSource(sourceName, sourceSshKey);
+
+      if (!newSource?.id) {
+        throw new Error(
+          `Failed to create source. Response: ${JSON.stringify(newSource, null, 2)}`
+        );
+      }
+
       const imageUrl = `/planner/api/v1/sources/${newSource.id}/image`;
 
       const response = await fetch(imageUrl, { method: "HEAD" });
