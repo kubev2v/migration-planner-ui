@@ -74,20 +74,28 @@ jobs:
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-      - name: Publish api-client package
+      - name: Lookup for workspaces to be published
         run: |
-          cd packages/api-client
-          yarn build
-          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
-          yarn workspace @migration-planner-ui/api-client npm publish --access public
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          declare -a LIBS=()
+          for pkg in packages/*/package.json; do
+            if [[ "$(jq '.publishConfig.access == "public"' "${pkg}")" = "true" ]]; then
+              LIBS+=("${pkg:5:-13}")
+            fi
+          done
+          echo "LIBS=${LIBS[@]}" >> $GITHUB_ENV
+          (IFS=,; printf 'The following workspaces will be published: [%s]\n' "${LIBS[*]}")
 
-      - name: Publish ioc package
-        run: |
-          cd packages/ioc
-          yarn build
-          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
-          yarn workspace @migration-planner-ui/api-client npm publish --access public
+      - name: Publish workspaces to NPM
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: |
+          for LIB in $(echo ${LIBS}); do
+            printf 'Publishing @assisted-migration/%s\n' "${LIB}"
+            yarn workspace @assisted-migration/${LIB} npm publish
+            # Verify the package has been published before publishing another one.
+            until [[ "$(yarn npm info @assisted-migration/${LIB} --fields version --json | jq -r '.version')" = "${GITHUB_REF_NAME:1}" ]]; do
+              printf '@assisted-migration/%s has not ben published yet\n' "${LIB}"
+              sleep ${{ vars.NPM_PUBLISH_DELAY }}
+              echo "Retrying..."
+            done
+          done
