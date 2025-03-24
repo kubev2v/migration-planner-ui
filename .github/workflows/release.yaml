@@ -79,7 +79,6 @@ jobs:
           cd packages/api-client
           yarn build
           yarn bundle
-          yarn workspace @migration-planner-ui/api-client version prerelease
           yarn workspace @migration-planner-ui/api-client npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
@@ -89,7 +88,6 @@ jobs:
           cd packages/ioc
           yarn build
           yarn bundle
-          yarn workspace @migration-planner-ui/ioc version prerelease
           yarn workspace @migration-planner-ui/ioc npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

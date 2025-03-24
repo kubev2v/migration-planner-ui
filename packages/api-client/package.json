@@ -1,6 +1,6 @@
 {
   "name": "@migration-planner-ui/api-client",
-  "version": "1.0.0-beta",
+  "version": "1.0.1-alpha",
   "description": "OpenAPI client for the Migration Planner API",
   "author": "OpenAPI-Generator",
   "repository": {
