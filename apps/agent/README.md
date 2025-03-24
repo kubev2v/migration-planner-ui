@@ -33,4 +33,4 @@ export default {
 We can create a TGZ file executing `yarn bundle` and the file generated can be consumed by oher projects like [migration-planner](https://github.com/kubev2v/migration-planner).
 
 ## bundle creation on push to main
-With the .github/workflows/push-to-main.yaml action the TGZ file is automatically generated when we push to main branch changes related with agent folder.
+With the .github/workflows/push-to-main.yaml action the TGZ file is automatically generated when we push to main branch changes related with agent folder (apps/agent).
