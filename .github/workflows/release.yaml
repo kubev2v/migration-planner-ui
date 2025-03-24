@@ -80,7 +80,7 @@ jobs:
           yarn build
           yarn bundle
           npm version ${{ github.event.release.tag_name }} --no-git-tag-version
-          npm publish --access public
+          yarn npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
@@ -90,6 +90,6 @@ jobs:
           yarn build
           yarn bundle
           npm version ${{ github.event.release.tag_name }} --no-git-tag-version
-          npm publish --access public
+          yarn npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
