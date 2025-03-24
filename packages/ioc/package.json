@@ -1,6 +1,6 @@
 {
   "name": "@migration-planner-ui/ioc",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-beta",
   "description": "A basic IoC solution for React apps (inspired by InversifyJs)",
   "author": "Jonathan Kilzi <jkilzi@redhat.com>",
   "repository": {
@@ -9,10 +9,11 @@
     "directory": "packages/ioc"
   },
   "exports": {
-    ".": [
-      "./src/index.ts",
-      "./dist/index.d.ts"
-    ]
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
   },
   "typesVersions": {
     "*": {
