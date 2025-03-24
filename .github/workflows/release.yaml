@@ -87,11 +87,5 @@ jobs:
           yarn config set npmScopes.migration-planner-ui.npmAuthToken $NPM_AUTH_TOKEN
           for LIB in $(echo ${LIBS}); do
             printf 'Publishing %s\n' "${LIB}"
-            yarn workspace ${LIB} npm publish
-            # Verify the package has been published before publishing another one.
-            until [[ "$(yarn npm info ${LIB} --fields version --json | jq -r '.version')" = "${GITHUB_REF_NAME:1}" ]]; do
-              printf '%s has not ben published yet\n' "${LIB}"
-              sleep ${{ vars.NPM_PUBLISH_DELAY }}
-              echo "Retrying..."
-            done
+            yarn workspace ${LIB} npm publish            
           done
