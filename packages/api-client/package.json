@@ -27,11 +27,10 @@
       "require": "./dist/models/index.cjs",
       "types": "./dist/models/index.d.ts"
     },
-    "./runtime": {
-      "import": "./dist/runtime.js",
-      "require": "./dist/runtime.cjs",
-      "types": "./dist/runtime.d.ts"
-    }
+    "./runtime": [
+      "./src/runtime.ts",
+      "./dist/runtime.d.ts"
+    ]
   },
   "typesVersions": {
     "*": {
