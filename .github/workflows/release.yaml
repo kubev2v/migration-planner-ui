@@ -85,11 +85,11 @@ jobs:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: |
           for LIB in $(echo ${LIBS}); do
-            printf 'Publishing @assisted-migration/%s\n' "${LIB}"
-            yarn workspace @assisted-migration/${LIB} npm publish
+            printf 'Publishing %s\n' "${LIB}"
+            yarn workspace ${LIB} npm publish
             # Verify the package has been published before publishing another one.
-            until [[ "$(yarn npm info @assisted-migration/${LIB} --fields version --json | jq -r '.version')" = "${GITHUB_REF_NAME:1}" ]]; do
-              printf '@assisted-migration/%s has not ben published yet\n' "${LIB}"
+            until [[ "$(yarn npm info ${LIB} --fields version --json | jq -r '.version')" = "${GITHUB_REF_NAME:1}" ]]; do
+              printf '%s has not ben published yet\n' "${LIB}"
               sleep ${{ vars.NPM_PUBLISH_DELAY }}
               echo "Retrying..."
             done
