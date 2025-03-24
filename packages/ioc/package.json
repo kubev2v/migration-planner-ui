@@ -1,18 +1,19 @@
 {
   "name": "@migration-planner-ui/ioc",
-  "version": "1.0.0-alpha",
+  "version": "1.0.2-alpha",
   "description": "A basic IoC solution for React apps (inspired by InversifyJs)",
   "author": "Jonathan Kilzi <jkilzi@redhat.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jkilzi/migration-planner-ui.git",
+    "url": "https://github.com/kubev2v/migration-planner-ui.git",
     "directory": "packages/ioc"
   },
   "exports": {
-    ".": [
-      "./src/index.ts",
-      "./dist/index.d.ts"
-    ]
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
   },
   "typesVersions": {
     "*": {
@@ -23,6 +24,9 @@
     }
   },
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "yarn run -T tsc -b",
     "bundle": "yarn build && yarn pack --out dist/%s-%v.tgz",
@@ -44,5 +48,6 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0"
-  }
+  },
+  "stableVersion": "1.1.1"
 }

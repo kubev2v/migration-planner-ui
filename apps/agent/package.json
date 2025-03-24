@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@emotion/css": "^11.13.0",
-    "@migration-planner-ui/agent-client": "workspace:^",
-    "@migration-planner-ui/ioc": "workspace:^",
+    "@migration-planner-ui/agent-client": "workspace:*",
+    "@migration-planner-ui/ioc": "workspace:*",
     "@patternfly/react-core": "^5.4.0",
     "@patternfly/react-icons": "^5.4.0",
     "@patternfly/react-table": "^5.4.0",
