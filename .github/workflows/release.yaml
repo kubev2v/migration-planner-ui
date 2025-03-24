@@ -74,22 +74,14 @@ jobs:
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-      - name: Publish api-client package
+      - name: Replace workspace dependencies with real versions
         run: |
-          cd packages/api-client
-          yarn build
-          yarn bundle
-          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
-          yarn npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          yarn workspaces foreach --all --no-private exec "yarn npm version ${{ github.event.release.tag_name }} --no-git-tag-version"
 
-      - name: Publish ioc package
-        run: |
-          cd packages/ioc
-          yarn build
-          yarn bundle
-          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
-          yarn npm publish --access public
+      - name: Build all packages
+        run: yarn workspaces foreach --all run build
+
+      - name: Publish all packages
+        run: yarn workspaces foreach --all --no-private npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
