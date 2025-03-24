@@ -84,6 +84,7 @@ jobs:
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: |
+          yarn config set npmScopes.migration-planner-ui.npmAuthToken $NPM_AUTH_TOKEN
           for LIB in $(echo ${LIBS}); do
             printf 'Publishing %s\n' "${LIB}"
             yarn workspace ${LIB} npm publish
