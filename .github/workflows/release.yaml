@@ -5,7 +5,7 @@ on:
     types: [created]
 
 jobs:
-  build-and-push:
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,24 +14,25 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      
+          registry-url: 'https://registry.npmjs.org/'
+
       - name: Enable Corepack
         run: |
           corepack enable
           corepack prepare yarn@4.5.0 --activate
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --immutable
 
-      - name: Build and bundle
+      - name: Build and bundle agent
         run: |
           cd apps/agent
           yarn bundle
 
-      - name: Rename bundle
+      - name: Rename agent bundle
         run: mv apps/agent/dist/*.tgz apps/agent/dist/agent-${{ github.event.release.tag_name }}.tgz
 
-      - name: Upload Release Asset
+      - name: Upload Agent Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -41,26 +42,21 @@ jobs:
           asset_name: agent-${{ github.event.release.tag_name }}.tgz
           asset_content_type: application/gzip
 
-      - name: Copy asset for latest
+      - name: Copy agent asset for latest
         run: cp apps/agent/dist/agent-${{ github.event.release.tag_name }}.tgz apps/agent/dist/agent-latest.tgz
 
       - name: Update latest release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Delete existing 'latest' tag
           git push --delete origin latest || true
-          
-          # Create new 'latest' tag
           git tag -f latest ${{ github.sha }}
           git push -f origin latest
           
-          # Get the upload URL for the 'latest' release
           upload_url=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
             "https://api.github.com/repos/${{ github.repository }}/releases/tags/latest" \
             | jq -r '.upload_url' | sed 's/{?name,label}//g')
           
-          # If 'latest' release doesn't exist, create it
           if [ "$upload_url" = "null" ]; then
             response=$(curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
               -d '{"tag_name": "latest", "name": "Latest Release", "body": "This is always the latest release"}' \
@@ -68,21 +64,30 @@ jobs:
             upload_url=$(echo "$response" | jq -r '.upload_url' | sed 's/{?name,label}//g')
           fi
           
-          # Upload the asset to the 'latest' release
           curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
             -H "Content-Type: application/gzip" \
             --data-binary @apps/agent/dist/agent-latest.tgz \
             "${upload_url}?name=agent-latest.tgz"
-            
+
       - name: Configure npm credentials
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > .npmrc
-          cat .npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ~/.npmrc
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-      - name: Publish to npm
+      - name: Build all packages
+        run: yarn workspaces foreach run build
+
+      - name: Publish api-client package
         run: |
+          cd packages/api-client
+          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+      - name: Publish ioc package
+        run: |
+          cd packages/ioc
           npm version ${{ github.event.release.tag_name }} --no-git-tag-version
           npm publish --access public
         env:
