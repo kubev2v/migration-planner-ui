@@ -552,19 +552,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@migration-planner-ui/agent-client@workspace:^, @migration-planner-ui/agent-client@workspace:packages/agent-client":
+"@migration-planner-ui/agent-client@workspace:*, @migration-planner-ui/agent-client@workspace:packages/agent-client":
   version: 0.0.0-use.local
   resolution: "@migration-planner-ui/agent-client@workspace:packages/agent-client"
   languageName: unknown
   linkType: soft
 
-"@migration-planner-ui/api-client@workspace:^, @migration-planner-ui/api-client@workspace:packages/api-client":
+"@migration-planner-ui/api-client@workspace:*, @migration-planner-ui/api-client@workspace:packages/api-client":
   version: 0.0.0-use.local
   resolution: "@migration-planner-ui/api-client@workspace:packages/api-client"
   languageName: unknown
   linkType: soft
 
-"@migration-planner-ui/ioc@workspace:^, @migration-planner-ui/ioc@workspace:packages/ioc":
+"@migration-planner-ui/ioc@workspace:*, @migration-planner-ui/ioc@workspace:packages/ioc":
   version: 0.0.0-use.local
   resolution: "@migration-planner-ui/ioc@workspace:packages/ioc"
   dependencies:
@@ -1669,8 +1669,8 @@ __metadata:
   resolution: "agent@workspace:apps/agent"
   dependencies:
     "@emotion/css": "npm:^11.13.0"
-    "@migration-planner-ui/agent-client": "workspace:^"
-    "@migration-planner-ui/ioc": "workspace:^"
+    "@migration-planner-ui/agent-client": "workspace:*"
+    "@migration-planner-ui/ioc": "workspace:*"
     "@patternfly/react-core": "npm:^5.4.0"
     "@patternfly/react-icons": "npm:^5.4.0"
     "@patternfly/react-table": "npm:^5.4.0"
@@ -2608,8 +2608,8 @@ __metadata:
   resolution: "demo@workspace:apps/demo"
   dependencies:
     "@emotion/css": "npm:^11.13.0"
-    "@migration-planner-ui/api-client": "workspace:^"
-    "@migration-planner-ui/ioc": "workspace:^"
+    "@migration-planner-ui/api-client": "workspace:*"
+    "@migration-planner-ui/ioc": "workspace:*"
     "@patternfly/react-charts": "npm:7.4.1"
     "@patternfly/react-core": "npm:^5.4.0"
     "@patternfly/react-icons": "npm:^5.4.0"
