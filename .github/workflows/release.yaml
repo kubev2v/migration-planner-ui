@@ -78,9 +78,8 @@ jobs:
         run: |
           cd packages/api-client
           yarn build
-          yarn bundle
-          yarn workspace @migration-planner-ui/api-client version prerelease
-          yarn workspace @migration-planner-ui/api-client npm publish
+          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
+          npm publish --access publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
@@ -88,8 +87,7 @@ jobs:
         run: |
           cd packages/ioc
           yarn build
-          yarn bundle
-          yarn workspace @migration-planner-ui/ioc version prerelease
-          yarn workspace @migration-planner-ui/ioc npm publish
+          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
