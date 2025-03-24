@@ -46,15 +46,22 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
     async (name: string, sshPublicKey: string) => {
       try {
         return await sourceApi.createSource({ sourceCreate: { name, sshPublicKey } });
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Error creating source:", error);
   
-        if (error.response) {
+        if (typeof error === "object" && error !== null && "response" in error) {
+          const response = (error as { response: Response }).response;
+  
           try {
-            const errorData = await error.response.json();
-            return errorData?.message || "API error occurred.";
+            const errorText = await response.text(); // Read as text first
+            try {
+              const errorData = JSON.parse(errorText); // Attempt to parse JSON
+              return errorData?.message || "API error occurred.";
+            } catch {
+              return errorText || "Failed to parse API error response.";
+            }
           } catch {
-            return "Failed to parse API error response.";
+            return "Error response could not be read.";
           }
         }
   
@@ -62,7 +69,7 @@ export const Provider: React.FC<PropsWithChildren> = (props) => {
       }
     }
   );
-
+  
   const [downloadSourceState, downloadSource] = useAsyncFn(
     async (sourceName: string, sourceSshKey: string): Promise<void> => {
       const anchor = document.createElement("a");
