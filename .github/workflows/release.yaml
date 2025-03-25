@@ -89,8 +89,7 @@ jobs:
         run: |
           for LIB in $(echo ${LIBS}); do
             echo Bumping @migration-planner-ui/"${LIB}"
-            echo Release name "${github.ref_name}"
-            yarn workspace @migration-planner-ui/"${LIB}" version --immediate "${github.ref_name}"
+            yarn workspace @migration-planner-ui/"${LIB}" version --immediate "${{ github.ref_name }}"
             jq 'del(.stableVersion)' packages/"${LIB}"/package.json > packages/"${LIB}"/package.tmp.json
             mv packages/"${LIB}"/package.tmp.json packages/"${LIB}"/package.json
           done
