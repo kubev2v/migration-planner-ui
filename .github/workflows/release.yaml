@@ -20,6 +20,7 @@ jobs:
         run: |
           corepack enable
           corepack prepare yarn@4.5.0 --activate
+
       - name: Install dependencies
         run: yarn install --immutable
 
@@ -27,6 +28,7 @@ jobs:
         run: |
           cd apps/agent
           yarn bundle
+
       - name: Rename agent bundle
         run: mv apps/agent/dist/*.tgz apps/agent/dist/agent-${{ github.event.release.tag_name }}.tgz
 
@@ -73,7 +75,7 @@ jobs:
 
       - name: Publish workspaces to npm
         run: |
-          cd packages/api-client && npm version ${{ github.event.release.tag_name }} --no-git-tag-version && yarn workspace @migration-planner-ui/api-client npm publish
-          cd ../ioc && npm version ${{ github.event.release.tag_name }} --no-git-tag-version && yarn workspace @migration-planner-ui/ioc npm publish
+          cd packages/api-client && yarn version ${{ github.event.release.tag_name }} && yarn workspace @migration-planner-ui/api-client npm publish
+          cd ../ioc && yarn version ${{ github.event.release.tag_name }} && yarn workspace @migration-planner-ui/ioc npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
