@@ -69,14 +69,37 @@ jobs:
             --data-binary @apps/agent/dist/agent-latest.tgz \
             "${upload_url}?name=agent-latest.tgz"
 
+      - name: Lookup for workspaces to be published
+        run: |
+          declare -a LIBS=("api-client" "ioc")
+          echo "LIBS=${LIBS[@]}" >> $GITHUB_ENV
+          (IFS=,; printf 'The following workspaces will be published: [%s]\n' "${LIBS[*]}")
+      
+      - name: Bump workspaces to ${{ github.ref_name }}
+        run: |
+          for LIB in $(echo ${LIBS}); do
+            yarn workspace @migration-planner-ui/"${LIB}" version "${GITHUB_REF_NAME:1}"
+            jq 'del(.stableVersion)' packages/"${LIB}"/package.json > packages/"${LIB}"/package.tmp.json
+            mv packages/"${LIB}"/package.tmp.json packages/"${LIB}"/package.json
+          done
+
       - name: Configure npm credentials
         run: echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ~/.npmrc
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-      - name: Publish workspaces to npm
-        run: |
-          cd packages/api-client && npm version ${{ github.event.release.tag_name }} --no-git-tag-version && yarn npm publish --access public
-          cd ../ioc && npm version ${{ github.event.release.tag_name }} --no-git-tag-version && yarn npm publish --access public
+      - name: Publish workspaces to NPM
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: |
+          yarn config set npmScopes.migration-planner-ui.npmAuthToken $NPM_AUTH_TOKEN
+          for LIB in $(echo ${LIBS}); do
+            printf 'Publishing %s\n' @migration-planner-ui/"${LIB}"
+            yarn workspace @migration-planner-ui/${LIB} npm publish
+            # Verify the package has been published before publishing another one.
+            until [[ "$(yarn npm info ${LIB} --fields version --json | jq -r '.version')" = "${GITHUB_REF_NAME:1}" ]]; do
+              printf '%s has not ben published yet\n' "${LIB}"
+              sleep ${{ vars.NPM_PUBLISH_DELAY }}
+              echo "Retrying..."
+            done
+          done
