@@ -76,12 +76,7 @@ jobs:
           
       - name: Lookup for workspaces to be published
         run: |
-          declare -a LIBS=()
-          for pkg in packages/*/package.json; do
-            if [[ "$(jq '.publishConfig.access == "public"' "${pkg}")" = "true" ]]; then
-              LIBS+=("${pkg:5:-13}")
-            fi
-          done
+          declare -a LIBS=("api-client" "ioc")
           echo "LIBS=${LIBS[@]}" >> $GITHUB_ENV
           (IFS=,; printf 'The following workspaces will be published: [%s]\n' "${LIBS[*]}")
 
