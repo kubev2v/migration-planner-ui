@@ -69,7 +69,12 @@ jobs:
             --data-binary @apps/agent/dist/agent-latest.tgz \
             "${upload_url}?name=agent-latest.tgz"
 
-        - name: Lookup for workspaces to be published
+      - name: Configure npm credentials
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ~/.npmrc
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          
+      - name: Lookup for workspaces to be published
         run: |
           declare -a LIBS=()
           for pkg in packages/*/package.json; do
