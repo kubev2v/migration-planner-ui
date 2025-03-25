@@ -76,13 +76,13 @@ jobs:
 
       - name: Update prerelease version and publish api-client to npm
         run: |
-          cd packages/api-client && yarn version prerelease --preid alpha --no-git-tag-version && yarn npm publish --access public
+          cd packages/api-client && yarn version prerelease --no-git-tag-version && yarn npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
       - name: Update prerelease version and publish ioc to npm
         run: |
-          cd packages/ioc && yarn version prerelease --preid alpha --no-git-tag-version && yarn npm publish --access public
+          cd packages/ioc && yarn version prerelease --no-git-tag-version && yarn npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
