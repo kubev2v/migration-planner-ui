@@ -74,18 +74,9 @@ jobs:
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-      - name: Lookup for workspaces to be published
+      - name: Publish to npm
         run: |
-          declare -a LIBS=("@migration-planner-ui/api-client" "@migration-planner-ui/ioc")
-          echo "LIBS=${LIBS[@]}" >> $GITHUB_ENV
-          (IFS=,; printf 'The following workspaces will be published: [%s]\n' "${LIBS[*]}")
-
-      - name: Publish workspaces to NPM
+          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
+          npm publish --access public
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        run: |
-          yarn config set npmScopes.migration-planner-ui.npmAuthToken $NPM_AUTH_TOKEN
-          for LIB in $(echo ${LIBS}); do
-            printf 'Publishing %s\n' "${LIB}"
-            yarn workspace ${LIB} npm publish            
-          done
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
