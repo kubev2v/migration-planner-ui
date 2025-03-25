@@ -75,7 +75,7 @@ jobs:
 
       - name: Publish workspaces to npm
         run: |
-          cd packages/api-client && yarn version ${{ github.event.release.tag_name }} && yarn workspace @migration-planner-ui/api-client npm publish
-          cd ../ioc && yarn version ${{ github.event.release.tag_name }} && yarn workspace @migration-planner-ui/ioc npm publish
+          cd packages/api-client && yarn workspace @migration-planner-ui/api-client version "${GITHUB_REF_NAME:1}" && yarn workspace @migration-planner-ui/api-client npm publish
+          cd ../ioc && yarn workspace @migration-planner-ui/ioc version "${GITHUB_REF_NAME:1}" && yarn workspace @migration-planner-ui/ioc npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
