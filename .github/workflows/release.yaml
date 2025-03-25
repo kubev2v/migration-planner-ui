@@ -89,7 +89,7 @@ jobs:
         run: |
           for LIB in $(echo ${LIBS}); do
             echo Bumping @migration-planner-ui/"${LIB}"
-            jq '.version |= "0.1.1"' packages/"${LIB}"/package.json > packages/"${LIB}"/package.tmp.json
+            jq '.version |= "0.0.1"' packages/"${LIB}"/package.json > packages/"${LIB}"/package.tmp.json
             mv packages/"${LIB}"/package.tmp.json packages/"${LIB}"/package.json
           done
 
@@ -107,7 +107,6 @@ jobs:
             # Verify the package has been published before publishing another one.
             until [[ "$(yarn npm info @migration-planner-ui/${LIB} --fields version --json | jq -r '.version')" = "${GITHUB_REF_NAME:1}" ]]; do
               printf '@migration-planner-ui/%s has not ben published yet\n' "${LIB}"
-              sleep ${{ vars.NPM_PUBLISH_DELAY }}
               echo "Retrying..."
             done
           done
