@@ -94,7 +94,7 @@ jobs:
           done
 
       - name: Build
-        run: yarn build:all
+        run: yarn all:build
 
       - name: Publish workspaces to NPM
         env:
