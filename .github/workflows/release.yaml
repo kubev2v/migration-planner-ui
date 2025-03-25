@@ -20,7 +20,6 @@ jobs:
         run: |
           corepack enable
           corepack prepare yarn@4.5.0 --activate
-
       - name: Install dependencies
         run: yarn install --immutable
 
@@ -28,7 +27,6 @@ jobs:
         run: |
           cd apps/agent
           yarn bundle
-
       - name: Rename agent bundle
         run: mv apps/agent/dist/*.tgz apps/agent/dist/agent-${{ github.event.release.tag_name }}.tgz
 
