@@ -20,7 +20,6 @@ jobs:
         run: |
           corepack enable
           corepack prepare yarn@4.5.0 --activate
-
       - name: Install dependencies
         run: yarn install --immutable
 
@@ -28,7 +27,6 @@ jobs:
         run: |
           cd apps/agent
           yarn bundle
-
       - name: Rename agent bundle
         run: mv apps/agent/dist/*.tgz apps/agent/dist/agent-${{ github.event.release.tag_name }}.tgz
 
@@ -68,38 +66,14 @@ jobs:
             -H "Content-Type: application/gzip" \
             --data-binary @apps/agent/dist/agent-latest.tgz \
             "${upload_url}?name=agent-latest.tgz"
-
-      - name: Lookup for workspaces to be published
-        run: |
-          declare -a LIBS=("api-client" "ioc")
-          echo "LIBS=${LIBS[@]}" >> $GITHUB_ENV
-          (IFS=,; printf 'The following workspaces will be published: [%s]\n' "${LIBS[*]}")
-      
-      - name: Bump workspaces to ${{ github.ref_name }}
-        run: |
-          for LIB in $(echo ${LIBS}); do
-            yarn workspace @migration-planner-ui/"${LIB}" version "${github.event.release.tag_name}"
-            jq 'del(.stableVersion)' packages/"${LIB}"/package.json > packages/"${LIB}"/package.tmp.json
-            mv packages/"${LIB}"/package.tmp.json packages/"${LIB}"/package.json
-          done
-
       - name: Configure npm credentials
         run: echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ~/.npmrc
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-      - name: Publish workspaces to NPM
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: Publish workspaces to npm
         run: |
-          yarn config set npmScopes.migration-planner-ui.npmAuthToken $NPM_AUTH_TOKEN
-          for LIB in $(echo ${LIBS}); do
-            printf 'Publishing %s\n' @migration-planner-ui/"${LIB}"
-            yarn workspace @migration-planner-ui/${LIB} npm publish
-            # Verify the package has been published before publishing another one.
-            until [[ "$(yarn npm info ${LIB} --fields version --json | jq -r '.version')" = "${GITHUB_REF_NAME:1}" ]]; do
-              printf '%s has not ben published yet\n' "${LIB}"
-              sleep ${{ vars.NPM_PUBLISH_DELAY }}
-              echo "Retrying..."
-            done
-          done
+          cd packages/api-client && npm version ${{ github.event.release.tag_name }} --no-git-tag-version && yarn workspace @migration-planner-ui/api-client npm publish
+          cd ../ioc && npm version ${{ github.event.release.tag_name }} --no-git-tag-version && yarn workspace @migration-planner-ui/ioc npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
