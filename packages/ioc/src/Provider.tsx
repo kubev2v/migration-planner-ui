@@ -1,7 +1,7 @@
-import { createContext, type FC, type PropsWithChildren } from "react";
+import { type FC, type PropsWithChildren } from "react";
+import { Context } from "./Context";
 import { Container } from "./Container";
 
-export const Context = createContext<Container | null>(null);
 export const Provider: FC<
   PropsWithChildren<{ container: Container }>
 > = (props) => {

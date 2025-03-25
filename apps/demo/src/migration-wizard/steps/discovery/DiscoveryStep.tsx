@@ -24,8 +24,8 @@ import {
   NetworkIcon,
   VirtualMachineIcon,
 } from "@patternfly/react-icons";
-import globalWarningColor100 from "@patternfly/react-tokens/dist/esm/global_warning_color_100";
-import globalDangerColor100 from "@patternfly/react-tokens/dist/esm/global_danger_color_100";
+import globalWarningColor100 from "@patternfly/react-tokens/dist/js/global_warning_color_100";
+import globalDangerColor100 from "@patternfly/react-tokens/dist/js/global_danger_color_100";
 import type {
   InfraDatastoresInner,
   InfraNetworksInner,
