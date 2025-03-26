@@ -87,9 +87,11 @@ jobs:
 
       - name: Bump workspaces to ${{ github.ref_name }}
         run: |
+          TAG_NAME="${{ github.event.release.tag_name }}"
+          VERSION="${TAG_NAME#v}"
           for LIB in $(echo ${LIBS}); do
             echo Bumping @migration-planner-ui/"${LIB}"
-            jq '.version |= "${{ github.event.release.tag_name }}"' packages/"${LIB}"/package.json > packages/"${LIB}"/package.tmp.json
+            jq --arg ver "$VERSION" '.version = $ver' packages/"${LIB}"/package.json > packages/"${LIB}"/package.tmp.json
             mv packages/"${LIB}"/package.tmp.json packages/"${LIB}"/package.json
           done
 
