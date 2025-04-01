@@ -12,9 +12,7 @@ export {
   type DeleteSourceRequest,
   type ListSourcesRequest,
   type SourceApiInterface,
-  GetSourceRequest,
   SourceApi,
-  UpdateSourceRequest
 } from "./SourceApi";
 
 export {
