@@ -1,6 +1,6 @@
 import { type FC, type PropsWithChildren } from "react";
-import { Context } from "./Context";
 import { Container } from "./Container";
+import { Context } from "./Context";
 
 export const Provider: FC<
   PropsWithChildren<{ container: Container }>
