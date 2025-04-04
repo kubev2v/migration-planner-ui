@@ -24,6 +24,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Build all packaged
+        run: yarn all:build
+
       - name: Build and bundle agent
         run: |
           cd apps/agent
@@ -94,9 +97,6 @@ jobs:
             jq --arg ver "$VERSION" '.version = $ver' packages/"${LIB}"/package.json > packages/"${LIB}"/package.tmp.json
             mv packages/"${LIB}"/package.tmp.json packages/"${LIB}"/package.json
           done
-
-      - name: Build
-        run: yarn all:build
 
       - name: Publish workspaces to NPM
         env:
