@@ -10,35 +10,26 @@
   },
   "type": "module",
   "exports": {
-    "./apis": [
-      "./src/apis/index.ts",
-      "./dist/apis/index.d.ts"
-    ],
-    "./models": [
-      "./src/models/index.ts",
-      "./dist/models/index.d.ts"
-    ],
-    "./runtime": [
-      "./src/runtime.ts",
-      "./dist/runtime.d.ts"
-    ]
+  "./apis": {
+    "import": "./dist/apis/index.js",
+    "types": "./dist/apis/index.d.ts"
   },
-  "typesVersions": {
-    "*": {
-      "apis": [
-        "./src/apis/index.ts",
-        "./dist/apis/index.d.ts"
-      ],
-      "models": [
-        "./src/models/index.ts",
-        "./dist/models/index.d.ts"
-      ],
-      "runtime": [
-        "./src/runtime.ts",
-        "./dist/runtime.d.ts"
-      ]
-    }
+  "./models": {
+    "import": "./dist/models/index.js",
+    "types": "./dist/models/index.d.ts"
   },
+  "./runtime": {
+    "import": "./dist/runtime.js",
+    "types": "./dist/runtime.d.ts"
+  }
+},
+"typesVersions": {
+  "*": {
+    "apis": ["./dist/apis/index.d.ts"],
+    "models": ["./dist/models/index.d.ts"],
+    "runtime": ["./dist/runtime.d.ts"]
+  }
+},
   "sideEffects": false,
   "publishConfig": {
     "access": "public"

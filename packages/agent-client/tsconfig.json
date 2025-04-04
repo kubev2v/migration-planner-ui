@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
-    "composite": true,
-    "declaration": true,
     "target": "es6",
     "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "bundler",
     "rootDir": "src",
     "outDir": "dist",
     "paths": {
       "#/*": ["./src/*"]
-    }
+    },
+    "composite": true,
+    "declaration": true,
+    "useDefineForClassFields": true,
+    "jsx": "react-jsx",
   },
   "exclude": ["dist", "node_modules"]
 }

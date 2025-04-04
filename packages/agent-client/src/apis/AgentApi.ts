@@ -1,9 +1,9 @@
 import {
-  type Either,
-  type Credentials,
-  type StatusReply,
+  Either,
+  Credentials,
+  StatusReply,
   CredentialsError,
-} from "#/models/";
+} from "../models";
 
 interface Configuration {
   basePath: string;
