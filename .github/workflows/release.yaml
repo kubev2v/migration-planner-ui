@@ -76,7 +76,7 @@ jobs:
           
       - name: Lookup for workspaces to be published
         run: |
-          declare -a LIBS=("api-client" "ioc")
+          declare -a LIBS=("api-client" "ioc" "agent-client")
           echo "LIBS=${LIBS[@]}" >> $GITHUB_ENV
           (IFS=,; printf 'The following workspaces will be published: [%s]\n' "${LIBS[*]}")
 
