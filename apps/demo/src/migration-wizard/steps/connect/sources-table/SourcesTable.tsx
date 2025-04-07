@@ -28,11 +28,12 @@ export const SourcesTable: React.FC = () => {
     if (!areSourcesEquals(prevSourcesRef.current, discoverySourcesContext.sources)) {
       prevSourcesRef.current = discoverySourcesContext.sources;
       return discoverySourcesContext.sources
-        ? discoverySourcesContext.sources.sort((a: Source, b: Source) => a.id.localeCompare(b.id))
+        ? [...discoverySourcesContext.sources].sort((a: Source, b: Source) => a.id.localeCompare(b.id))
         : [];
     }
     return prevSourcesRef.current;
-  }, [discoverySourcesContext]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [discoverySourcesContext.sources]);
 
   const [firstSource, ..._otherSources] = memoizedSources ?? [];  
   const hasSources = memoizedSources && memoizedSources.length>0;
