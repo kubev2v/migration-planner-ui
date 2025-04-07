@@ -1,45 +1,39 @@
 {
   "name": "@migration-planner-ui/api-client",
-  "version": "1.0.0-alpha",
+  "version": "0.0.1",
   "description": "OpenAPI client for the Migration Planner API",
   "author": "OpenAPI-Generator",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jkilzi/migration-planner-ui.git",
+    "url": "https://github.com/kubev2v/migration-planner-ui.git",
     "directory": "packages/api-client"
   },
   "type": "module",
   "exports": {
-    "./apis": [
-      "./src/apis/index.ts",
-      "./dist/apis/index.d.ts"
-    ],
-    "./models": [
-      "./src/models/index.ts",
-      "./dist/models/index.d.ts"
-    ],
-    "./runtime": [
-      "./src/runtime.ts",
-      "./dist/runtime.d.ts"
-    ]
+  "./apis": {
+    "import": "./dist/apis/index.js",
+    "types": "./dist/apis/index.d.ts"
   },
-  "typesVersions": {
-    "*": {
-      "apis": [
-        "./src/apis/index.ts",
-        "./dist/apis/index.d.ts"
-      ],
-      "models": [
-        "./src/models/index.ts",
-        "./dist/models/index.d.ts"
-      ],
-      "runtime": [
-        "./src/runtime.ts",
-        "./dist/runtime.d.ts"
-      ]
-    }
+  "./models": {
+    "import": "./dist/models/index.js",
+    "types": "./dist/models/index.d.ts"
   },
+  "./runtime": {
+    "import": "./dist/runtime.js",
+    "types": "./dist/runtime.d.ts"
+  }
+},
+"typesVersions": {
+  "*": {
+    "apis": ["./dist/apis/index.d.ts"],
+    "models": ["./dist/models/index.d.ts"],
+    "runtime": ["./dist/runtime.d.ts"]
+  }
+},
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "yarn run -T tsc -b",
     "bundle": "yarn build && yarn pack --out dist/%s-%v.tgz",
