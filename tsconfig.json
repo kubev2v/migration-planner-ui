@@ -1,6 +1,5 @@
 {
   "references": [
-    { "path": "./apps/agent/tsconfig.json" },
     { "path": "./apps/demo/tsconfig.json" },
     { "path": "./packages/agent-client/tsconfig.json" },
     { "path": "./packages/api-client/tsconfig.json" },
