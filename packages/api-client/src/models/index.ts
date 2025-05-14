@@ -2,6 +2,7 @@
 /* eslint-disable */
 export * from './Agent';
 export * from './AgentProxy';
+export * from './Datastore';
 export * from './Event';
 export * from './EventData';
 export * from './Infra';

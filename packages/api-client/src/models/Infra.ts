@@ -13,18 +13,18 @@
  */
 
 import { mapValues } from '../runtime';
+import type { Datastore } from './Datastore';
+import {
+    DatastoreFromJSON,
+    DatastoreFromJSONTyped,
+    DatastoreToJSON,
+} from './Datastore';
 import type { InfraNetworksInner } from './InfraNetworksInner';
 import {
     InfraNetworksInnerFromJSON,
     InfraNetworksInnerFromJSONTyped,
     InfraNetworksInnerToJSON,
 } from './InfraNetworksInner';
-import type { InfraDatastoresInner } from './InfraDatastoresInner';
-import {
-    InfraDatastoresInnerFromJSON,
-    InfraDatastoresInnerFromJSONTyped,
-    InfraDatastoresInnerToJSON,
-} from './InfraDatastoresInner';
 
 /**
  * 
@@ -64,10 +64,10 @@ export interface Infra {
     networks: Array<InfraNetworksInner>;
     /**
      * 
-     * @type {Array<InfraDatastoresInner>}
+     * @type {Array<Datastore>}
      * @memberof Infra
      */
-    datastores: Array<InfraDatastoresInner>;
+    datastores: Array<Datastore>;
 }
 
 /**
@@ -98,7 +98,7 @@ export function InfraFromJSONTyped(json: any, ignoreDiscriminator: boolean): Inf
         'hostsPerCluster': json['hostsPerCluster'],
         'hostPowerStates': json['hostPowerStates'],
         'networks': ((json['networks'] as Array<any>).map(InfraNetworksInnerFromJSON)),
-        'datastores': ((json['datastores'] as Array<any>).map(InfraDatastoresInnerFromJSON)),
+        'datastores': ((json['datastores'] as Array<any>).map(DatastoreFromJSON)),
     };
 }
 
@@ -113,7 +113,7 @@ export function InfraToJSON(value?: Infra | null): any {
         'hostsPerCluster': value['hostsPerCluster'],
         'hostPowerStates': value['hostPowerStates'],
         'networks': ((value['networks'] as Array<any>).map(InfraNetworksInnerToJSON)),
-        'datastores': ((value['datastores'] as Array<any>).map(InfraDatastoresInnerToJSON)),
+        'datastores': ((value['datastores'] as Array<any>).map(DatastoreToJSON)),
     };
 }
 
