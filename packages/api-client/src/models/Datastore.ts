@@ -55,6 +55,18 @@ export interface Datastore {
      * @memberof Datastore
      */
     hardwareAcceleratedMove: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof Datastore
+     */
+    protocolType: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Datastore
+     */
+    model: string;
 }
 
 /**
@@ -67,6 +79,8 @@ export function instanceOfDatastore(value: object): value is Datastore {
     if (!('vendor' in value) || value['vendor'] === undefined) return false;
     if (!('diskId' in value) || value['diskId'] === undefined) return false;
     if (!('hardwareAcceleratedMove' in value) || value['hardwareAcceleratedMove'] === undefined) return false;
+    if (!('protocolType' in value) || value['protocolType'] === undefined) return false;
+    if (!('model' in value) || value['model'] === undefined) return false;
     return true;
 }
 
@@ -86,6 +100,8 @@ export function DatastoreFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'vendor': json['vendor'],
         'diskId': json['diskId'],
         'hardwareAcceleratedMove': json['hardwareAcceleratedMove'],
+        'protocolType': json['protocolType'],
+        'model': json['model'],
     };
 }
 
@@ -101,6 +117,8 @@ export function DatastoreToJSON(value?: Datastore | null): any {
         'vendor': value['vendor'],
         'diskId': value['diskId'],
         'hardwareAcceleratedMove': value['hardwareAcceleratedMove'],
+        'protocolType': value['protocolType'],
+        'model': value['model'],
     };
 }
 

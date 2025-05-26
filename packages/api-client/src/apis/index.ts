@@ -1,7 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export {
-  type GetImageRequest,
   type HeadImageRequest,
   type ImageApiInterface,
   ImageApi,

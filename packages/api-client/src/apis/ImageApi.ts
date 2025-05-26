@@ -22,10 +22,6 @@ import {
     PresignedUrlToJSON,
 } from '../models/index';
 
-export interface GetImageRequest {
-    id: string;
-}
-
 export interface GetSourceDownloadURLRequest {
     id: string;
 }
@@ -41,20 +37,6 @@ export interface HeadImageRequest {
  * @interface ImageApiInterface
  */
 export interface ImageApiInterface {
-    /**
-     * Get the OVA image
-     * @param {string} id id of the source
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ImageApiInterface
-     */
-    getImageRaw(requestParameters: GetImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
-
-    /**
-     * Get the OVA image
-     */
-    getImage(requestParameters: GetImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
-
     /**
      * Get the OVA image via URL
      * @param {string} id Source id
@@ -89,39 +71,6 @@ export interface ImageApiInterface {
  * 
  */
 export class ImageApi extends runtime.BaseAPI implements ImageApiInterface {
-
-    /**
-     * Get the OVA image
-     */
-    async getImageRaw(requestParameters: GetImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling getImage().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/api/v1/sources/{id}/image`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.BlobApiResponse(response);
-    }
-
-    /**
-     * Get the OVA image
-     */
-    async getImage(requestParameters: GetImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
-        const response = await this.getImageRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
 
     /**
      * Get the OVA image via URL

@@ -2,7 +2,6 @@
 import {
   CreateSourceRequest,
   DeleteSourceRequest,
-  GetImageRequest,
   ListSourcesRequest,
   SourceApiInterface,
 } from "@migration-planner-ui/api-client/apis";
@@ -48,18 +47,6 @@ export class MockSourceApi implements SourceApiInterface {
   async deleteSources(
     _initOverrides?: RequestInit | InitOverrideFunction
   ): Promise<Status> {
-    throw new Error("Method not implemented.");
-  }
-  async getSourceImageRaw(
-    _requestParameters: GetImageRequest,
-    _initOverrides?: RequestInit | InitOverrideFunction
-  ): Promise<ApiResponse<Blob>> {
-    throw new Error("Method not implemented.");
-  }
-  async getSourceImage(
-    _requestParameters: GetImageRequest,
-    _initOverrides?: RequestInit | InitOverrideFunction
-  ): Promise<Blob> {
     throw new Error("Method not implemented.");
   }
   async listSourcesRaw(
