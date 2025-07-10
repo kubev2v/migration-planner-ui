@@ -5,23 +5,28 @@ import {
   ListSourcesRequest,
   SourceApiInterface,
 } from "@migration-planner-ui/api-client/apis";
-import { Source, Status } from "@migration-planner-ui/api-client/models";
+import { Source, Status, UploadRvtoolsFile200Response } from "@migration-planner-ui/api-client/models";
 import {
   InitOverrideFunction,
   ApiResponse,
   ConfigurationParameters,
 } from "@migration-planner-ui/api-client/runtime";
-import { GetSourceRequest, UpdateSourceRequest } from "../../../../packages/api-client/src/apis/SourceApi";
+import { GetSourceRequest, UpdateSourceRequest, UploadRvtoolsFileRequest } from "../../../../packages/api-client/src/apis/SourceApi";
 
 export class MockSourceApi implements SourceApiInterface {
   constructor(_configuration: ConfigurationParameters) {
     console.warn("#### CAUTION: Using MockSourceApi ####");
   }
+  uploadRvtoolsFileRaw(_requestParameters: UploadRvtoolsFileRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<ApiResponse<UploadRvtoolsFile200Response>> {
+    throw new Error("Method not implemented.");
+  }
+  uploadRvtoolsFile(_requestParameters: UploadRvtoolsFileRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<UploadRvtoolsFile200Response> {
+    throw new Error("Method not implemented.");
+  }
 
   async createSourceRaw(_requestParameters: CreateSourceRequest, _initOverrides?: RequestInit | InitOverrideFunction):Promise<ApiResponse<Source>>{
     throw new Error("Method not implemented.");
   }
-
  
   async createSource(_requestParameters: CreateSourceRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<Source>{
     throw new Error("Method not implemented.");

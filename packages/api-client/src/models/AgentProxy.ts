@@ -24,19 +24,19 @@ export interface AgentProxy {
      * @type {string}
      * @memberof AgentProxy
      */
-    httpUrl?: string;
+    httpUrl?: string | null;
     /**
      * 
      * @type {string}
      * @memberof AgentProxy
      */
-    httpsUrl?: string;
+    httpsUrl?: string | null;
     /**
      * 
      * @type {string}
      * @memberof AgentProxy
      */
-    noProxy?: string;
+    noProxy?: string | null;
 }
 
 /**

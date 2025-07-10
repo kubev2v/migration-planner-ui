@@ -13,12 +13,12 @@
  */
 
 import { mapValues } from '../runtime';
-import type { VMResourceBreakdownHistogram } from './VMResourceBreakdownHistogram';
+import type { Histogram } from './Histogram';
 import {
-    VMResourceBreakdownHistogramFromJSON,
-    VMResourceBreakdownHistogramFromJSONTyped,
-    VMResourceBreakdownHistogramToJSON,
-} from './VMResourceBreakdownHistogram';
+    HistogramFromJSON,
+    HistogramFromJSONTyped,
+    HistogramToJSON,
+} from './Histogram';
 
 /**
  * 
@@ -52,10 +52,10 @@ export interface VMResourceBreakdown {
     totalForNotMigratable: number;
     /**
      * 
-     * @type {VMResourceBreakdownHistogram}
+     * @type {Histogram}
      * @memberof VMResourceBreakdown
      */
-    histogram: VMResourceBreakdownHistogram;
+    histogram: Histogram;
 }
 
 /**
@@ -84,7 +84,7 @@ export function VMResourceBreakdownFromJSONTyped(json: any, ignoreDiscriminator:
         'totalForMigratable': json['totalForMigratable'],
         'totalForMigratableWithWarnings': json['totalForMigratableWithWarnings'],
         'totalForNotMigratable': json['totalForNotMigratable'],
-        'histogram': VMResourceBreakdownHistogramFromJSON(json['histogram']),
+        'histogram': HistogramFromJSON(json['histogram']),
     };
 }
 
@@ -98,7 +98,7 @@ export function VMResourceBreakdownToJSON(value?: VMResourceBreakdown | null): a
         'totalForMigratable': value['totalForMigratable'],
         'totalForMigratableWithWarnings': value['totalForMigratableWithWarnings'],
         'totalForNotMigratable': value['totalForNotMigratable'],
-        'histogram': VMResourceBreakdownHistogramToJSON(value['histogram']),
+        'histogram': HistogramToJSON(value['histogram']),
     };
 }
 

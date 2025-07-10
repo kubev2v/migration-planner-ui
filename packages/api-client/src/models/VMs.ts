@@ -13,12 +13,18 @@
  */
 
 import { mapValues } from '../runtime';
-import type { MigrationIssuesInner } from './MigrationIssuesInner';
+import type { MigrationIssue } from './MigrationIssue';
 import {
-    MigrationIssuesInnerFromJSON,
-    MigrationIssuesInnerFromJSONTyped,
-    MigrationIssuesInnerToJSON,
-} from './MigrationIssuesInner';
+    MigrationIssueFromJSON,
+    MigrationIssueFromJSONTyped,
+    MigrationIssueToJSON,
+} from './MigrationIssue';
+import type { OsInfo } from './OsInfo';
+import {
+    OsInfoFromJSON,
+    OsInfoFromJSONTyped,
+    OsInfoToJSON,
+} from './OsInfo';
 import type { VMResourceBreakdown } from './VMResourceBreakdown';
 import {
     VMResourceBreakdownFromJSON,
@@ -84,20 +90,27 @@ export interface VMs {
      * 
      * @type {{ [key: string]: number; }}
      * @memberof VMs
+     * @deprecated
      */
     os: { [key: string]: number; };
     /**
      * 
-     * @type {Array<MigrationIssuesInner>}
+     * @type {{ [key: string]: OsInfo; }}
      * @memberof VMs
      */
-    notMigratableReasons: Array<MigrationIssuesInner>;
+    osInfo?: { [key: string]: OsInfo; };
     /**
      * 
-     * @type {Array<MigrationIssuesInner>}
+     * @type {Array<MigrationIssue>}
      * @memberof VMs
      */
-    migrationWarnings: Array<MigrationIssuesInner>;
+    notMigratableReasons: Array<MigrationIssue>;
+    /**
+     * 
+     * @type {Array<MigrationIssue>}
+     * @memberof VMs
+     */
+    migrationWarnings: Array<MigrationIssue>;
 }
 
 /**
@@ -130,14 +143,15 @@ export function VMsFromJSONTyped(json: any, ignoreDiscriminator: boolean): VMs {
         'total': json['total'],
         'totalMigratable': json['totalMigratable'],
         'totalMigratableWithWarnings': json['totalMigratableWithWarnings'] == null ? undefined : json['totalMigratableWithWarnings'],
-        'cpuCores': json['cpuCores'],
-        'ramGB': json['ramGB'],
-        'diskGB': json['diskGB'],
-        'diskCount': json['diskCount'],
+        'cpuCores': VMResourceBreakdownFromJSON(json['cpuCores']),
+        'ramGB': VMResourceBreakdownFromJSON(json['ramGB']),
+        'diskGB': VMResourceBreakdownFromJSON(json['diskGB']),
+        'diskCount': VMResourceBreakdownFromJSON(json['diskCount']),
         'powerStates': json['powerStates'],
         'os': json['os'],
-        'notMigratableReasons': ((json['notMigratableReasons'] as Array<any>).map(MigrationIssuesInnerFromJSON)),
-        'migrationWarnings': ((json['migrationWarnings'] as Array<any>).map(MigrationIssuesInnerFromJSON)),
+        'osInfo': json['osInfo'] == null ? undefined : (mapValues(json['osInfo'], OsInfoFromJSON)),
+        'notMigratableReasons': ((json['notMigratableReasons'] as Array<any>).map(MigrationIssueFromJSON)),
+        'migrationWarnings': ((json['migrationWarnings'] as Array<any>).map(MigrationIssueFromJSON)),
     };
 }
 
@@ -150,14 +164,15 @@ export function VMsToJSON(value?: VMs | null): any {
         'total': value['total'],
         'totalMigratable': value['totalMigratable'],
         'totalMigratableWithWarnings': value['totalMigratableWithWarnings'],
-        'cpuCores': value['cpuCores'],
-        'ramGB': value['ramGB'],
-        'diskGB': value['diskGB'],
-        'diskCount': value['diskCount'],
+        'cpuCores': VMResourceBreakdownToJSON(value['cpuCores']),
+        'ramGB': VMResourceBreakdownToJSON(value['ramGB']),
+        'diskGB': VMResourceBreakdownToJSON(value['diskGB']),
+        'diskCount': VMResourceBreakdownToJSON(value['diskCount']),
         'powerStates': value['powerStates'],
         'os': value['os'],
-        'notMigratableReasons': ((value['notMigratableReasons'] as Array<any>).map(MigrationIssuesInnerToJSON)),
-        'migrationWarnings': ((value['migrationWarnings'] as Array<any>).map(MigrationIssuesInnerToJSON)),
+        'osInfo': value['osInfo'] == null ? undefined : (mapValues(value['osInfo'], OsInfoToJSON)),
+        'notMigratableReasons': ((value['notMigratableReasons'] as Array<any>).map(MigrationIssueToJSON)),
+        'migrationWarnings': ((value['migrationWarnings'] as Array<any>).map(MigrationIssueToJSON)),
     };
 }
 

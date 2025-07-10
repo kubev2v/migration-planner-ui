@@ -19,6 +19,12 @@ import {
     AgentFromJSONTyped,
     AgentToJSON,
 } from './Agent';
+import type { Label } from './Label';
+import {
+    LabelFromJSON,
+    LabelFromJSONTyped,
+    LabelToJSON,
+} from './Label';
 import type { Inventory } from './Inventory';
 import {
     InventoryFromJSON,
@@ -74,6 +80,12 @@ export interface Source {
      * @memberof Source
      */
     agent?: Agent;
+    /**
+     * 
+     * @type {Array<Label>}
+     * @memberof Source
+     */
+    labels?: Array<Label>;
 }
 
 /**
@@ -105,6 +117,7 @@ export function SourceFromJSONTyped(json: any, ignoreDiscriminator: boolean): So
         'updatedAt': (new Date(json['updatedAt'])),
         'onPremises': json['onPremises'],
         'agent': json['agent'] == null ? undefined : AgentFromJSON(json['agent']),
+        'labels': json['labels'] == null ? undefined : ((json['labels'] as Array<any>).map(LabelFromJSON)),
     };
 }
 
@@ -121,6 +134,7 @@ export function SourceToJSON(value?: Source | null): any {
         'updatedAt': ((value['updatedAt']).toISOString()),
         'onPremises': value['onPremises'],
         'agent': AgentToJSON(value['agent']),
+        'labels': value['labels'] == null ? undefined : ((value['labels'] as Array<any>).map(LabelToJSON)),
     };
 }
 

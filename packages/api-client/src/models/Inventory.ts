@@ -78,9 +78,9 @@ export function InventoryFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
-        'vcenter': json['vcenter'],
-        'vms': json['vms'],
-        'infra': json['infra'],
+        'vcenter': VCenterFromJSON(json['vcenter']),
+        'vms': VMsFromJSON(json['vms']),
+        'infra': InfraFromJSON(json['infra']),
     };
 }
 
@@ -90,9 +90,9 @@ export function InventoryToJSON(value?: Inventory | null): any {
     }
     return {
         
-        'vcenter': value['vcenter'],
-        'vms': value['vms'],
-        'infra': value['infra'],
+        'vcenter': VCenterToJSON(value['vcenter']),
+        'vms': VMsToJSON(value['vms']),
+        'infra': InfraToJSON(value['infra']),
     };
 }
 

@@ -37,7 +37,7 @@ export interface SourceCreate {
      * @type {string}
      * @memberof SourceCreate
      */
-    sshPublicKey?: string;
+    sshPublicKey?: string | null;
     /**
      * 
      * @type {AgentProxy}
@@ -49,7 +49,7 @@ export interface SourceCreate {
      * @type {string}
      * @memberof SourceCreate
      */
-    certificateChain?: string;
+    certificateChain?: string | null;
 }
 
 /**
