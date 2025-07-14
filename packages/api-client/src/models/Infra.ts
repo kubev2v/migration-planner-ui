@@ -120,15 +120,15 @@ export function InfraFromJSONTyped(json: any, ignoreDiscriminator: boolean): Inf
     }
     return {
         
-        'totalHosts': json['totalHosts'],
-        'totalDatacenters': json['totalDatacenters'],
-        'totalClusters': json['totalClusters'],
-        'clustersPerDatacenter': json['clustersPerDatacenter'],
-        'hosts': ((json['hosts'] as Array<any>).map(HostFromJSON)),
-        'hostsPerCluster': json['hostsPerCluster'],
-        'hostPowerStates': json['hostPowerStates'],
-        'networks': ((json['networks'] as Array<any>).map(NetworkFromJSON)),
-        'datastores': ((json['datastores'] as Array<any>).map(DatastoreFromJSON)),
+        'totalHosts': json['totalHosts'] || 0,
+        'totalDatacenters': json['totalDatacenters'] || 0,
+        'totalClusters': json['totalClusters'] || 0,
+        'clustersPerDatacenter': json['clustersPerDatacenter'] || [],
+        'hosts': ((json['hosts'] as Array<any>) || []).map(HostFromJSON),
+        'hostsPerCluster': json['hostsPerCluster'] || [],
+        'hostPowerStates': json['hostPowerStates'] || {},
+        'networks': ((json['networks'] as Array<any>) || []).map(NetworkFromJSON),
+        'datastores': ((json['datastores'] as Array<any>) || []).map(DatastoreFromJSON),
     };
 }
 
