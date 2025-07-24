@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useMemo } from "react";
-import { useAsync, useMount, useTitle } from "react-use";
+import { useAsync, useTitle } from "react-use";
 import { useNavigate } from "react-router-dom";
 import { AlertVariant } from "@patternfly/react-core";
 import {
@@ -11,7 +11,7 @@ import { useInjection } from "@migration-planner-ui/ioc";
 import { newAbortSignal } from "#/common/AbortSignal";
 import {
   DATA_SHARING_ALLOWED_DEFAULT_STATE,
-  REQUEST_TIMEOUT_SECONDS,
+  REQUEST_TIMEOUT_MS,
 } from "#/login-form/Constants";
 import { FormStates } from "#/login-form/FormStates";
 import { FormControlValidatedStateVariant } from "#/login-form/Aliases";
@@ -34,7 +34,7 @@ export interface LoginFormViewModelInterface {
   shouldDisplayAlert: boolean;
   handleSubmit: React.FormEventHandler<HTMLFormElement>;
   handleReturnToAssistedMigration: () => void;
-  handleChangeDataSharingAllowed: (checked:boolean)=>void;
+  handleChangeDataSharingAllowed: (checked: boolean) => void;
   isDataSharingChecked: boolean;
 }
 
@@ -60,32 +60,30 @@ export const useViewModel = (): LoginFormViewModelInterface => {
   );
   const formRef = useRef<HTMLFormElement>();
   const agentApi = useInjection<AgentApiInterface>(Symbols.AgentApi);
-  const [isDataSharingAllowed,setIsDataSharingAllowed] = useState<boolean>(DATA_SHARING_ALLOWED_DEFAULT_STATE);
-
-  useMount(() => {
-    const form = formRef.current;
-    if (!form) {
-      return;
-    }
-
-    form["isDataSharingAllowed"].checked = isDataSharingAllowed;
-  });
+  const [isDataSharingAllowed, setIsDataSharingAllowed] = useState<boolean>(
+    DATA_SHARING_ALLOWED_DEFAULT_STATE
+  );
 
   useAsync(async () => {
-    const res = await agentApi.getStatus();
-    switch (res.status) {
-      case SourceStatus.SourceStatusWaitingForCredentials:
-        setFormState(FormStates.WaitingForCredentials);
-        break;
-      case SourceStatus.SourceStatusGatheringInitialInventory:
-        setFormState(FormStates.GatheringInventory);
-        break;
-      case SourceStatus.SourceStatusUpToDate:
-        setFormState(FormStates.CredentialsAccepted);
-        break;
+    try {
+      const res = await agentApi.getStatus();
+      switch (res.status) {
+        case SourceStatus.SourceStatusWaitingForCredentials:
+          setFormState(FormStates.WaitingForCredentials);
+          break;
+        case SourceStatus.SourceStatusGatheringInitialInventory:
+          setFormState(FormStates.GatheringInventory);
+          break;
+        case SourceStatus.SourceStatusUpToDate:
+          setFormState(FormStates.CredentialsAccepted);
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error("Failed to fetch status:", error);
+      setFormState(FormStates.WaitingForCredentials);
     }
   });
 
@@ -97,7 +95,7 @@ export const useViewModel = (): LoginFormViewModelInterface => {
         case FormStates.CredentialsAccepted:
           return "success";
         case FormStates.InvalidCredentials:
-          return "success";
+          return "error";
         case FormStates.CredentialsRejected:
           return "error";
         default:
@@ -166,7 +164,7 @@ export const useViewModel = (): LoginFormViewModelInterface => {
           FormStates.CheckingStatus,
           FormStates.WaitingForCredentials,
           FormStates.Submitting,
-          FormStates.GatheringInventory
+          FormStates.GatheringInventory,
         ].includes(formState),
       [formState]
     ),
@@ -192,7 +190,7 @@ export const useViewModel = (): LoginFormViewModelInterface => {
           isDataSharingAllowed: form["isDataSharingAllowed"].checked,
         };
         const signal = newAbortSignal(
-          REQUEST_TIMEOUT_SECONDS,
+          REQUEST_TIMEOUT_MS,
           "The server didn't respond in a timely fashion."
         );
         const [statusCodeOK, error] = await agentApi.putCredentials(
@@ -217,8 +215,10 @@ export const useViewModel = (): LoginFormViewModelInterface => {
             setFormState(FormStates.CredentialsRejected);
             break;
           default:
-            navigateTo(`/error/${error!.code}`, {
-              state: { message: error!.message },
+            navigateTo(`/error/${error?.code || 500}`, {
+              state: {
+                message: error?.message || "An unexpected error occurred",
+              },
             });
             break;
         }
@@ -226,13 +226,14 @@ export const useViewModel = (): LoginFormViewModelInterface => {
       [agentApi, navigateTo]
     ),
     handleReturnToAssistedMigration: useCallback(async () => {
-      const serviceUrl = await agentApi.getServiceUiUrl() || "http://localhost:3000/migrate/wizard";
-      window.open(serviceUrl, '_blank', 'noopener,noreferrer');
+      const serviceUrl =
+        (await agentApi.getServiceUiUrl()) ||
+        "http://localhost:3000/migrate/wizard";
+      window.open(serviceUrl, "_blank", "noopener,noreferrer");
     }, []),
-    handleChangeDataSharingAllowed: useCallback((checked)=>{
-      console.log(checked);
+    handleChangeDataSharingAllowed: useCallback((checked) => {
       setIsDataSharingAllowed(checked);
-    },[]),
-    isDataSharingChecked: isDataSharingAllowed
+    }, []),
+    isDataSharingChecked: isDataSharingAllowed,
   };
 };

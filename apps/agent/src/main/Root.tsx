@@ -34,20 +34,24 @@ function getConfiguredContainer(): Container {
 
 function main(): void {
   const root = document.getElementById("root");
-  if (root) {
-    root.style.height = "inherit";
-    const container = getConfiguredContainer();
-    ReactDOM.createRoot(root).render(
-      <React.StrictMode>
-        <DependencyInjectionProvider container={container}>
-          <React.Suspense fallback={<Spinner />}>
-            <AgentUIVersion />
-            <RouterProvider router={router} />
-          </React.Suspense>
-        </DependencyInjectionProvider>
-      </React.StrictMode>
+  if (!root) {
+    throw new Error(
+      "Root element not found. Make sure the HTML contains an element with id='root'."
     );
   }
+
+  root.style.height = "inherit";
+  const container = getConfiguredContainer();
+  ReactDOM.createRoot(root).render(
+    <React.StrictMode>
+      <DependencyInjectionProvider container={container}>
+        <React.Suspense fallback={<Spinner />}>
+          <AgentUIVersion />
+          <RouterProvider router={router} />
+        </React.Suspense>
+      </DependencyInjectionProvider>
+    </React.StrictMode>
+  );
 }
 
 main();

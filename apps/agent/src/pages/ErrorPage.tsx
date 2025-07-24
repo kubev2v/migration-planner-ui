@@ -90,7 +90,7 @@ const ErrorPage: React.FC<Props> = (props) => {
               <TextContent>
                 <Text component="h1">{code}</Text>
                 <Text component="h2">{message}</Text>
-                {additionalDetails ?? <Text>{additionalDetails}</Text>}
+                {additionalDetails && <Text>{additionalDetails}</Text>}
               </TextContent>
             </EmptyStateBody>
 

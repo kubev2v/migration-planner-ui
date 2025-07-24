@@ -181,7 +181,7 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
               isRequired
               aria-describedby="password-helper-text"
             />
-            {vm.passwordControlHelperText && vm.passwordControlHelperText && (
+            {vm.passwordControlHelperText && (
               <FormHelperText>
                 <HelperText>
                   <HelperTextItem

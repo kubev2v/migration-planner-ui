@@ -1,4 +1,4 @@
-export const enum FormStates {
+export enum FormStates {
   CheckingStatus = "checkingStatus",
   WaitingForCredentials = "waitingForCredentials",
   Submitting = "submitting",

@@ -1,6 +1,6 @@
 export type Duration = number;
 
-export const enum Time {
+export enum Time {
   Millisecond = 1,
   Second = 1000 * Millisecond,
   Minute = 60 * Second,

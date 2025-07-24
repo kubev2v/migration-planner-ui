@@ -32,8 +32,14 @@ jobs:
           yarn bundle
 
       - name: Rename bundle
-        run: mv apps/agent/dist/*.tgz apps/agent/dist/agent-${{ github.sha }}.tgz
-      
+        run: |
+          if ls apps/agent/dist/*.tgz 1> /dev/null 2>&1; then
+            mv apps/agent/dist/*.tgz apps/agent/dist/agent-${{ github.sha }}.tgz
+          else
+            echo "Error: No .tgz file found in apps/agent/dist/"
+            exit 1
+          fi
+       
       - name: Create a copy with the name 'agent-latest.tgz'
         run: cp apps/agent/dist/agent-${{ github.sha }}.tgz apps/agent/dist/agent-latest.tgz
 
