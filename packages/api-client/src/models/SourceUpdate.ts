@@ -29,78 +29,77 @@ import {
 /**
  * 
  * @export
- * @interface SourceCreate
+ * @interface SourceUpdate
  */
-export interface SourceCreate {
+export interface SourceUpdate {
     /**
      * 
      * @type {string}
-     * @memberof SourceCreate
+     * @memberof SourceUpdate
      */
-    name: string;
+    name?: string;
+    /**
+     * 
+     * @type {Array<Label>}
+     * @memberof SourceUpdate
+     */
+    labels?: Array<Label>;
     /**
      * 
      * @type {string}
-     * @memberof SourceCreate
+     * @memberof SourceUpdate
      */
     sshPublicKey?: string | null;
     /**
      * 
-     * @type {AgentProxy}
-     * @memberof SourceCreate
-     */
-    proxy?: AgentProxy;
-    /**
-     * 
      * @type {string}
-     * @memberof SourceCreate
+     * @memberof SourceUpdate
      */
     certificateChain?: string | null;
     /**
      * 
-     * @type {Array<Label>}
-     * @memberof SourceCreate
+     * @type {AgentProxy}
+     * @memberof SourceUpdate
      */
-    labels?: Array<Label>;
+    proxy?: AgentProxy;
 }
 
 /**
- * Check if a given object implements the SourceCreate interface.
+ * Check if a given object implements the SourceUpdate interface.
  */
-export function instanceOfSourceCreate(value: object): value is SourceCreate {
-    if (!('name' in value) || value['name'] === undefined) return false;
+export function instanceOfSourceUpdate(value: object): value is SourceUpdate {
     return true;
 }
 
-export function SourceCreateFromJSON(json: any): SourceCreate {
-    return SourceCreateFromJSONTyped(json, false);
+export function SourceUpdateFromJSON(json: any): SourceUpdate {
+    return SourceUpdateFromJSONTyped(json, false);
 }
 
-export function SourceCreateFromJSONTyped(json: any, ignoreDiscriminator: boolean): SourceCreate {
+export function SourceUpdateFromJSONTyped(json: any, ignoreDiscriminator: boolean): SourceUpdate {
     if (json == null) {
         return json;
     }
     return {
         
-        'name': json['name'],
-        'sshPublicKey': json['sshPublicKey'] == null ? undefined : json['sshPublicKey'],
-        'proxy': json['proxy'] == null ? undefined : AgentProxyFromJSON(json['proxy']),
-        'certificateChain': json['certificateChain'] == null ? undefined : json['certificateChain'],
+        'name': json['name'] == null ? undefined : json['name'],
         'labels': json['labels'] == null ? undefined : ((json['labels'] as Array<any>).map(LabelFromJSON)),
+        'sshPublicKey': json['sshPublicKey'] == null ? undefined : json['sshPublicKey'],
+        'certificateChain': json['certificateChain'] == null ? undefined : json['certificateChain'],
+        'proxy': json['proxy'] == null ? undefined : AgentProxyFromJSON(json['proxy']),
     };
 }
 
-export function SourceCreateToJSON(value?: SourceCreate | null): any {
+export function SourceUpdateToJSON(value?: SourceUpdate | null): any {
     if (value == null) {
         return value;
     }
     return {
         
         'name': value['name'],
-        'sshPublicKey': value['sshPublicKey'],
-        'proxy': AgentProxyToJSON(value['proxy']),
-        'certificateChain': value['certificateChain'],
         'labels': value['labels'] == null ? undefined : ((value['labels'] as Array<any>).map(LabelToJSON)),
+        'sshPublicKey': value['sshPublicKey'],
+        'certificateChain': value['certificateChain'],
+        'proxy': AgentProxyToJSON(value['proxy']),
     };
 }
 

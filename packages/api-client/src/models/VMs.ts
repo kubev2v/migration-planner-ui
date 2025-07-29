@@ -82,6 +82,12 @@ export interface VMs {
     diskCount: VMResourceBreakdown;
     /**
      * 
+     * @type {VMResourceBreakdown}
+     * @memberof VMs
+     */
+    nicCount?: VMResourceBreakdown;
+    /**
+     * 
      * @type {{ [key: string]: number; }}
      * @memberof VMs
      */
@@ -147,6 +153,7 @@ export function VMsFromJSONTyped(json: any, ignoreDiscriminator: boolean): VMs {
         'ramGB': VMResourceBreakdownFromJSON(json['ramGB']),
         'diskGB': VMResourceBreakdownFromJSON(json['diskGB']),
         'diskCount': VMResourceBreakdownFromJSON(json['diskCount']),
+        'nicCount': json['nicCount'] == null ? undefined : VMResourceBreakdownFromJSON(json['nicCount']),
         'powerStates': json['powerStates'],
         'os': json['os'],
         'osInfo': json['osInfo'] == null ? undefined : (mapValues(json['osInfo'], OsInfoFromJSON)),
@@ -168,6 +175,7 @@ export function VMsToJSON(value?: VMs | null): any {
         'ramGB': VMResourceBreakdownToJSON(value['ramGB']),
         'diskGB': VMResourceBreakdownToJSON(value['diskGB']),
         'diskCount': VMResourceBreakdownToJSON(value['diskCount']),
+        'nicCount': VMResourceBreakdownToJSON(value['nicCount']),
         'powerStates': value['powerStates'],
         'os': value['os'],
         'osInfo': value['osInfo'] == null ? undefined : (mapValues(value['osInfo'], OsInfoToJSON)),

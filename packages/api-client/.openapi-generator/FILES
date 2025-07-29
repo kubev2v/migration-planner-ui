@@ -18,8 +18,9 @@ src/models/OsInfo.ts
 src/models/PresignedUrl.ts
 src/models/Source.ts
 src/models/SourceCreate.ts
-src/models/SourceUpdateOnPrem.ts
+src/models/SourceUpdate.ts
 src/models/Status.ts
+src/models/UpdateInventory.ts
 src/models/UploadRvtoolsFile200Response.ts
 src/models/VCenter.ts
 src/models/VMResourceBreakdown.ts

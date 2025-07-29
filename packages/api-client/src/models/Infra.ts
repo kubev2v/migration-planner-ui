@@ -49,7 +49,7 @@ export interface Infra {
      * @type {number}
      * @memberof Infra
      */
-    totalDatacenters: number;
+    totalDatacenters?: number;
     /**
      * 
      * @type {number}
@@ -61,13 +61,13 @@ export interface Infra {
      * @type {Array<number>}
      * @memberof Infra
      */
-    clustersPerDatacenter: Array<number>;
+    clustersPerDatacenter?: Array<number>;
     /**
      * 
      * @type {Array<Host>}
      * @memberof Infra
      */
-    hosts: Array<Host>;
+    hosts?: Array<Host>;
     /**
      * 
      * @type {Array<number>}
@@ -99,10 +99,7 @@ export interface Infra {
  */
 export function instanceOfInfra(value: object): value is Infra {
     if (!('totalHosts' in value) || value['totalHosts'] === undefined) return false;
-    if (!('totalDatacenters' in value) || value['totalDatacenters'] === undefined) return false;
     if (!('totalClusters' in value) || value['totalClusters'] === undefined) return false;
-    if (!('clustersPerDatacenter' in value) || value['clustersPerDatacenter'] === undefined) return false;
-    if (!('hosts' in value) || value['hosts'] === undefined) return false;
     if (!('hostsPerCluster' in value) || value['hostsPerCluster'] === undefined) return false;
     if (!('hostPowerStates' in value) || value['hostPowerStates'] === undefined) return false;
     if (!('networks' in value) || value['networks'] === undefined) return false;
@@ -120,15 +117,15 @@ export function InfraFromJSONTyped(json: any, ignoreDiscriminator: boolean): Inf
     }
     return {
         
-        'totalHosts': json['totalHosts'] || 0,
-        'totalDatacenters': json['totalDatacenters'] || 0,
-        'totalClusters': json['totalClusters'] || 0,
-        'clustersPerDatacenter': json['clustersPerDatacenter'] || [],
-        'hosts': ((json['hosts'] as Array<any>) || []).map(HostFromJSON),
-        'hostsPerCluster': json['hostsPerCluster'] || [],
-        'hostPowerStates': json['hostPowerStates'] || {},
-        'networks': ((json['networks'] as Array<any>) || []).map(NetworkFromJSON),
-        'datastores': ((json['datastores'] as Array<any>) || []).map(DatastoreFromJSON),
+        'totalHosts': json['totalHosts'],
+        'totalDatacenters': json['totalDatacenters'] == null ? undefined : json['totalDatacenters'],
+        'totalClusters': json['totalClusters'],
+        'clustersPerDatacenter': json['clustersPerDatacenter'] == null ? undefined : json['clustersPerDatacenter'],
+        'hosts': json['hosts'] == null ? undefined : ((json['hosts'] as Array<any>).map(HostFromJSON)),
+        'hostsPerCluster': json['hostsPerCluster'],
+        'hostPowerStates': json['hostPowerStates'],
+        'networks': ((json['networks'] as Array<any>).map(NetworkFromJSON)),
+        'datastores': ((json['datastores'] as Array<any>).map(DatastoreFromJSON)),
     };
 }
 
@@ -142,7 +139,7 @@ export function InfraToJSON(value?: Infra | null): any {
         'totalDatacenters': value['totalDatacenters'],
         'totalClusters': value['totalClusters'],
         'clustersPerDatacenter': value['clustersPerDatacenter'],
-        'hosts': ((value['hosts'] as Array<any>).map(HostToJSON)),
+        'hosts': value['hosts'] == null ? undefined : ((value['hosts'] as Array<any>).map(HostToJSON)),
         'hostsPerCluster': value['hostsPerCluster'],
         'hostPowerStates': value['hostPowerStates'],
         'networks': ((value['networks'] as Array<any>).map(NetworkToJSON)),

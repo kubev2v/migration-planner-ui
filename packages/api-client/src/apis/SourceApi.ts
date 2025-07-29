@@ -17,8 +17,9 @@ import * as runtime from '../runtime';
 import type {
   Source,
   SourceCreate,
-  SourceUpdateOnPrem,
+  SourceUpdate,
   Status,
+  UpdateInventory,
   UploadRvtoolsFile200Response,
 } from '../models/index';
 import {
@@ -26,10 +27,12 @@ import {
     SourceToJSON,
     SourceCreateFromJSON,
     SourceCreateToJSON,
-    SourceUpdateOnPremFromJSON,
-    SourceUpdateOnPremToJSON,
+    SourceUpdateFromJSON,
+    SourceUpdateToJSON,
     StatusFromJSON,
     StatusToJSON,
+    UpdateInventoryFromJSON,
+    UpdateInventoryToJSON,
     UploadRvtoolsFile200ResponseFromJSON,
     UploadRvtoolsFile200ResponseToJSON,
 } from '../models/index';
@@ -50,9 +53,14 @@ export interface ListSourcesRequest {
     includeDefault?: boolean;
 }
 
+export interface UpdateInventoryRequest {
+    id: string;
+    updateInventory: UpdateInventory;
+}
+
 export interface UpdateSourceRequest {
     id: string;
-    sourceUpdateOnPrem: SourceUpdateOnPrem;
+    sourceUpdate: SourceUpdate;
 }
 
 export interface UploadRvtoolsFileRequest {
@@ -137,9 +145,24 @@ export interface SourceApiInterface {
     listSources(requestParameters: ListSourcesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Source>>;
 
     /**
-     * Update a source from inventory file
+     * Update inventory
      * @param {string} id ID of the source
-     * @param {SourceUpdateOnPrem} sourceUpdateOnPrem 
+     * @param {UpdateInventory} updateInventory 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SourceApiInterface
+     */
+    updateInventoryRaw(requestParameters: UpdateInventoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Source>>;
+
+    /**
+     * Update inventory
+     */
+    updateInventory(requestParameters: UpdateInventoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source>;
+
+    /**
+     * Update source
+     * @param {string} id ID of the source
+     * @param {SourceUpdate} sourceUpdate 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SourceApiInterface
@@ -147,7 +170,7 @@ export interface SourceApiInterface {
     updateSourceRaw(requestParameters: UpdateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Source>>;
 
     /**
-     * Update a source from inventory file
+     * Update source
      */
     updateSource(requestParameters: UpdateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source>;
 
@@ -332,7 +355,50 @@ export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
     }
 
     /**
-     * Update a source from inventory file
+     * Update inventory
+     */
+    async updateInventoryRaw(requestParameters: UpdateInventoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Source>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling updateInventory().'
+            );
+        }
+
+        if (requestParameters['updateInventory'] == null) {
+            throw new runtime.RequiredError(
+                'updateInventory',
+                'Required parameter "updateInventory" was null or undefined when calling updateInventory().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/v1/sources/{id}/inventory`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateInventoryToJSON(requestParameters['updateInventory']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SourceFromJSON(jsonValue));
+    }
+
+    /**
+     * Update inventory
+     */
+    async updateInventory(requestParameters: UpdateInventoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source> {
+        const response = await this.updateInventoryRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Update source
      */
     async updateSourceRaw(requestParameters: UpdateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Source>> {
         if (requestParameters['id'] == null) {
@@ -342,10 +408,10 @@ export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
             );
         }
 
-        if (requestParameters['sourceUpdateOnPrem'] == null) {
+        if (requestParameters['sourceUpdate'] == null) {
             throw new runtime.RequiredError(
-                'sourceUpdateOnPrem',
-                'Required parameter "sourceUpdateOnPrem" was null or undefined when calling updateSource().'
+                'sourceUpdate',
+                'Required parameter "sourceUpdate" was null or undefined when calling updateSource().'
             );
         }
 
@@ -360,14 +426,14 @@ export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: SourceUpdateOnPremToJSON(requestParameters['sourceUpdateOnPrem']),
+            body: SourceUpdateToJSON(requestParameters['sourceUpdate']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SourceFromJSON(jsonValue));
     }
 
     /**
-     * Update a source from inventory file
+     * Update source
      */
     async updateSource(requestParameters: UpdateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source> {
         const response = await this.updateSourceRaw(requestParameters, initOverrides);
