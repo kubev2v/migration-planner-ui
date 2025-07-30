@@ -78,10 +78,10 @@ jobs:
             --data-binary @apps/agent/dist/agent-latest.tgz \
             "${upload_url}?name=agent-latest.tgz")
           http_code="${response: -3}"
-+          if [ "$http_code" -ne 201 ]; then
-+            echo "Failed to upload agent-latest.tgz. HTTP status: $http_code"
-+            exit 1
-+          fi
+          if [ "$http_code" -ne 201 ]; then
+            echo "Failed to upload agent-latest.tgz. HTTP status: $http_code"
+            exit 1
+          fi
 
       - name: Configure npm credentials
         run: echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ~/.npmrc
