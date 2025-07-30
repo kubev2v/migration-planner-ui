@@ -21,6 +21,7 @@ export * from './PresignedUrl';
 export * from './Source';
 export * from './SourceCreate';
 export * from './SourceUpdate';
+export * from './SourceUpdateOnPrem';
 export * from './Status';
 export * from './UpdateInventory';
 export * from './UploadRvtoolsFile200Response';
