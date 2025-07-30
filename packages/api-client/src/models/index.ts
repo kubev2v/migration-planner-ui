@@ -22,3 +22,6 @@ export * from './UploadRvtoolsFile200Response';
 export * from './VCenter';
 export * from './VMResourceBreakdown';
 export * from './VMs';
+export * from './SourceUpdateOnPrem';
+export * from './InfraNetworksInner';
+export * from './MigrationIssuesInner';

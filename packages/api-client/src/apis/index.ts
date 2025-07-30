@@ -14,6 +14,7 @@ export {
   type SourceApiInterface,
   SourceApi,
   type UpdateSourceRequest,
+  type UpdateInventoryRequest
 } from "./SourceApi";
 
 export {
