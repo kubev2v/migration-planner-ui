@@ -2,13 +2,18 @@
 /* eslint-disable */
 export * from './Agent';
 export * from './AgentProxy';
+export * from './Assessment';
+export * from './AssessmentForm';
 export * from './Datastore';
 export * from './Histogram';
 export * from './Host';
 export * from './Infra';
+export * from './InfraDatastoresInner';
+export * from './InfraNetworksInner';
 export * from './Inventory';
 export * from './Label';
 export * from './MigrationIssue';
+export * from './MigrationIssuesInner';
 export * from './ModelError';
 export * from './Network';
 export * from './OsInfo';
@@ -22,6 +27,3 @@ export * from './UploadRvtoolsFile200Response';
 export * from './VCenter';
 export * from './VMResourceBreakdown';
 export * from './VMs';
-export * from './SourceUpdateOnPrem';
-export * from './InfraNetworksInner';
-export * from './MigrationIssuesInner';

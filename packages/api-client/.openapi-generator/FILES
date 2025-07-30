@@ -1,10 +1,13 @@
 README.md
+src/apis/AssessmentApi.ts
 src/apis/HealthApi.ts
 src/apis/ImageApi.ts
 src/apis/SourceApi.ts
 src/index.ts
 src/models/Agent.ts
 src/models/AgentProxy.ts
+src/models/Assessment.ts
+src/models/AssessmentForm.ts
 src/models/Datastore.ts
 src/models/Histogram.ts
 src/models/Host.ts
