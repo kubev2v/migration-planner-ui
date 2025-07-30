@@ -180,3 +180,46 @@ Make it executable and use it:
 chmod +x scripts/update-api-client-local.sh
 ./scripts/update-api-client-local.sh /path/to/your/local/openapi.yaml
 ```
+
+## Release Process and Library Version Update
+
+After you have successfully modified the API code and tested it locally, you need to follow these steps to make the changes available for the migration-planner-ui-app project:
+
+### Step 1: Create a Release
+
+Once your API changes are ready and merged into the main branch:
+
+1. **Tag the release** in the API repository:
+   ```bash
+   git tag -a v1.2.3 -m "Release version 1.2.3 with new endpoints"
+   git push origin v1.2.3
+   ```
+
+2. **Create a GitHub release**:
+   - Go to the API repository's GitHub page
+   - Navigate to "Releases" → "Create a new release"
+   - Select the tag you just created
+   - Add release notes describing the changes
+   - Publish the release
+
+### Step 2: Update migration-planner-ui-app Project
+
+Update the api-client, agent-client and ioc projects inside migration-planner-ui-app project:
+
+1. **Update the dependency version** in the consuming project's `package.json`:
+   ```json
+   {
+     "dependencies": {
+       "@migration-planner-ui/agent-client": "^1.2.3",
+       "@migration-planner-ui/api-client": "^1.2.3",
+       "@migration-planner-ui/ioc": "^1.2.3"      
+     }
+   }
+   ```
+
+2. **Install the updated dependency**:
+   ```bash
+   yarn install   
+   ```
+
+3. **Test the application** with the new API client version
