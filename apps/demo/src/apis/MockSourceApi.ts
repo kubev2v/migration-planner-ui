@@ -4,14 +4,17 @@ import {
   DeleteSourceRequest,
   ListSourcesRequest,
   SourceApiInterface,
-} from "@migration-planner-ui/api-client/apis";
-import { Source, Status, UploadRvtoolsFile200Response } from "@migration-planner-ui/api-client/models";
+  GetSourceRequest,
+  UpdateSourceRequest,
+  UploadRvtoolsFileRequest,
+  UpdateInventoryRequest,
+} from "../../../../packages/api-client/src/apis/SourceApi";
+import { Source, Status, UploadRvtoolsFile200Response } from "../../../../packages/api-client/src/models";
 import {
   InitOverrideFunction,
   ApiResponse,
   ConfigurationParameters,
-} from "@migration-planner-ui/api-client/runtime";
-import { GetSourceRequest, UpdateSourceRequest, UploadRvtoolsFileRequest } from "../../../../packages/api-client/src/apis/SourceApi";
+} from "../../../../packages/api-client/src/runtime";
 
 export class MockSourceApi implements SourceApiInterface {
   constructor(_configuration: ConfigurationParameters) {
@@ -106,6 +109,16 @@ export class MockSourceApi implements SourceApiInterface {
   }
 
   async updateSource(_requestParameters: UpdateSourceRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<Source>
+  {
+    throw new Error("Method not implemented.");
+  }
+
+  async updateInventoryRaw(_requestParameters: UpdateInventoryRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<ApiResponse<Source>>
+  {
+    throw new Error("Method not implemented.");
+  }
+
+  async updateInventory(_requestParameters: UpdateInventoryRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<Source>
   {
     throw new Error("Method not implemented.");
   }
