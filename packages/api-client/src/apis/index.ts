@@ -27,3 +27,12 @@ export {
   type DeleteAgentRequest,
   AgentApi
 } from "./AgentApi";
+
+export {
+  type AssessmentApiInterface,
+  type CreateAssessmentRequest,
+  type DeleteAssessmentRequest,
+  type GetAssessmentRequest,
+  AssessmentApi
+} from "./AssessmentApi";
+
