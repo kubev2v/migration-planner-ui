@@ -33,6 +33,7 @@ export {
   type CreateAssessmentRequest,
   type DeleteAssessmentRequest,
   type GetAssessmentRequest,
+  type UpdateAssessmentRequest,
   AssessmentApi
 } from "./AssessmentApi";
 

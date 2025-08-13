@@ -8,6 +8,7 @@ src/models/Agent.ts
 src/models/AgentProxy.ts
 src/models/Assessment.ts
 src/models/AssessmentForm.ts
+src/models/AssessmentUpdate.ts
 src/models/Datastore.ts
 src/models/Histogram.ts
 src/models/Host.ts
@@ -19,6 +20,7 @@ src/models/ModelError.ts
 src/models/Network.ts
 src/models/OsInfo.ts
 src/models/PresignedUrl.ts
+src/models/Snapshot.ts
 src/models/Source.ts
 src/models/SourceCreate.ts
 src/models/SourceUpdate.ts

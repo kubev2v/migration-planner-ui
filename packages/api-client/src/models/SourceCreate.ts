@@ -103,3 +103,4 @@ export function SourceCreateToJSON(value?: SourceCreate | null): any {
         'labels': value['labels'] == null ? undefined : ((value['labels'] as Array<any>).map(LabelToJSON)),
     };
 }
+

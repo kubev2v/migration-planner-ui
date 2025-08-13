@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { Inventory } from './Inventory';
+import {
+    InventoryFromJSON,
+    InventoryFromJSONTyped,
+    InventoryToJSON,
+} from './Inventory';
+
 /**
  * 
  * @export
@@ -26,11 +33,26 @@ export interface AssessmentForm {
      */
     name: string;
     /**
+     * Source of the assessment data:
+     *  * `inventory` - Manual inventory upload via JSON
+     *  * `agent` - Collected by migration planner agent
      * 
      * @type {string}
      * @memberof AssessmentForm
      */
-    sourceID: string;
+    sourceType: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AssessmentForm
+     */
+    sourceId?: string;
+    /**
+     * 
+     * @type {Inventory}
+     * @memberof AssessmentForm
+     */
+    inventory?: Inventory;
 }
 
 /**
@@ -38,7 +60,7 @@ export interface AssessmentForm {
  */
 export function instanceOfAssessmentForm(value: object): value is AssessmentForm {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('sourceID' in value) || value['sourceID'] === undefined) return false;
+    if (!('sourceType' in value) || value['sourceType'] === undefined) return false;
     return true;
 }
 
@@ -53,7 +75,9 @@ export function AssessmentFormFromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'name': json['name'],
-        'sourceID': json['sourceID'],
+        'sourceType': json['sourceType'],
+        'sourceId': json['sourceId'] == null ? undefined : json['sourceId'],
+        'inventory': json['inventory'] == null ? undefined : InventoryFromJSON(json['inventory']),
     };
 }
 
@@ -64,7 +88,9 @@ export function AssessmentFormToJSON(value?: AssessmentForm | null): any {
     return {
         
         'name': value['name'],
-        'sourceID': value['sourceID'],
+        'sourceType': value['sourceType'],
+        'sourceId': value['sourceId'],
+        'inventory': InventoryToJSON(value['inventory']),
     };
 }
 

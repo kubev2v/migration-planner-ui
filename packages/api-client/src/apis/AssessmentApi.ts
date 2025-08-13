@@ -17,12 +17,12 @@ import * as runtime from '../runtime';
 import type {
   Assessment,
   AssessmentForm,
+  AssessmentUpdate,
 } from '../models/index';
 import {
     AssessmentFromJSON,
-    AssessmentToJSON,
-    AssessmentFormFromJSON,
     AssessmentFormToJSON,
+    AssessmentUpdateToJSON,
 } from '../models/index';
 
 export interface CreateAssessmentRequest {
@@ -35,6 +35,11 @@ export interface DeleteAssessmentRequest {
 
 export interface GetAssessmentRequest {
     id: string;
+}
+
+export interface UpdateAssessmentRequest {
+    id: string;
+    assessmentUpdate: AssessmentUpdate;
 }
 
 /**
@@ -98,6 +103,21 @@ export interface AssessmentApiInterface {
      * List assessments
      */
     listAssessments(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Assessment>>;
+
+    /**
+     * Update an assessment
+     * @param {string} id ID of the assessment
+     * @param {AssessmentUpdate} assessmentUpdate 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AssessmentApiInterface
+     */
+    updateAssessmentRaw(requestParameters: UpdateAssessmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Assessment>>;
+
+    /**
+     * Update an assessment
+     */
+    updateAssessment(requestParameters: UpdateAssessmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Assessment>;
 
 }
 
@@ -231,6 +251,49 @@ export class AssessmentApi extends runtime.BaseAPI implements AssessmentApiInter
      */
     async listAssessments(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Assessment>> {
         const response = await this.listAssessmentsRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Update an assessment
+     */
+    async updateAssessmentRaw(requestParameters: UpdateAssessmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Assessment>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling updateAssessment().'
+            );
+        }
+
+        if (requestParameters['assessmentUpdate'] == null) {
+            throw new runtime.RequiredError(
+                'assessmentUpdate',
+                'Required parameter "assessmentUpdate" was null or undefined when calling updateAssessment().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/v1/assessments/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: AssessmentUpdateToJSON(requestParameters['assessmentUpdate']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AssessmentFromJSON(jsonValue));
+    }
+
+    /**
+     * Update an assessment
+     */
+    async updateAssessment(requestParameters: UpdateAssessmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Assessment> {
+        const response = await this.updateAssessmentRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

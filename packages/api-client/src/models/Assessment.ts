@@ -13,12 +13,12 @@
  */
 
 import { mapValues } from '../runtime';
-import type { Inventory } from './Inventory';
+import type { Snapshot } from './Snapshot';
 import {
-    InventoryFromJSON,
-    InventoryFromJSONTyped,
-    InventoryToJSON,
-} from './Inventory';
+    SnapshotFromJSON,
+    SnapshotFromJSONTyped,
+    SnapshotToJSON,
+} from './Snapshot';
 
 /**
  * 
@@ -40,23 +40,41 @@ export interface Assessment {
     name: string;
     /**
      * 
+     * @type {string}
+     * @memberof Assessment
+     */
+    sourceType: AssessmentSourceTypeEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Assessment
+     */
+    sourceId?: string;
+    /**
+     * 
      * @type {Date}
      * @memberof Assessment
      */
     createdAt: Date;
     /**
      * 
-     * @type {Inventory}
+     * @type {Array<Snapshot>}
      * @memberof Assessment
      */
-    inventory: Inventory;
-    /**
-     * 
-     * @type {string}
-     * @memberof Assessment
-     */
-    sourceID: string;
+    snapshots: Array<Snapshot>;
 }
+
+
+/**
+ * @export
+ */
+export const AssessmentSourceTypeEnum = {
+    Inventory: 'inventory',
+    Rvtools: 'rvtools',
+    Source: 'source'
+} as const;
+export type AssessmentSourceTypeEnum = typeof AssessmentSourceTypeEnum[keyof typeof AssessmentSourceTypeEnum];
+
 
 /**
  * Check if a given object implements the Assessment interface.
@@ -64,9 +82,9 @@ export interface Assessment {
 export function instanceOfAssessment(value: object): value is Assessment {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('sourceType' in value) || value['sourceType'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('inventory' in value) || value['inventory'] === undefined) return false;
-    if (!('sourceID' in value) || value['sourceID'] === undefined) return false;
+    if (!('snapshots' in value) || value['snapshots'] === undefined) return false;
     return true;
 }
 
@@ -82,9 +100,10 @@ export function AssessmentFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'id': json['id'],
         'name': json['name'],
+        'sourceType': json['sourceType'],
+        'sourceId': json['sourceId'] == null ? undefined : json['sourceId'],
         'createdAt': (new Date(json['createdAt'])),
-        'inventory': InventoryFromJSON(json['inventory']),
-        'sourceID': json['sourceID'],
+        'snapshots': ((json['snapshots'] as Array<any>).map(SnapshotFromJSON)),
     };
 }
 
@@ -96,9 +115,10 @@ export function AssessmentToJSON(value?: Assessment | null): any {
         
         'id': value['id'],
         'name': value['name'],
+        'sourceType': value['sourceType'],
+        'sourceId': value['sourceId'],
         'createdAt': ((value['createdAt']).toISOString()),
-        'inventory': InventoryToJSON(value['inventory']),
-        'sourceID': value['sourceID'],
+        'snapshots': ((value['snapshots'] as Array<any>).map(SnapshotToJSON)),
     };
 }
 
