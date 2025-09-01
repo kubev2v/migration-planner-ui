@@ -67,6 +67,12 @@ export interface Datastore {
      * @memberof Datastore
      */
     model: string;
+    /**
+     * Identifier of the host where this datastore is attached
+     * @type {string}
+     * @memberof Datastore
+     */
+    hostId?: string | null;
 }
 
 /**
@@ -102,6 +108,7 @@ export function DatastoreFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'hardwareAcceleratedMove': json['hardwareAcceleratedMove'],
         'protocolType': json['protocolType'],
         'model': json['model'],
+        'hostId': json['hostId'] == null ? undefined : json['hostId'],
     };
 }
 
@@ -119,6 +126,7 @@ export function DatastoreToJSON(value?: Datastore | null): any {
         'hardwareAcceleratedMove': value['hardwareAcceleratedMove'],
         'protocolType': value['protocolType'],
         'model': value['model'],
+        'hostId': value['hostId'],
     };
 }
 
