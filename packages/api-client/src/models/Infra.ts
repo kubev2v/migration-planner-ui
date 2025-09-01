@@ -76,6 +76,12 @@ export interface Infra {
     hostsPerCluster: Array<number>;
     /**
      * 
+     * @type {Array<number>}
+     * @memberof Infra
+     */
+    vmsPerCluster?: Array<number>;
+    /**
+     * 
      * @type {{ [key: string]: number; }}
      * @memberof Infra
      */
@@ -123,6 +129,7 @@ export function InfraFromJSONTyped(json: any, ignoreDiscriminator: boolean): Inf
         'clustersPerDatacenter': json['clustersPerDatacenter'] == null ? undefined : json['clustersPerDatacenter'],
         'hosts': json['hosts'] == null ? undefined : ((json['hosts'] as Array<any>).map(HostFromJSON)),
         'hostsPerCluster': json['hostsPerCluster'],
+        'vmsPerCluster': json['vmsPerCluster'] == null ? undefined : json['vmsPerCluster'],
         'hostPowerStates': json['hostPowerStates'],
         'networks': ((json['networks'] as Array<any>).map(NetworkFromJSON)),
         'datastores': ((json['datastores'] as Array<any>).map(DatastoreFromJSON)),
@@ -141,6 +148,7 @@ export function InfraToJSON(value?: Infra | null): any {
         'clustersPerDatacenter': value['clustersPerDatacenter'],
         'hosts': value['hosts'] == null ? undefined : ((value['hosts'] as Array<any>).map(HostToJSON)),
         'hostsPerCluster': value['hostsPerCluster'],
+        'vmsPerCluster': value['vmsPerCluster'],
         'hostPowerStates': value['hostPowerStates'],
         'networks': ((value['networks'] as Array<any>).map(NetworkToJSON)),
         'datastores': ((value['datastores'] as Array<any>).map(DatastoreToJSON)),

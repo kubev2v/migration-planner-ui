@@ -2,6 +2,7 @@ README.md
 src/apis/AssessmentApi.ts
 src/apis/HealthApi.ts
 src/apis/ImageApi.ts
+src/apis/InfoApi.ts
 src/apis/SourceApi.ts
 src/index.ts
 src/models/Agent.ts
@@ -12,6 +13,7 @@ src/models/AssessmentUpdate.ts
 src/models/Datastore.ts
 src/models/Histogram.ts
 src/models/Host.ts
+src/models/Info.ts
 src/models/Infra.ts
 src/models/Inventory.ts
 src/models/Label.ts

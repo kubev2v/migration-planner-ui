@@ -20,6 +20,12 @@ import { mapValues } from '../runtime';
  */
 export interface Host {
     /**
+     * Unique identifier for this host
+     * @type {string}
+     * @memberof Host
+     */
+    id?: string;
+    /**
      * 
      * @type {string}
      * @memberof Host
@@ -31,6 +37,24 @@ export interface Host {
      * @memberof Host
      */
     model: string;
+    /**
+     * Number of CPU cores
+     * @type {number}
+     * @memberof Host
+     */
+    cpuCores?: number | null;
+    /**
+     * Number of CPU sockets
+     * @type {number}
+     * @memberof Host
+     */
+    cpuSockets?: number | null;
+    /**
+     * Host memory in MB
+     * @type {number}
+     * @memberof Host
+     */
+    memoryMB?: number | null;
 }
 
 /**
@@ -52,8 +76,12 @@ export function HostFromJSONTyped(json: any, ignoreDiscriminator: boolean): Host
     }
     return {
         
+        'id': json['id'] == null ? undefined : json['id'],
         'vendor': json['vendor'],
         'model': json['model'],
+        'cpuCores': json['cpuCores'] == null ? undefined : json['cpuCores'],
+        'cpuSockets': json['cpuSockets'] == null ? undefined : json['cpuSockets'],
+        'memoryMB': json['memoryMB'] == null ? undefined : json['memoryMB'],
     };
 }
 
@@ -63,8 +91,12 @@ export function HostToJSON(value?: Host | null): any {
     }
     return {
         
+        'id': value['id'],
         'vendor': value['vendor'],
         'model': value['model'],
+        'cpuCores': value['cpuCores'],
+        'cpuSockets': value['cpuSockets'],
+        'memoryMB': value['memoryMB'],
     };
 }
 

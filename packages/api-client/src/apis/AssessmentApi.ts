@@ -17,11 +17,17 @@ import * as runtime from '../runtime';
 import type {
   Assessment,
   AssessmentForm,
+  AssessmentRvtoolsForm,
   AssessmentUpdate,
 } from '../models/index';
 import {
     AssessmentFromJSON,
+    AssessmentToJSON,
+    AssessmentFormFromJSON,
     AssessmentFormToJSON,
+    AssessmentRvtoolsFormFromJSON,
+    AssessmentRvtoolsFormToJSON,
+    AssessmentUpdateFromJSON,
     AssessmentUpdateToJSON,
 } from '../models/index';
 
