@@ -37,3 +37,7 @@ export {
   AssessmentApi
 } from "./AssessmentApi";
 
+export {
+  type InfoApiInterface,
+  InfoApi
+} from "./InfoApi";
