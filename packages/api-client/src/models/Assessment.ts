@@ -39,6 +39,18 @@ export interface Assessment {
      */
     name: string;
     /**
+     * Owner's first name
+     * @type {string}
+     * @memberof Assessment
+     */
+    ownerFirstName?: string;
+    /**
+     * Owner's last name
+     * @type {string}
+     * @memberof Assessment
+     */
+    ownerLastName?: string;
+    /**
      * 
      * @type {string}
      * @memberof Assessment
@@ -100,6 +112,8 @@ export function AssessmentFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'id': json['id'],
         'name': json['name'],
+        'ownerFirstName': json['ownerFirstName'] == null ? undefined : json['ownerFirstName'],
+        'ownerLastName': json['ownerLastName'] == null ? undefined : json['ownerLastName'],
         'sourceType': json['sourceType'],
         'sourceId': json['sourceId'] == null ? undefined : json['sourceId'],
         'createdAt': (new Date(json['createdAt'])),
@@ -115,6 +129,8 @@ export function AssessmentToJSON(value?: Assessment | null): any {
         
         'id': value['id'],
         'name': value['name'],
+        'ownerFirstName': value['ownerFirstName'],
+        'ownerLastName': value['ownerLastName'],
         'sourceType': value['sourceType'],
         'sourceId': value['sourceId'],
         'createdAt': ((value['createdAt']).toISOString()),
