@@ -13,6 +13,12 @@
  */
 
 import { mapValues } from '../runtime';
+import type { VmNetwork } from './VmNetwork';
+import {
+    VmNetworkFromJSON,
+    VmNetworkFromJSONTyped,
+    VmNetworkToJSON,
+} from './VmNetwork';
 import type { AgentProxy } from './AgentProxy';
 import {
     AgentProxyFromJSON,
@@ -58,6 +64,12 @@ export interface SourceCreate {
     certificateChain?: string | null;
     /**
      * 
+     * @type {VmNetwork}
+     * @memberof SourceCreate
+     */
+    network?: VmNetwork;
+    /**
+     * 
      * @type {Array<Label>}
      * @memberof SourceCreate
      */
@@ -86,6 +98,7 @@ export function SourceCreateFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'sshPublicKey': json['sshPublicKey'] == null ? undefined : json['sshPublicKey'],
         'proxy': json['proxy'] == null ? undefined : AgentProxyFromJSON(json['proxy']),
         'certificateChain': json['certificateChain'] == null ? undefined : json['certificateChain'],
+        'network': json['network'] == null ? undefined : VmNetworkFromJSON(json['network']),
         'labels': json['labels'] == null ? undefined : ((json['labels'] as Array<any>).map(LabelFromJSON)),
     };
 }
@@ -100,6 +113,7 @@ export function SourceCreateToJSON(value?: SourceCreate | null): any {
         'sshPublicKey': value['sshPublicKey'],
         'proxy': AgentProxyToJSON(value['proxy']),
         'certificateChain': value['certificateChain'],
+        'network': VmNetworkToJSON(value['network']),
         'labels': value['labels'] == null ? undefined : ((value['labels'] as Array<any>).map(LabelToJSON)),
     };
 }

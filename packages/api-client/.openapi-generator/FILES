@@ -16,6 +16,7 @@ src/models/Host.ts
 src/models/Info.ts
 src/models/Infra.ts
 src/models/Inventory.ts
+src/models/Ipv4Config.ts
 src/models/Label.ts
 src/models/MigrationIssue.ts
 src/models/ModelError.ts
@@ -32,5 +33,6 @@ src/models/UploadRvtoolsFile200Response.ts
 src/models/VCenter.ts
 src/models/VMResourceBreakdown.ts
 src/models/VMs.ts
+src/models/VmNetwork.ts
 src/models/index.ts
 src/runtime.ts

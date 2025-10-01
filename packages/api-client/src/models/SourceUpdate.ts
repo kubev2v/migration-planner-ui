@@ -13,6 +13,12 @@
  */
 
 import { mapValues } from '../runtime';
+import type { VmNetwork } from './VmNetwork';
+import {
+    VmNetworkFromJSON,
+    VmNetworkFromJSONTyped,
+    VmNetworkToJSON,
+} from './VmNetwork';
 import type { AgentProxy } from './AgentProxy';
 import {
     AgentProxyFromJSON,
@@ -62,6 +68,12 @@ export interface SourceUpdate {
      * @memberof SourceUpdate
      */
     proxy?: AgentProxy;
+    /**
+     * 
+     * @type {VmNetwork}
+     * @memberof SourceUpdate
+     */
+    network?: VmNetwork;
 }
 
 /**
@@ -86,6 +98,7 @@ export function SourceUpdateFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'sshPublicKey': json['sshPublicKey'] == null ? undefined : json['sshPublicKey'],
         'certificateChain': json['certificateChain'] == null ? undefined : json['certificateChain'],
         'proxy': json['proxy'] == null ? undefined : AgentProxyFromJSON(json['proxy']),
+        'network': json['network'] == null ? undefined : VmNetworkFromJSON(json['network']),
     };
 }
 
@@ -100,6 +113,7 @@ export function SourceUpdateToJSON(value?: SourceUpdate | null): any {
         'sshPublicKey': value['sshPublicKey'],
         'certificateChain': value['certificateChain'],
         'proxy': AgentProxyToJSON(value['proxy']),
+        'network': VmNetworkToJSON(value['network']),
     };
 }
 
