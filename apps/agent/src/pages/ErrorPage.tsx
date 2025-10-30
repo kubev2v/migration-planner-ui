@@ -4,19 +4,18 @@ import {
   Bullseye,
   Card,
   Button,
-  TextContent,
-  Text,
+  Content,
   ButtonProps,
   Backdrop,
-  EmptyStateIcon,
   EmptyState,
   EmptyStateBody,
   EmptyStateActions,
   EmptyStateFooter,
+  Icon,
 } from "@patternfly/react-core";
 import { WarningTriangleIcon, ErrorCircleOIcon } from "@patternfly/react-icons";
-import globalWarningColor100 from "@patternfly/react-tokens/dist/esm/global_warning_color_100";
-import globalDangerColor100 from "@patternfly/react-tokens/dist/esm/global_danger_color_100";
+import globalWarningColor100/* CODEMODS: you should update this color token, original v5 token was global_warning_color_100 */ from "@patternfly/react-tokens/dist/esm/t_temp_dev_tbd";
+import globalDangerColor100/* CODEMODS: you should update this color token, original v5 token was global_danger_color_100 */ from "@patternfly/react-tokens/dist/esm/t_temp_dev_tbd";
 import { useLocation, useParams } from "react-router-dom";
 
 const bounce = keyframes`
@@ -71,27 +70,26 @@ const ErrorPage: React.FC<Props> = (props) => {
       <Bullseye>
         <Card
           style={{ width: "36rem", height: "38rem", justifyContent: "center" }}
-          isFlat
-          isRounded
+          
+          
         >
           <EmptyState>
             <EmptyStateBody>
-              <EmptyStateIcon
+              <Icon
                 className={classes.icon}
-                icon={
-                  parseInt(code) < 500 ? WarningTriangleIcon : ErrorCircleOIcon
-                }
-                color={
-                  parseInt(code) < 500
-                    ? globalWarningColor100.value
-                    : globalDangerColor100.value
-                }
-              />
-              <TextContent>
-                <Text component="h1">{code}</Text>
-                <Text component="h2">{message}</Text>
-                {additionalDetails && <Text>{additionalDetails}</Text>}
-              </TextContent>
+                size="xl"
+              >
+                {parseInt(code) < 500 ? (
+                  <WarningTriangleIcon color={globalWarningColor100.value} />
+                ) : (
+                  <ErrorCircleOIcon color={globalDangerColor100.value} />
+                )}
+              </Icon>
+              <Content>
+                <Content component="h1">{code}</Content>
+                <Content component="h2">{message}</Content>
+                {additionalDetails && <Content component="p">{additionalDetails}</Content>}
+              </Content>
             </EmptyStateBody>
 
             {actions.length > 0 && (

@@ -15,8 +15,7 @@ import {
   HelperTextItem,
   List,
   ListItem,
-  Text,
-  TextContent,
+  Content,
   TextInput,
   Spinner,
   SplitItem,
@@ -28,7 +27,7 @@ import { LoginFormViewModelInterface } from "./hooks/UseViewModel";
 import { FormStates } from "./FormStates";
 import { CheckCircleIcon, InfoCircleIcon } from "@patternfly/react-icons";
 import { getConfigurationBasePath } from "#/main/Root";
-import globalSuccessColor100 from "@patternfly/react-tokens/dist/esm/global_success_color_100";
+import globalSuccessColor100/* CODEMODS: you should update this color token, original v5 token was global_success_color_100 */ from "@patternfly/react-tokens/dist/esm/t_temp_dev_tbd";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace LoginForm {
@@ -42,23 +41,23 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
   return (
     <Card
       style={{ maxWidth: "36rem", width: "100%",  maxHeight: "90vh", overflowY: "auto" }}
-      isFlat
-      isRounded
+      
+      
       aria-labelledby="card-header-title"
       aria-describedby="card-body-description"
     >
       <CardHeader id="card-header-title">
-        <TextContent>
-          <Text component="h2">Migration Discovery VM</Text>
-          <Text>
+        <Content>
+          <Content component="h2">Migration Discovery VM</Content>
+          <Content component="p">
             The migration discovery VM requires access to your VMware
             environment to execute a discovery process that gathers essential
             data, including network topology, storage configuration, and VM
             inventory. The process leverages this information to provide
             recommendations for a seamless migration to OpenShift
             Virtualization.
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       </CardHeader>
 
       <Divider
@@ -73,21 +72,21 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
           padding: "1rem",
         }}
       >
-        <TextContent
+        <Content
           style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
         >
           <InfoCircleIcon color="#007bff" />
-          <Text component="p" style={{ color: "#002952", fontWeight: "bold" }}>
+          <Content component="p" style={{ color: "#002952", fontWeight: "bold" }}>
             Access control
-          </Text>
-        </TextContent>
-        <Text
+          </Content>
+        </Content>
+        <Content
           component="p"
           style={{ marginTop: "0.5rem", marginLeft: "1.5rem" }}
         >
           A VMware user account with read-only permissions is sufficient for
           secure access during the discovery process.
-        </Text>
+        </Content>
       </CardBody>
 
       <Divider
@@ -249,22 +248,22 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
         }
       >
         {vm.formState === FormStates.GatheringInventory && (
-          <Text component="p" style={{ textAlign: "center" }}>
+          <Content component="p" style={{ textAlign: "center" }}>
             <Icon size="xl">
               <Spinner />
             </Icon>
             <br />
             Gathering inventory...
-          </Text>
+          </Content>
         )}
         {vm.formState === FormStates.CredentialsAccepted && (
-          <Text component="p" style={{ textAlign: "center" }}>
+          <Content component="p" style={{ textAlign: "center" }}>
             <Icon size="xl" isInline>
               <CheckCircleIcon color={globalSuccessColor100.value} />
             </Icon>
             <br />
             Discovery completed
-          </Text>
+          </Content>
         )}
       </CardBody>
       <CardFooter>
@@ -311,11 +310,11 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
           <SplitItem isFilled></SplitItem>
           <SplitItem style={{ paddingRight: "2rem" }}>
             {vm.formState === FormStates.CheckingStatus && (
-              <TextContent>
-                <Text component="p">
+              <Content>
+                <Content component="p">
                   <Spinner isInline /> Checking status...
-                </Text>
-              </TextContent>
+                </Content>
+              </Content>
             )}
           </SplitItem>
         </Split>

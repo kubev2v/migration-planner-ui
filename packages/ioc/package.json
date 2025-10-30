@@ -34,20 +34,12 @@
     "lint": "yarn run -T eslint . --report-unused-disable-directives --max-warnings 0"
   },
   "devDependencies": {
-    "@patternfly/react-core": "*",
-    "@patternfly/react-icons": "*",
-    "@patternfly/react-tokens": "*",
     "react": "*",
-    "react-dom": "*",
-    "react-router-dom": "*"
+    "react-dom": "*"
   },
   "peerDependencies": {
-    "@patternfly/react-core": "^5.4.0",
-    "@patternfly/react-icons": "^5.4.0",
-    "@patternfly/react-tokens": "^5.4.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.0"
+    "react-dom": "^18.3.1"
   },
   "stableVersion": "1.1.1"
 }
