@@ -20,7 +20,6 @@ import type {
   SourceUpdate,
   Status,
   UpdateInventory,
-  UploadRvtoolsFile200Response,
 } from '../models/index';
 import {
     SourceFromJSON,
@@ -33,8 +32,6 @@ import {
     StatusToJSON,
     UpdateInventoryFromJSON,
     UpdateInventoryToJSON,
-    UploadRvtoolsFile200ResponseFromJSON,
-    UploadRvtoolsFile200ResponseToJSON,
 } from '../models/index';
 
 export interface CreateSourceRequest {
@@ -49,10 +46,6 @@ export interface GetSourceRequest {
     id: string;
 }
 
-export interface ListSourcesRequest {
-    includeDefault?: boolean;
-}
-
 export interface UpdateInventoryRequest {
     id: string;
     updateInventory: UpdateInventory;
@@ -61,11 +54,6 @@ export interface UpdateInventoryRequest {
 export interface UpdateSourceRequest {
     id: string;
     sourceUpdate: SourceUpdate;
-}
-
-export interface UploadRvtoolsFileRequest {
-    id: string;
-    file: Blob;
 }
 
 /**
@@ -132,17 +120,16 @@ export interface SourceApiInterface {
 
     /**
      * List sources
-     * @param {boolean} [includeDefault] control whatever the default report should be added to the result
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SourceApiInterface
      */
-    listSourcesRaw(requestParameters: ListSourcesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Source>>>;
+    listSourcesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Source>>>;
 
     /**
      * List sources
      */
-    listSources(requestParameters: ListSourcesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Source>>;
+    listSources(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Source>>;
 
     /**
      * Update inventory
@@ -173,21 +160,6 @@ export interface SourceApiInterface {
      * Update source
      */
     updateSource(requestParameters: UpdateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source>;
-
-    /**
-     * Update a source by uploading an RVTools file directly
-     * @param {string} id ID of the source
-     * @param {Blob} file The RVTools file (Excel)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof SourceApiInterface
-     */
-    uploadRvtoolsFileRaw(requestParameters: UploadRvtoolsFileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UploadRvtoolsFile200Response>>;
-
-    /**
-     * Update a source by uploading an RVTools file directly
-     */
-    uploadRvtoolsFile(requestParameters: UploadRvtoolsFileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UploadRvtoolsFile200Response>;
 
 }
 
@@ -327,12 +299,8 @@ export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
     /**
      * List sources
      */
-    async listSourcesRaw(requestParameters: ListSourcesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Source>>> {
+    async listSourcesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Source>>> {
         const queryParameters: any = {};
-
-        if (requestParameters['includeDefault'] != null) {
-            queryParameters['include_default'] = requestParameters['includeDefault'];
-        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -349,8 +317,8 @@ export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
     /**
      * List sources
      */
-    async listSources(requestParameters: ListSourcesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Source>> {
-        const response = await this.listSourcesRaw(requestParameters, initOverrides);
+    async listSources(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Source>> {
+        const response = await this.listSourcesRaw(initOverrides);
         return await response.value();
     }
 
@@ -437,67 +405,6 @@ export class SourceApi extends runtime.BaseAPI implements SourceApiInterface {
      */
     async updateSource(requestParameters: UpdateSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source> {
         const response = await this.updateSourceRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Update a source by uploading an RVTools file directly
-     */
-    async uploadRvtoolsFileRaw(requestParameters: UploadRvtoolsFileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UploadRvtoolsFile200Response>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling uploadRvtoolsFile().'
-            );
-        }
-
-        if (requestParameters['file'] == null) {
-            throw new runtime.RequiredError(
-                'file',
-                'Required parameter "file" was null or undefined when calling uploadRvtoolsFile().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const consumes: runtime.Consume[] = [
-            { contentType: 'multipart/form-data' },
-        ];
-        // @ts-ignore: canConsumeForm may be unused
-        const canConsumeForm = runtime.canConsumeForm(consumes);
-
-        let formParams: { append(param: string, value: any): any };
-        let useForm = false;
-        // use FormData to transmit files using content-type "multipart/form-data"
-        useForm = canConsumeForm;
-        if (useForm) {
-            formParams = new FormData();
-        } else {
-            formParams = new URLSearchParams();
-        }
-
-        if (requestParameters['file'] != null) {
-            formParams.append('file', requestParameters['file'] as any);
-        }
-
-        const response = await this.request({
-            path: `/api/v1/sources/{id}/rvtools`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'PUT',
-            headers: headerParameters,
-            query: queryParameters,
-            body: formParams,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => UploadRvtoolsFile200ResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Update a source by uploading an RVTools file directly
-     */
-    async uploadRvtoolsFile(requestParameters: UploadRvtoolsFileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UploadRvtoolsFile200Response> {
-        const response = await this.uploadRvtoolsFileRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

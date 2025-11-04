@@ -25,6 +25,12 @@ import {
     OsInfoFromJSONTyped,
     OsInfoToJSON,
 } from './OsInfo';
+import type { DiskSizeTierSummary } from './DiskSizeTierSummary';
+import {
+    DiskSizeTierSummaryFromJSON,
+    DiskSizeTierSummaryFromJSONTyped,
+    DiskSizeTierSummaryToJSON,
+} from './DiskSizeTierSummary';
 import type { VMResourceBreakdown } from './VMResourceBreakdown';
 import {
     VMResourceBreakdownFromJSON,
@@ -62,6 +68,12 @@ export interface VMs {
      * @memberof VMs
      */
     cpuCores: VMResourceBreakdown;
+    /**
+     * 
+     * @type {{ [key: string]: DiskSizeTierSummary; }}
+     * @memberof VMs
+     */
+    diskSizeTier?: { [key: string]: DiskSizeTierSummary; };
     /**
      * 
      * @type {VMResourceBreakdown}
@@ -150,6 +162,7 @@ export function VMsFromJSONTyped(json: any, ignoreDiscriminator: boolean): VMs {
         'totalMigratable': json['totalMigratable'],
         'totalMigratableWithWarnings': json['totalMigratableWithWarnings'] == null ? undefined : json['totalMigratableWithWarnings'],
         'cpuCores': VMResourceBreakdownFromJSON(json['cpuCores']),
+        'diskSizeTier': json['diskSizeTier'] == null ? undefined : (mapValues(json['diskSizeTier'], DiskSizeTierSummaryFromJSON)),
         'ramGB': VMResourceBreakdownFromJSON(json['ramGB']),
         'diskGB': VMResourceBreakdownFromJSON(json['diskGB']),
         'diskCount': VMResourceBreakdownFromJSON(json['diskCount']),
@@ -172,6 +185,7 @@ export function VMsToJSON(value?: VMs | null): any {
         'totalMigratable': value['totalMigratable'],
         'totalMigratableWithWarnings': value['totalMigratableWithWarnings'],
         'cpuCores': VMResourceBreakdownToJSON(value['cpuCores']),
+        'diskSizeTier': value['diskSizeTier'] == null ? undefined : (mapValues(value['diskSizeTier'], DiskSizeTierSummaryToJSON)),
         'ramGB': VMResourceBreakdownToJSON(value['ramGB']),
         'diskGB': VMResourceBreakdownToJSON(value['diskGB']),
         'diskCount': VMResourceBreakdownToJSON(value['diskCount']),

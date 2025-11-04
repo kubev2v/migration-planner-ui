@@ -13,6 +13,12 @@
  */
 
 import { mapValues } from '../runtime';
+import type { SourceInfra } from './SourceInfra';
+import {
+    SourceInfraFromJSON,
+    SourceInfraFromJSONTyped,
+    SourceInfraToJSON,
+} from './SourceInfra';
 import type { Agent } from './Agent';
 import {
     AgentFromJSON,
@@ -86,6 +92,12 @@ export interface Source {
      * @memberof Source
      */
     labels?: Array<Label>;
+    /**
+     * 
+     * @type {SourceInfra}
+     * @memberof Source
+     */
+    infra?: SourceInfra;
 }
 
 /**
@@ -118,6 +130,7 @@ export function SourceFromJSONTyped(json: any, ignoreDiscriminator: boolean): So
         'onPremises': json['onPremises'],
         'agent': json['agent'] == null ? undefined : AgentFromJSON(json['agent']),
         'labels': json['labels'] == null ? undefined : ((json['labels'] as Array<any>).map(LabelFromJSON)),
+        'infra': json['infra'] == null ? undefined : SourceInfraFromJSON(json['infra']),
     };
 }
 
@@ -135,6 +148,7 @@ export function SourceToJSON(value?: Source | null): any {
         'onPremises': value['onPremises'],
         'agent': AgentToJSON(value['agent']),
         'labels': value['labels'] == null ? undefined : ((value['labels'] as Array<any>).map(LabelToJSON)),
+        'infra': SourceInfraToJSON(value['infra']),
     };
 }
 

@@ -25,6 +25,12 @@ export interface ModelError {
      * @memberof ModelError
      */
     message: string;
+    /**
+     * Id of the request generating the error
+     * @type {string}
+     * @memberof ModelError
+     */
+    requestId?: string;
 }
 
 /**
@@ -46,6 +52,7 @@ export function ModelErrorFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     return {
         
         'message': json['message'],
+        'requestId': json['requestId'] == null ? undefined : json['requestId'],
     };
 }
 
@@ -56,6 +63,7 @@ export function ModelErrorToJSON(value?: ModelError | null): any {
     return {
         
         'message': value['message'],
+        'requestId': value['requestId'],
     };
 }
 

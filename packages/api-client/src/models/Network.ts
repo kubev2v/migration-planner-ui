@@ -43,6 +43,12 @@ export interface Network {
      * @memberof Network
      */
     dvswitch?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Network
+     */
+    vmsCount?: number;
 }
 
 
@@ -81,6 +87,7 @@ export function NetworkFromJSONTyped(json: any, ignoreDiscriminator: boolean): N
         'name': json['name'],
         'vlanId': json['vlanId'] == null ? undefined : json['vlanId'],
         'dvswitch': json['dvswitch'] == null ? undefined : json['dvswitch'],
+        'vmsCount': json['vmsCount'] == null ? undefined : json['vmsCount'],
     };
 }
 
@@ -94,6 +101,7 @@ export function NetworkToJSON(value?: Network | null): any {
         'name': value['name'],
         'vlanId': value['vlanId'],
         'dvswitch': value['dvswitch'],
+        'vmsCount': value['vmsCount'],
     };
 }
 

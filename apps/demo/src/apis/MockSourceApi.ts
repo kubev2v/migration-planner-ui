@@ -2,14 +2,12 @@
 import {
   CreateSourceRequest,
   DeleteSourceRequest,
-  ListSourcesRequest,
   SourceApiInterface,
   GetSourceRequest,
   UpdateSourceRequest,
-  UploadRvtoolsFileRequest,
   UpdateInventoryRequest,
 } from "../../../../packages/api-client/src/apis/SourceApi";
-import { Source, Status, UploadRvtoolsFile200Response } from "../../../../packages/api-client/src/models";
+import { Source, Status } from "../../../../packages/api-client/src/models";
 import {
   InitOverrideFunction,
   ApiResponse,
@@ -19,12 +17,6 @@ import {
 export class MockSourceApi implements SourceApiInterface {
   constructor(_configuration: ConfigurationParameters) {
     console.warn("#### CAUTION: Using MockSourceApi ####");
-  }
-  uploadRvtoolsFileRaw(_requestParameters: UploadRvtoolsFileRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<ApiResponse<UploadRvtoolsFile200Response>> {
-    throw new Error("Method not implemented.");
-  }
-  uploadRvtoolsFile(_requestParameters: UploadRvtoolsFileRequest, _initOverrides?: RequestInit | InitOverrideFunction): Promise<UploadRvtoolsFile200Response> {
-    throw new Error("Method not implemented.");
   }
 
   async createSourceRaw(_requestParameters: CreateSourceRequest, _initOverrides?: RequestInit | InitOverrideFunction):Promise<ApiResponse<Source>>{
@@ -58,13 +50,11 @@ export class MockSourceApi implements SourceApiInterface {
     throw new Error("Method not implemented.");
   }
   async listSourcesRaw(
-    _requestParameters: ListSourcesRequest,
     _initOverrides?: RequestInit | InitOverrideFunction
   ): Promise<ApiResponse<Array<Source>>> {
     throw new Error("Method not implemented.");
   }
   async listSources(
-    _requestParameters: ListSourcesRequest,
     _initOverrides?: RequestInit | InitOverrideFunction
   ): Promise<Array<Source>> {
     // await sleep(3 * Time.Second);

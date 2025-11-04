@@ -21,7 +21,10 @@ import type {
 } from '../models/index';
 import {
     AssessmentFromJSON,
+    AssessmentToJSON,
+    AssessmentFormFromJSON,
     AssessmentFormToJSON,
+    AssessmentUpdateFromJSON,
     AssessmentUpdateToJSON,
 } from '../models/index';
 

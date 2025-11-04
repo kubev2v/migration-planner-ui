@@ -10,7 +10,6 @@ export {
   type CreateSourceRequest,
   type DeleteSourceRequest,
   type GetSourceRequest,
-  type ListSourcesRequest,
   type SourceApiInterface,
   SourceApi,
   type UpdateSourceRequest,

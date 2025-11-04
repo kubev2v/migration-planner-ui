@@ -11,6 +11,7 @@ src/models/Assessment.ts
 src/models/AssessmentForm.ts
 src/models/AssessmentUpdate.ts
 src/models/Datastore.ts
+src/models/DiskSizeTierSummary.ts
 src/models/Histogram.ts
 src/models/Host.ts
 src/models/Info.ts
@@ -26,10 +27,10 @@ src/models/PresignedUrl.ts
 src/models/Snapshot.ts
 src/models/Source.ts
 src/models/SourceCreate.ts
+src/models/SourceInfra.ts
 src/models/SourceUpdate.ts
 src/models/Status.ts
 src/models/UpdateInventory.ts
-src/models/UploadRvtoolsFile200Response.ts
 src/models/VCenter.ts
 src/models/VMResourceBreakdown.ts
 src/models/VMs.ts
