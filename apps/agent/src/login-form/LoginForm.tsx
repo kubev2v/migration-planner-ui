@@ -41,7 +41,12 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
   const { vm } = props;
   return (
     <Card
-      style={{ maxWidth: "36rem", width: "100%",  maxHeight: "90vh", overflowY: "auto" }}
+      style={{
+        maxWidth: "36rem",
+        width: "100%",
+        maxHeight: "90vh",
+        overflowY: "auto",
+      }}
       isFlat
       isRounded
       aria-labelledby="card-header-title"
@@ -111,6 +116,8 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
               id="url-form-control"
               type="url"
               name="url"
+              value={vm.urlValue}
+              onChange={(_event, value) => vm.handleChangeUrl(value)}
               isRequired
               placeholder="https://vcenter_server_ip_address_or_fqdn"
               pattern="https://.*"
@@ -145,6 +152,8 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
               id="username-form-control"
               type="email"
               name="username"
+              value={vm.usernameValue}
+              onChange={(_event, value) => vm.handleChangeUsername(value)}
               isRequired
               placeholder="su.do@redhat.com"
               aria-describedby="username-helper-text"
@@ -178,6 +187,8 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
               id="password-form-control"
               type="password"
               name="password"
+              value={vm.passwordValue}
+              onChange={(_event, value) => vm.handleChangePassword(value)}
               isRequired
               aria-describedby="password-helper-text"
             />
@@ -288,7 +299,7 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
               <>
                 <Button
                   variant="primary"
-                  onClick={vm.handleReturnToAssistedMigration}
+                  onClick={() => window.close()}
                   style={{ marginLeft: "16px" }}
                 >
                   Go back to assessment wizard

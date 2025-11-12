@@ -22,10 +22,16 @@ export interface LoginFormViewModelInterface {
   formRef: React.MutableRefObject<HTMLFormElement | undefined>;
   urlControlStateVariant: FormControlValidatedStateVariant;
   urlControlHelperText?: string;
+  urlValue: string;
+  handleChangeUrl: (value: string) => void;
   usernameControlStateVariant: FormControlValidatedStateVariant;
   usernameControlHelperText?: string;
+  usernameValue: string;
+  handleChangeUsername: (value: string) => void;
   passwordControlStateVariant: FormControlValidatedStateVariant;
   passwordControlHelperText?: string;
+  passwordValue: string;
+  handleChangePassword: (value: string) => void;
   shouldDisableFormControl: boolean;
   alertVariant?: AlertVariant;
   alertTitle?: string;
@@ -33,7 +39,6 @@ export interface LoginFormViewModelInterface {
   alertActionLinkText?: string;
   shouldDisplayAlert: boolean;
   handleSubmit: React.FormEventHandler<HTMLFormElement>;
-  handleReturnToAssistedMigration: () => void;
   handleChangeDataSharingAllowed: (checked: boolean) => void;
   isDataSharingChecked: boolean;
 }
@@ -63,6 +68,9 @@ export const useViewModel = (): LoginFormViewModelInterface => {
   const [isDataSharingAllowed, setIsDataSharingAllowed] = useState<boolean>(
     DATA_SHARING_ALLOWED_DEFAULT_STATE
   );
+  const [urlValue, setUrlValue] = useState<string>("");
+  const [usernameValue, setUsernameValue] = useState<string>("");
+  const [passwordValue, setPasswordValue] = useState<string>("");
 
   useAsync(async () => {
     try {
@@ -102,8 +110,20 @@ export const useViewModel = (): LoginFormViewModelInterface => {
           return "default";
       }
     }, [formState]),
+    urlValue,
+    handleChangeUrl: useCallback((value: string) => {
+      setUrlValue(value);
+    }, []),
     usernameControlStateVariant: _computeFormControlVariant(formState),
+    usernameValue,
+    handleChangeUsername: useCallback((value: string) => {
+      setUsernameValue(value);
+    }, []),
     passwordControlStateVariant: _computeFormControlVariant(formState),
+    passwordValue,
+    handleChangePassword: useCallback((value: string) => {
+      setPasswordValue(value);
+    }, []),
     shouldDisableFormControl: useMemo(
       () =>
         [
@@ -184,10 +204,10 @@ export const useViewModel = (): LoginFormViewModelInterface => {
         }
 
         const credentials: Credentials = {
-          url: form["url"].value,
-          username: form["username"].value,
-          password: form["password"].value,
-          isDataSharingAllowed: form["isDataSharingAllowed"].checked,
+          url: urlValue,
+          username: usernameValue,
+          password: passwordValue,
+          isDataSharingAllowed: isDataSharingAllowed,
         };
         const signal = newAbortSignal(
           REQUEST_TIMEOUT_MS,
@@ -223,14 +243,15 @@ export const useViewModel = (): LoginFormViewModelInterface => {
             break;
         }
       },
-      [agentApi, navigateTo]
+      [
+        agentApi,
+        navigateTo,
+        urlValue,
+        usernameValue,
+        passwordValue,
+        isDataSharingAllowed,
+      ]
     ),
-    handleReturnToAssistedMigration: useCallback(async () => {
-      const serviceUrl =
-        (await agentApi.getServiceUiUrl()) ||
-        "http://localhost:3000/migrate/wizard";
-      window.open(serviceUrl, "_blank", "noopener,noreferrer");
-    }, []),
     handleChangeDataSharingAllowed: useCallback((checked) => {
       setIsDataSharingAllowed(checked);
     }, []),
