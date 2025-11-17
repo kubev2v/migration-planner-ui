@@ -28,6 +28,10 @@ import {
     AssessmentUpdateToJSON,
 } from '../models/index';
 
+export interface CancelAssessmentJobRequest {
+    id: string;
+}
+
 export interface CreateAssessmentRequest {
     assessmentForm: AssessmentForm;
 }
@@ -52,6 +56,20 @@ export interface UpdateAssessmentRequest {
  * @interface AssessmentApiInterface
  */
 export interface AssessmentApiInterface {
+    /**
+     * Cancel the processing job for an assessment
+     * @param {string} id ID of the assessment
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AssessmentApiInterface
+     */
+    cancelAssessmentJobRaw(requestParameters: CancelAssessmentJobRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Cancel the processing job for an assessment
+     */
+    cancelAssessmentJob(requestParameters: CancelAssessmentJobRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
     /**
      * Create an assessment
      * @param {AssessmentForm} assessmentForm 
@@ -128,6 +146,38 @@ export interface AssessmentApiInterface {
  * 
  */
 export class AssessmentApi extends runtime.BaseAPI implements AssessmentApiInterface {
+
+    /**
+     * Cancel the processing job for an assessment
+     */
+    async cancelAssessmentJobRaw(requestParameters: CancelAssessmentJobRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling cancelAssessmentJob().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/assessments/{id}/job`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Cancel the processing job for an assessment
+     */
+    async cancelAssessmentJob(requestParameters: CancelAssessmentJobRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.cancelAssessmentJobRaw(requestParameters, initOverrides);
+    }
 
     /**
      * Create an assessment

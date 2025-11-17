@@ -28,24 +28,50 @@ import {
 export interface Snapshot {
     /**
      * 
-     * @type {Inventory}
-     * @memberof Snapshot
-     */
-    inventory: Inventory;
-    /**
-     * 
      * @type {Date}
      * @memberof Snapshot
      */
     createdAt: Date;
+    /**
+     * Status of the snapshot processing
+     * @type {string}
+     * @memberof Snapshot
+     */
+    status: SnapshotStatusEnum;
+    /**
+     * Error message if snapshot processing failed
+     * @type {string}
+     * @memberof Snapshot
+     */
+    error?: string;
+    /**
+     * 
+     * @type {Inventory}
+     * @memberof Snapshot
+     */
+    inventory?: Inventory;
 }
+
+
+/**
+ * @export
+ */
+export const SnapshotStatusEnum = {
+    Pending: 'pending',
+    Parsing: 'parsing',
+    Validating: 'validating',
+    Ready: 'ready',
+    Failed: 'failed'
+} as const;
+export type SnapshotStatusEnum = typeof SnapshotStatusEnum[keyof typeof SnapshotStatusEnum];
+
 
 /**
  * Check if a given object implements the Snapshot interface.
  */
 export function instanceOfSnapshot(value: object): value is Snapshot {
-    if (!('inventory' in value) || value['inventory'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
     return true;
 }
 
@@ -59,8 +85,10 @@ export function SnapshotFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     }
     return {
         
-        'inventory': InventoryFromJSON(json['inventory']),
         'createdAt': (new Date(json['createdAt'])),
+        'status': json['status'],
+        'error': json['error'] == null ? undefined : json['error'],
+        'inventory': json['inventory'] == null ? undefined : InventoryFromJSON(json['inventory']),
     };
 }
 
@@ -70,8 +98,10 @@ export function SnapshotToJSON(value?: Snapshot | null): any {
     }
     return {
         
-        'inventory': InventoryToJSON(value['inventory']),
         'createdAt': ((value['createdAt']).toISOString()),
+        'status': value['status'],
+        'error': value['error'],
+        'inventory': InventoryToJSON(value['inventory']),
     };
 }
 
