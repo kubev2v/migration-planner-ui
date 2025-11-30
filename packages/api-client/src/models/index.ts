@@ -13,6 +13,7 @@ export * from './Info';
 export * from './Infra';
 export * from './Inventory';
 export * from './Ipv4Config';
+export * from './Job';
 export * from './Label';
 export * from './MigrationIssue';
 export * from './ModelError';

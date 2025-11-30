@@ -36,17 +36,24 @@ export interface AssessmentForm {
      * Source of the assessment data:
      *  * `inventory` - Manual inventory upload via JSON
      *  * `agent` - Collected by migration planner agent
+     *  * `rvtools` - Parsed from RVTools file via async job
      * 
      * @type {string}
      * @memberof AssessmentForm
      */
     sourceType: string;
     /**
-     * 
+     * Source ID for agent source type
      * @type {string}
      * @memberof AssessmentForm
      */
     sourceId?: string;
+    /**
+     * Job ID for rvtools source type (from completed job)
+     * @type {number}
+     * @memberof AssessmentForm
+     */
+    jobId?: number;
     /**
      * 
      * @type {Inventory}
@@ -77,6 +84,7 @@ export function AssessmentFormFromJSONTyped(json: any, ignoreDiscriminator: bool
         'name': json['name'],
         'sourceType': json['sourceType'],
         'sourceId': json['sourceId'] == null ? undefined : json['sourceId'],
+        'jobId': json['jobId'] == null ? undefined : json['jobId'],
         'inventory': json['inventory'] == null ? undefined : InventoryFromJSON(json['inventory']),
     };
 }
@@ -90,6 +98,7 @@ export function AssessmentFormToJSON(value?: AssessmentForm | null): any {
         'name': value['name'],
         'sourceType': value['sourceType'],
         'sourceId': value['sourceId'],
+        'jobId': value['jobId'],
         'inventory': InventoryToJSON(value['inventory']),
     };
 }

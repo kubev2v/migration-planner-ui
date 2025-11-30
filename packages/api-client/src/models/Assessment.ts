@@ -83,7 +83,7 @@ export interface Assessment {
 export const AssessmentSourceTypeEnum = {
     Inventory: 'inventory',
     Rvtools: 'rvtools',
-    Source: 'source'
+    Agent: 'agent'
 } as const;
 export type AssessmentSourceTypeEnum = typeof AssessmentSourceTypeEnum[keyof typeof AssessmentSourceTypeEnum];
 
