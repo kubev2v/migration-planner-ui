@@ -42,6 +42,7 @@ jobs:
           fi
 
       - name: Upload Agent Release Asset
+        if: ${{ false }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -52,6 +53,7 @@ jobs:
           asset_content_type: application/gzip
 
       - name: Copy agent asset for latest
+        if: ${{ false }}
         run: cp apps/agent/dist/agent-${{ github.event.release.tag_name }}.tgz apps/agent/dist/agent-latest.tgz
 
       - name: Update latest release
