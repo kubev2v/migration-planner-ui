@@ -16,25 +16,21 @@ import { mapValues } from '../runtime';
 import type { MigrationIssue } from './MigrationIssue';
 import {
     MigrationIssueFromJSON,
-    MigrationIssueFromJSONTyped,
     MigrationIssueToJSON,
 } from './MigrationIssue';
 import type { OsInfo } from './OsInfo';
 import {
     OsInfoFromJSON,
-    OsInfoFromJSONTyped,
     OsInfoToJSON,
 } from './OsInfo';
 import type { DiskSizeTierSummary } from './DiskSizeTierSummary';
 import {
     DiskSizeTierSummaryFromJSON,
-    DiskSizeTierSummaryFromJSONTyped,
     DiskSizeTierSummaryToJSON,
 } from './DiskSizeTierSummary';
 import type { VMResourceBreakdown } from './VMResourceBreakdown';
 import {
     VMResourceBreakdownFromJSON,
-    VMResourceBreakdownFromJSONTyped,
     VMResourceBreakdownToJSON,
 } from './VMResourceBreakdown';
 
@@ -172,7 +168,7 @@ export function VMsFromJSONTyped(json: any, ignoreDiscriminator: boolean): VMs {
         'osInfo': json['osInfo'] == null ? undefined : (mapValues(json['osInfo'], OsInfoFromJSON)),
         'notMigratableReasons': json['notMigratableReasons'] == null ? undefined : ((json['notMigratableReasons'] as Array<any>).map(MigrationIssueFromJSON)),
         'migrationWarnings': json['migrationWarnings'] == null ? undefined : ((json['migrationWarnings'] as Array<any>).map(MigrationIssueFromJSON)),
-    };
+   };
 }
 
 export function VMsToJSON(value?: VMs | null): any {

@@ -13,24 +13,11 @@
  */
 
 import { mapValues } from '../runtime';
-import type { VCenter } from './VCenter';
+import type { InventoryData } from './InventoryData';
 import {
-    VCenterFromJSON,
-    VCenterFromJSONTyped,
-    VCenterToJSON,
-} from './VCenter';
-import type { Infra } from './Infra';
-import {
-    InfraFromJSON,
-    InfraFromJSONTyped,
-    InfraToJSON,
-} from './Infra';
-import type { VMs } from './VMs';
-import {
-    VMsFromJSON,
-    VMsFromJSONTyped,
-    VMsToJSON,
-} from './VMs';
+    InventoryDataFromJSON,
+    InventoryDataToJSON,
+} from './InventoryData';
 
 /**
  * 
@@ -39,32 +26,31 @@ import {
  */
 export interface Inventory {
     /**
-     * 
-     * @type {VCenter}
+     * ID of the vCenter
+     * @type {string}
      * @memberof Inventory
      */
-    vcenter: VCenter;
+    vcenterId: string;
+    /**
+     * Map of cluster names to their inventory data
+     * @type {{ [key: string]: InventoryData; }}
+     * @memberof Inventory
+     */
+    clusters: { [key: string]: InventoryData; };
     /**
      * 
-     * @type {VMs}
+     * @type {InventoryData}
      * @memberof Inventory
      */
-    vms: VMs;
-    /**
-     * 
-     * @type {Infra}
-     * @memberof Inventory
-     */
-    infra: Infra;
+    vcenter?: InventoryData;
 }
 
 /**
  * Check if a given object implements the Inventory interface.
  */
 export function instanceOfInventory(value: object): value is Inventory {
-    if (!('vcenter' in value) || value['vcenter'] === undefined) return false;
-    if (!('vms' in value) || value['vms'] === undefined) return false;
-    if (!('infra' in value) || value['infra'] === undefined) return false;
+    if (!('vcenterId' in value) || value['vcenterId'] === undefined) return false;
+    if (!('clusters' in value) || value['clusters'] === undefined) return false;
     return true;
 }
 
@@ -78,9 +64,9 @@ export function InventoryFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
-        'vcenter': VCenterFromJSON(json['vcenter']),
-        'vms': VMsFromJSON(json['vms']),
-        'infra': InfraFromJSON(json['infra']),
+        'vcenterId': json['vcenter_id'],
+        'clusters': (mapValues(json['clusters'], InventoryDataFromJSON)),
+        'vcenter': json['vcenter'] == null ? undefined : InventoryDataFromJSON(json['vcenter']),
     };
 }
 
@@ -90,9 +76,9 @@ export function InventoryToJSON(value?: Inventory | null): any {
     }
     return {
         
-        'vcenter': VCenterToJSON(value['vcenter']),
-        'vms': VMsToJSON(value['vms']),
-        'infra': InfraToJSON(value['infra']),
+        'vcenter_id': value['vcenterId'],
+        'clusters': (mapValues(value['clusters'], InventoryDataToJSON)),
+        'vcenter': InventoryDataToJSON(value['vcenter']),
     };
 }
 

@@ -17,6 +17,7 @@ src/models/Host.ts
 src/models/Info.ts
 src/models/Infra.ts
 src/models/Inventory.ts
+src/models/InventoryData.ts
 src/models/Ipv4Config.ts
 src/models/Label.ts
 src/models/MigrationIssue.ts

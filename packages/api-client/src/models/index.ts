@@ -12,6 +12,7 @@ export * from './Host';
 export * from './Info';
 export * from './Infra';
 export * from './Inventory';
+export * from './InventoryData';
 export * from './Ipv4Config';
 export * from './Label';
 export * from './MigrationIssue';
