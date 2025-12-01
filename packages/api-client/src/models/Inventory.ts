@@ -65,7 +65,7 @@ export function InventoryFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     return {
         
         'vcenterId': json['vcenter_id'],
-        'clusters': (mapValues(json['clusters'], InventoryDataFromJSON)),
+        'clusters': json['clusters'] == null ? undefined : (mapValues(json['clusters'], InventoryDataFromJSON)),
         'vcenter': json['vcenter'] == null ? undefined : InventoryDataFromJSON(json['vcenter']),
     };
 }
@@ -77,7 +77,7 @@ export function InventoryToJSON(value?: Inventory | null): any {
     return {
         
         'vcenter_id': value['vcenterId'],
-        'clusters': (mapValues(value['clusters'], InventoryDataToJSON)),
+        'clusters': value['clusters'] == null ? undefined : (mapValues(value['clusters'], InventoryDataToJSON)),
         'vcenter': InventoryDataToJSON(value['vcenter']),
     };
 }
