@@ -170,8 +170,8 @@ export function VMsFromJSONTyped(json: any, ignoreDiscriminator: boolean): VMs {
         'powerStates': json['powerStates'],
         'os': json['os'],
         'osInfo': json['osInfo'] == null ? undefined : (mapValues(json['osInfo'], OsInfoFromJSON)),
-        'notMigratableReasons': ((json['notMigratableReasons'] as Array<any>).map(MigrationIssueFromJSON)),
-        'migrationWarnings': ((json['migrationWarnings'] as Array<any>).map(MigrationIssueFromJSON)),
+        'notMigratableReasons': json['notMigratableReasons'] == null ? undefined : ((json['notMigratableReasons'] as Array<any>).map(MigrationIssueFromJSON)),
+        'migrationWarnings': json['migrationWarnings'] == null ? undefined : ((json['migrationWarnings'] as Array<any>).map(MigrationIssueFromJSON)),
     };
 }
 
