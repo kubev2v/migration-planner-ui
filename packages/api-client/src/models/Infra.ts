@@ -131,8 +131,8 @@ export function InfraFromJSONTyped(json: any, ignoreDiscriminator: boolean): Inf
         'hostsPerCluster': json['hostsPerCluster'],
         'vmsPerCluster': json['vmsPerCluster'] == null ? undefined : json['vmsPerCluster'],
         'hostPowerStates': json['hostPowerStates'],
-        'networks': ((json['networks'] as Array<any>).map(NetworkFromJSON)),
-        'datastores': ((json['datastores'] as Array<any>).map(DatastoreFromJSON)),
+        'networks': json['networks'] == null ? undefined : ((json['networks'] as Array<any>).map(NetworkFromJSON)),
+        'datastores': json['datastores'] == null ? undefined : ((json['datastores'] as Array<any>).map(DatastoreFromJSON)),
     };
 }
 

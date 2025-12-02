@@ -60,7 +60,7 @@ export function EventFromJSONTyped(json: any, ignoreDiscriminator: boolean): Eve
     return {
         
         'createdAt': (new Date(json['createdAt'])),
-        'data': ((json['data'] as Array<any>).map(EventDataFromJSON)),
+        'data': json['data'] == null ? undefined : ((json['data'] as Array<any>).map(EventDataFromJSON)),
     };
 }
 

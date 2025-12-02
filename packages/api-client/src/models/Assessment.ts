@@ -117,7 +117,7 @@ export function AssessmentFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'sourceType': json['sourceType'],
         'sourceId': json['sourceId'] == null ? undefined : json['sourceId'],
         'createdAt': (new Date(json['createdAt'])),
-        'snapshots': ((json['snapshots'] as Array<any>).map(SnapshotFromJSON)),
+        'snapshots': json['snapshots'] == null ? undefined : ((json['snapshots'] as Array<any>).map(SnapshotFromJSON)),
     };
 }
 
