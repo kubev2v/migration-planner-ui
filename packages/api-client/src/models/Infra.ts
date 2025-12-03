@@ -12,23 +12,19 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 import type { Datastore } from './Datastore';
 import {
     DatastoreFromJSON,
-    DatastoreFromJSONTyped,
     DatastoreToJSON,
 } from './Datastore';
 import type { Network } from './Network';
 import {
     NetworkFromJSON,
-    NetworkFromJSONTyped,
     NetworkToJSON,
 } from './Network';
 import type { Host } from './Host';
 import {
     HostFromJSON,
-    HostFromJSONTyped,
     HostToJSON,
 } from './Host';
 
@@ -62,6 +58,12 @@ export interface Infra {
      * @memberof Infra
      */
     clustersPerDatacenter?: Array<number>;
+    /**
+     * CPU Overcommitment Ratio. Calculated as total Allocated vCPUs / Total Physical Cores
+     * @type {number}
+     * @memberof Infra
+     */
+    cpuOverCommitment?: number;
     /**
      * 
      * @type {Array<Host>}
@@ -127,6 +129,7 @@ export function InfraFromJSONTyped(json: any, ignoreDiscriminator: boolean): Inf
         'totalDatacenters': json['totalDatacenters'] == null ? undefined : json['totalDatacenters'],
         'totalClusters': json['totalClusters'],
         'clustersPerDatacenter': json['clustersPerDatacenter'] == null ? undefined : json['clustersPerDatacenter'],
+        'cpuOverCommitment': json['cpuOverCommitment'] == null ? undefined : json['cpuOverCommitment'],
         'hosts': json['hosts'] == null ? undefined : ((json['hosts'] as Array<any>).map(HostFromJSON)),
         'hostsPerCluster': json['hostsPerCluster'],
         'vmsPerCluster': json['vmsPerCluster'] == null ? undefined : json['vmsPerCluster'],
@@ -146,6 +149,7 @@ export function InfraToJSON(value?: Infra | null): any {
         'totalDatacenters': value['totalDatacenters'],
         'totalClusters': value['totalClusters'],
         'clustersPerDatacenter': value['clustersPerDatacenter'],
+        'cpuOverCommitment': value['cpuOverCommitment'],
         'hosts': value['hosts'] == null ? undefined : ((value['hosts'] as Array<any>).map(HostToJSON)),
         'hostsPerCluster': value['hostsPerCluster'],
         'vmsPerCluster': value['vmsPerCluster'],
