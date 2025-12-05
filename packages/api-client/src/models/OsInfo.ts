@@ -31,6 +31,12 @@ export interface OsInfo {
      * @memberof OsInfo
      */
     supported: boolean;
+    /**
+     * Recommended OS upgrade for MTV unsupported OS that can be upgraded to a supported OS
+     * @type {string}
+     * @memberof OsInfo
+     */
+    upgradeRecommendation?: string;
 }
 
 /**
@@ -54,6 +60,7 @@ export function OsInfoFromJSONTyped(json: any, ignoreDiscriminator: boolean): Os
         
         'count': json['count'],
         'supported': json['supported'],
+        'upgradeRecommendation': json['upgradeRecommendation'] == null ? undefined : json['upgradeRecommendation'],
     };
 }
 
@@ -65,6 +72,7 @@ export function OsInfoToJSON(value?: OsInfo | null): any {
         
         'count': value['count'],
         'supported': value['supported'],
+        'upgradeRecommendation': value['upgradeRecommendation'],
     };
 }
 

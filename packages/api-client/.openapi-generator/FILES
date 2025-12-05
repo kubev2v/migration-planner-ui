@@ -12,6 +12,7 @@ src/models/AssessmentForm.ts
 src/models/AssessmentUpdate.ts
 src/models/Datastore.ts
 src/models/DiskSizeTierSummary.ts
+src/models/DiskTypeSummary.ts
 src/models/Histogram.ts
 src/models/Host.ts
 src/models/Info.ts

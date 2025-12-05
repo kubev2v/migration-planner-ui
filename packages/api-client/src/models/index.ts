@@ -7,6 +7,7 @@ export * from './AssessmentForm';
 export * from './AssessmentUpdate';
 export * from './Datastore';
 export * from './DiskSizeTierSummary';
+export * from './DiskTypeSummary';
 export * from './Histogram';
 export * from './Host';
 export * from './Info';

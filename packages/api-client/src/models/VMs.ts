@@ -28,6 +28,11 @@ import {
     DiskSizeTierSummaryFromJSON,
     DiskSizeTierSummaryToJSON,
 } from './DiskSizeTierSummary';
+import type { DiskTypeSummary } from './DiskTypeSummary';
+import {
+    DiskTypeSummaryFromJSON,
+    DiskTypeSummaryToJSON,
+} from './DiskTypeSummary';
 import type { VMResourceBreakdown } from './VMResourceBreakdown';
 import {
     VMResourceBreakdownFromJSON,
@@ -70,6 +75,12 @@ export interface VMs {
      * @memberof VMs
      */
     diskSizeTier?: { [key: string]: DiskSizeTierSummary; };
+    /**
+     * 
+     * @type {{ [key: string]: DiskTypeSummary; }}
+     * @memberof VMs
+     */
+    diskTypes?: { [key: string]: DiskTypeSummary; };
     /**
      * 
      * @type {VMResourceBreakdown}
@@ -159,6 +170,7 @@ export function VMsFromJSONTyped(json: any, ignoreDiscriminator: boolean): VMs {
         'totalMigratableWithWarnings': json['totalMigratableWithWarnings'] == null ? undefined : json['totalMigratableWithWarnings'],
         'cpuCores': VMResourceBreakdownFromJSON(json['cpuCores']),
         'diskSizeTier': json['diskSizeTier'] == null ? undefined : (mapValues(json['diskSizeTier'], DiskSizeTierSummaryFromJSON)),
+        'diskTypes': json['diskTypes'] == null ? undefined : (mapValues(json['diskTypes'], DiskTypeSummaryFromJSON)),
         'ramGB': VMResourceBreakdownFromJSON(json['ramGB']),
         'diskGB': VMResourceBreakdownFromJSON(json['diskGB']),
         'diskCount': VMResourceBreakdownFromJSON(json['diskCount']),
@@ -182,6 +194,7 @@ export function VMsToJSON(value?: VMs | null): any {
         'totalMigratableWithWarnings': value['totalMigratableWithWarnings'],
         'cpuCores': VMResourceBreakdownToJSON(value['cpuCores']),
         'diskSizeTier': value['diskSizeTier'] == null ? undefined : (mapValues(value['diskSizeTier'], DiskSizeTierSummaryToJSON)),
+        'diskTypes': value['diskTypes'] == null ? undefined : (mapValues(value['diskTypes'], DiskTypeSummaryToJSON)),
         'ramGB': VMResourceBreakdownToJSON(value['ramGB']),
         'diskGB': VMResourceBreakdownToJSON(value['diskGB']),
         'diskCount': VMResourceBreakdownToJSON(value['diskCount']),
