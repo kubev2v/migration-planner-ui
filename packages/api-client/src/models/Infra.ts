@@ -12,19 +12,23 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 import type { Datastore } from './Datastore';
 import {
     DatastoreFromJSON,
+    DatastoreFromJSONTyped,
     DatastoreToJSON,
 } from './Datastore';
 import type { Network } from './Network';
 import {
     NetworkFromJSON,
+    NetworkFromJSONTyped,
     NetworkToJSON,
 } from './Network';
 import type { Host } from './Host';
 import {
     HostFromJSON,
+    HostFromJSONTyped,
     HostToJSON,
 } from './Host';
 
@@ -50,8 +54,9 @@ export interface Infra {
      * 
      * @type {number}
      * @memberof Infra
+     * @deprecated
      */
-    totalClusters: number;
+    totalClusters?: number;
     /**
      * 
      * @type {Array<number>}
@@ -74,12 +79,14 @@ export interface Infra {
      * 
      * @type {Array<number>}
      * @memberof Infra
+     * @deprecated
      */
-    hostsPerCluster: Array<number>;
+    hostsPerCluster?: Array<number>;
     /**
      * 
      * @type {Array<number>}
      * @memberof Infra
+     * @deprecated
      */
     vmsPerCluster?: Array<number>;
     /**
@@ -107,8 +114,6 @@ export interface Infra {
  */
 export function instanceOfInfra(value: object): value is Infra {
     if (!('totalHosts' in value) || value['totalHosts'] === undefined) return false;
-    if (!('totalClusters' in value) || value['totalClusters'] === undefined) return false;
-    if (!('hostsPerCluster' in value) || value['hostsPerCluster'] === undefined) return false;
     if (!('hostPowerStates' in value) || value['hostPowerStates'] === undefined) return false;
     if (!('networks' in value) || value['networks'] === undefined) return false;
     if (!('datastores' in value) || value['datastores'] === undefined) return false;
@@ -127,11 +132,11 @@ export function InfraFromJSONTyped(json: any, ignoreDiscriminator: boolean): Inf
         
         'totalHosts': json['totalHosts'],
         'totalDatacenters': json['totalDatacenters'] == null ? undefined : json['totalDatacenters'],
-        'totalClusters': json['totalClusters'],
+        'totalClusters': json['totalClusters'] == null ? undefined : json['totalClusters'],
         'clustersPerDatacenter': json['clustersPerDatacenter'] == null ? undefined : json['clustersPerDatacenter'],
         'cpuOverCommitment': json['cpuOverCommitment'] == null ? undefined : json['cpuOverCommitment'],
         'hosts': json['hosts'] == null ? undefined : ((json['hosts'] as Array<any>).map(HostFromJSON)),
-        'hostsPerCluster': json['hostsPerCluster'],
+        'hostsPerCluster': json['hostsPerCluster'] == null ? undefined : json['hostsPerCluster'],
         'vmsPerCluster': json['vmsPerCluster'] == null ? undefined : json['vmsPerCluster'],
         'hostPowerStates': json['hostPowerStates'],
         'networks': json['networks'] == null ? undefined : ((json['networks'] as Array<any>).map(NetworkFromJSON)),

@@ -11,9 +11,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+
+import { mapValues } from '../runtime';
 import type { Inventory } from './Inventory';
 import {
     InventoryFromJSON,
+    InventoryFromJSONTyped,
     InventoryToJSON,
 } from './Inventory';
 

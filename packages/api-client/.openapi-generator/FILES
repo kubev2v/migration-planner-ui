@@ -3,6 +3,7 @@ src/apis/AssessmentApi.ts
 src/apis/HealthApi.ts
 src/apis/ImageApi.ts
 src/apis/InfoApi.ts
+src/apis/JobApi.ts
 src/apis/SourceApi.ts
 src/index.ts
 src/models/Agent.ts
@@ -20,6 +21,8 @@ src/models/Infra.ts
 src/models/Inventory.ts
 src/models/InventoryData.ts
 src/models/Ipv4Config.ts
+src/models/Job.ts
+src/models/JobStatus.ts
 src/models/Label.ts
 src/models/MigrationIssue.ts
 src/models/ModelError.ts

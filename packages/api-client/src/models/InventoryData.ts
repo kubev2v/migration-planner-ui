@@ -12,19 +12,23 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 import type { VCenter } from './VCenter';
 import {
     VCenterFromJSON,
+    VCenterFromJSONTyped,
     VCenterToJSON,
 } from './VCenter';
 import type { Infra } from './Infra';
 import {
     InfraFromJSON,
+    InfraFromJSONTyped,
     InfraToJSON,
 } from './Infra';
 import type { VMs } from './VMs';
 import {
     VMsFromJSON,
+    VMsFromJSONTyped,
     VMsToJSON,
 } from './VMs';
 

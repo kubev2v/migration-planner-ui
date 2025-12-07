@@ -15,6 +15,8 @@ export * from './Infra';
 export * from './Inventory';
 export * from './InventoryData';
 export * from './Ipv4Config';
+export * from './Job';
+export * from './JobStatus';
 export * from './Label';
 export * from './MigrationIssue';
 export * from './ModelError';
