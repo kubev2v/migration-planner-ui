@@ -37,6 +37,14 @@ export {
 } from "./AssessmentApi";
 
 export {
+  type CancelJobRequest,
+  type CreateRVToolsAssessmentRequest,
+  type GetJobRequest,
+  type JobApiInterface,
+  JobApi
+} from "./JobApi";
+
+export {
   type InfoApiInterface,
   InfoApi
 } from "./InfoApi";
