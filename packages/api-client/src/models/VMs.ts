@@ -87,6 +87,18 @@ export interface VMs {
      */
     diskTypes?: { [key: string]: DiskTypeSummary; };
     /**
+     * Distribution of VMs across CPU tier buckets (e.g., "0-4", "5-8", "9-16", "17-32", "32+")
+     * @type {{ [key: string]: number; }}
+     * @memberof VMs
+     */
+    distributionByCpuTier?: { [key: string]: number; };
+    /**
+     * Distribution of VMs across Memory tier buckets (e.g., "0-4", "5-16", "17-32", "33-64", "65-128", "129-256", "256+")
+     * @type {{ [key: string]: number; }}
+     * @memberof VMs
+     */
+    distributionByMemoryTier?: { [key: string]: number; };
+    /**
      * 
      * @type {VMResourceBreakdown}
      * @memberof VMs
@@ -175,6 +187,8 @@ export function VMsFromJSONTyped(json: any, ignoreDiscriminator: boolean): VMs {
         'cpuCores': VMResourceBreakdownFromJSON(json['cpuCores']),
         'diskSizeTier': json['diskSizeTier'] == null ? undefined : (mapValues(json['diskSizeTier'], DiskSizeTierSummaryFromJSON)),
         'diskTypes': json['diskTypes'] == null ? undefined : (mapValues(json['diskTypes'], DiskTypeSummaryFromJSON)),
+        'distributionByCpuTier': json['distributionByCpuTier'] == null ? undefined : json['distributionByCpuTier'],
+        'distributionByMemoryTier': json['distributionByMemoryTier'] == null ? undefined : json['distributionByMemoryTier'],
         'ramGB': VMResourceBreakdownFromJSON(json['ramGB']),
         'diskGB': VMResourceBreakdownFromJSON(json['diskGB']),
         'diskCount': VMResourceBreakdownFromJSON(json['diskCount']),
@@ -199,6 +213,8 @@ export function VMsToJSON(value?: VMs | null): any {
         'cpuCores': VMResourceBreakdownToJSON(value['cpuCores']),
         'diskSizeTier': value['diskSizeTier'] == null ? undefined : (mapValues(value['diskSizeTier'], DiskSizeTierSummaryToJSON)),
         'diskTypes': value['diskTypes'] == null ? undefined : (mapValues(value['diskTypes'], DiskTypeSummaryToJSON)),
+        'distributionByCpuTier': value['distributionByCpuTier'],
+        'distributionByMemoryTier': value['distributionByMemoryTier'],
         'ramGB': VMResourceBreakdownToJSON(value['ramGB']),
         'diskGB': VMResourceBreakdownToJSON(value['diskGB']),
         'diskCount': VMResourceBreakdownToJSON(value['diskCount']),

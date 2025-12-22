@@ -70,6 +70,12 @@ export interface Infra {
      */
     cpuOverCommitment?: number;
     /**
+     * RAM memory Overcommitment Ratio. Calculated as total Allocated memory / Total memory available
+     * @type {number}
+     * @memberof Infra
+     */
+    memoryOverCommitment?: number;
+    /**
      * 
      * @type {Array<Host>}
      * @memberof Infra
@@ -135,6 +141,7 @@ export function InfraFromJSONTyped(json: any, ignoreDiscriminator: boolean): Inf
         'totalClusters': json['totalClusters'] == null ? undefined : json['totalClusters'],
         'clustersPerDatacenter': json['clustersPerDatacenter'] == null ? undefined : json['clustersPerDatacenter'],
         'cpuOverCommitment': json['cpuOverCommitment'] == null ? undefined : json['cpuOverCommitment'],
+        'memoryOverCommitment': json['memoryOverCommitment'] == null ? undefined : json['memoryOverCommitment'],
         'hosts': json['hosts'] == null ? undefined : ((json['hosts'] as Array<any>).map(HostFromJSON)),
         'hostsPerCluster': json['hostsPerCluster'] == null ? undefined : json['hostsPerCluster'],
         'vmsPerCluster': json['vmsPerCluster'] == null ? undefined : json['vmsPerCluster'],
@@ -155,6 +162,7 @@ export function InfraToJSON(value?: Infra | null): any {
         'totalClusters': value['totalClusters'],
         'clustersPerDatacenter': value['clustersPerDatacenter'],
         'cpuOverCommitment': value['cpuOverCommitment'],
+        'memoryOverCommitment': value['memoryOverCommitment'],
         'hosts': value['hosts'] == null ? undefined : ((value['hosts'] as Array<any>).map(HostToJSON)),
         'hostsPerCluster': value['hostsPerCluster'],
         'vmsPerCluster': value['vmsPerCluster'],

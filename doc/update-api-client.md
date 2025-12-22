@@ -120,6 +120,16 @@ yarn run -T openapi-generator-cli generate \
 - **Version control**: Consider the impact on other developers if you commit generated code with local changes
 - **Documentation**: Update API documentation if your changes introduce breaking changes
 
+### Runtime base URL (BASE_PATH)
+
+- The generated client includes a `BASE_PATH` which must point to your API server, not to the location of the OpenAPI spec (e.g., not `raw.githubusercontent.com`).
+- You can override the base URL in two ways:
+  - Per instance: pass `basePath` via the `Configuration` constructor.
+  - Environment: set one of `MIGRATION_PLANNER_API_BASE_URL`, `MP_API_BASE_PATH`, or `API_BASE_PATH` at runtime. If none are set, the client defaults to a relative base URL (`''`), which is suitable when the UI is served behind a proxy that forwards to the API.
+- Examples:
+  - Local dev: `MIGRATION_PLANNER_API_BASE_URL=http://localhost:3000`
+  - Production: `MIGRATION_PLANNER_API_BASE_URL=https://api.example.com`
+
 ## Troubleshooting
 
 ### Common Issues

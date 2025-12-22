@@ -54,8 +54,9 @@ export interface VMResourceBreakdown {
      * 
      * @type {Histogram}
      * @memberof VMResourceBreakdown
+     * @deprecated
      */
-    histogram: Histogram;
+    histogram?: Histogram;
 }
 
 /**
@@ -66,7 +67,6 @@ export function instanceOfVMResourceBreakdown(value: object): value is VMResourc
     if (!('totalForMigratable' in value) || value['totalForMigratable'] === undefined) return false;
     if (!('totalForMigratableWithWarnings' in value) || value['totalForMigratableWithWarnings'] === undefined) return false;
     if (!('totalForNotMigratable' in value) || value['totalForNotMigratable'] === undefined) return false;
-    if (!('histogram' in value) || value['histogram'] === undefined) return false;
     return true;
 }
 
@@ -84,7 +84,7 @@ export function VMResourceBreakdownFromJSONTyped(json: any, ignoreDiscriminator:
         'totalForMigratable': json['totalForMigratable'],
         'totalForMigratableWithWarnings': json['totalForMigratableWithWarnings'],
         'totalForNotMigratable': json['totalForNotMigratable'],
-        'histogram': HistogramFromJSON(json['histogram']),
+        'histogram': json['histogram'] == null ? undefined : HistogramFromJSON(json['histogram']),
     };
 }
 
