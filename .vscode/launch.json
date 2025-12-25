@@ -9,14 +9,7 @@
             "type": "chrome",
             "request": "launch",
             "url": "http://127.0.0.1:3001",
-            "webRoot": "${workspaceFolder}/apps/agent"
-        },
-        {
-            "name": "Demo",
-            "type": "chrome",
-            "request": "launch",
-            "url": "http://127.0.0.1:3000",
-            "webRoot": "${workspaceFolder}/apps/demo"
+            "webRoot": "${workspaceFolder}/apps/agent-ui"
         }
     ]
 }
