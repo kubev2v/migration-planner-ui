@@ -13,13 +13,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           registry-url: 'https://registry.npmjs.org/'
 
       - name: Enable Corepack
         run: |
           corepack enable
-          corepack prepare yarn@4.5.0 --activate
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -27,34 +26,29 @@ jobs:
       - name: Build all packaged
         run: yarn all:build
 
-      - name: Build and bundle agent
+      - name: Build and bundle agent-ui
         run: |
-          cd apps/agent
+          cd apps/agent-ui
           yarn bundle
 
-      - name: Rename agent bundle
+      - name: Rename the agent-ui bundle
         run: |
-          if ls apps/agent/dist/*.tgz 1> /dev/null 2>&1; then
-            mv apps/agent/dist/*.tgz apps/agent/dist/agent-${{ github.event.release.tag_name }}.tgz
-          else
-            echo "Error: No .tgz file found in apps/agent/dist/"
-            exit 1
-          fi
+          mv out/agent-ui*.tgz out/agent-ui-${{ github.event.release.tag_name }}.tgz
 
-      - name: Upload Agent Release Asset
+      - name: Upload agent-ui artifact
         if: ${{ false }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./apps/agent/dist/agent-${{ github.event.release.tag_name }}.tgz
-          asset_name: agent-${{ github.event.release.tag_name }}.tgz
+          asset_path: ./out/agent-ui-${{ github.event.release.tag_name }}.tgz
+          asset_name: agent-ui-${{ github.event.release.tag_name }}.tgz
           asset_content_type: application/gzip
 
       - name: Copy agent asset for latest
         if: ${{ false }}
-        run: cp apps/agent/dist/agent-${{ github.event.release.tag_name }}.tgz apps/agent/dist/agent-latest.tgz
+        run: cp out/agent-ui-${{ github.event.release.tag_name }}.tgz out/agent-ui-latest.tgz
 
       - name: Update latest release
         if: ${{ false }}
@@ -78,11 +72,11 @@ jobs:
           
           response=$(curl -s -w "%{http_code}" -X POST -H "Authorization: token $GITHUB_TOKEN" \
             -H "Content-Type: application/gzip" \
-            --data-binary @apps/agent/dist/agent-latest.tgz \
-            "${upload_url}?name=agent-latest.tgz")
+            --data-binary @out/agent-ui-latest.tgz \
+            "${upload_url}?name=agent-ui-latest.tgz")
           http_code="${response: -3}"
           if [ "$http_code" -ne 201 ]; then
-            echo "Failed to upload agent-latest.tgz. HTTP status: $http_code"
+            echo "Failed to upload agent-ui-latest.tgz. HTTP status: $http_code"
             exit 1
           fi
 
@@ -93,7 +87,7 @@ jobs:
           
       - name: Lookup for workspaces to be published
         run: |
-          declare -a LIBS=("api-client" "ioc" "agent-client")
+          declare -a LIBS=("api-client" "agent-client" "ioc")
           echo "LIBS=${LIBS[@]}" >> $GITHUB_ENV
           (IFS=,; printf 'The following workspaces will be published: [%s]\n' "${LIBS[*]}")
 

@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'apps/agent/**'
+      - 'apps/agent-ui/**'
 
 jobs:
   build-and-push:
@@ -16,47 +16,46 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       
       - name: Enable Corepack
         run: |
           corepack enable
-          corepack prepare yarn@4.5.0 --activate
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --immutable
 
       - name: Build and bundle
         run: |
-          cd apps/agent
+          cd apps/agent-ui
           yarn bundle
 
       - name: Rename bundle
         run: |
-          if ls apps/agent/dist/*.tgz 1> /dev/null 2>&1; then
-            mv apps/agent/dist/*.tgz apps/agent/dist/agent-${{ github.sha }}.tgz
+          if stat out/agent-ui*.tgz > /dev/null 2>&1; then
+            mv out/agent-ui*.tgz out/agent-ui-${{ github.sha }}.tgz
           else
-            echo "Error: No .tgz file found in apps/agent/dist/"
+            echo "Error: No .tgz file found in out/agent-ui/"
             exit 1
           fi
        
-      - name: Create a copy with the name 'agent-latest.tgz'
-        run: cp apps/agent/dist/agent-${{ github.sha }}.tgz apps/agent/dist/agent-latest.tgz
+      - name: Create a copy with the name 'agent-ui-latest.tgz'
+        run: cp out/agent-ui-${{ github.sha }}.tgz out/agent-ui-latest.tgz
 
       - name: Upload artifact with SHA
         uses: actions/upload-artifact@v4
         with:
-          name: agent-${{ github.sha }}.tgz
-          path: apps/agent/dist/agent-${{ github.sha }}.tgz
+          name: agent-ui-${{ github.sha }}.tgz
+          path: out/agent-ui-${{ github.sha }}.tgz
           if-no-files-found: error
           retention-days: 1
           compression-level: 0
 
-      - name: Upload artifact 'agent-latest.tgz'
+      - name: Upload artifact 'agent-ui-latest.tgz'
         uses: actions/upload-artifact@v4
         with:
-          name: agent-latest.tgz
-          path: apps/agent/dist/agent-latest.tgz
+          name: agent-ui-latest.tgz
+          path: out/agent-ui-latest.tgz
           if-no-files-found: error
           retention-days: 1
           compression-level: 0

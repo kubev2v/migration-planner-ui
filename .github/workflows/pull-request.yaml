@@ -13,8 +13,6 @@ on:
 
 env:
   NODE_OPTIONS: '--max-old-space-size=8192'
-  # See https://github.com/cypress-io/cypress/issues/25357
-  ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
 jobs:
   preflight-check:
   # Prevents running the workflow when a PR is marked as draft.
@@ -27,12 +25,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       
       - name: Enable Corepack
         run: |
           corepack enable
-          corepack prepare yarn@4.5.0 --activate
   
       - name: Check if PR is draft
         id: check
@@ -56,14 +53,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       
       - name: Enable Corepack
         run: |
           corepack enable
-          corepack prepare yarn@4.5.0 --activate
 
       - run: yarn install --immutable
-      - run: yarn all:lint
-      - run: yarn all:build
-  
+      - run: yarn check:all
+      - run: yarn build:all
