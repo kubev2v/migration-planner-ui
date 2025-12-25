@@ -2,7 +2,7 @@
   "$schema": "node_modules/@openapitools/openapi-generator-cli/config.schema.json",
   "spaces": 2,
   "generator-cli": {
-    "version": "7.8.0",
+    "version": "7.18.0",
     "generators": {
       "api-client": {
         "inputSpec": "https://raw.githubusercontent.com/kubev2v/migration-planner/main/api/v1alpha1/openapi.yaml",
@@ -13,7 +13,34 @@
           "npmVersion": "1.0.0-alpha",
           "ensureUniqueParams": true,
           "supportsES6": true,
-          "withInterfaces": true
+          "withInterfaces": true,
+          "importFileExtension": ".js"
+        }
+      },
+      "agent-client": {
+        "inputSpec": "https://raw.githubusercontent.com/kubev2v/migration-planner/main/api/v1alpha1/agent/openapi.yaml",
+        "output": "packages/agent-client",
+        "generatorName": "typescript-fetch",
+        "additionalProperties": {
+          "npmName": "@migration-planner-ui/agent-client",
+          "npmVersion": "1.0.0-alpha",
+          "ensureUniqueParams": true,
+          "supportsES6": true,
+          "withInterfaces": true,
+          "importFileExtension": ".js"
+        }
+      },
+      "image-client": {
+        "inputSpec": "https://raw.githubusercontent.com/kubev2v/migration-planner/main/api/v1alpha1/image/openapi.yaml",
+        "output": "packages/image-client",
+        "generatorName": "typescript-fetch",
+        "additionalProperties": {
+          "npmName": "@migration-planner-ui/image-client",
+          "npmVersion": "1.0.0-alpha",
+          "ensureUniqueParams": true,
+          "supportsES6": true,
+          "withInterfaces": true,
+          "importFileExtension": ".js"
         }
       }
     }

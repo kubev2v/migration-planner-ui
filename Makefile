@@ -1,90 +1,59 @@
 # Migration Planner UI Makefile
 
-# Default container image for development tasks
-DEV_IMAGE := migration-planner-ui-dev
 CONTAINER_RUNTIME := $(shell command -v podman 2> /dev/null || echo docker)
-CLEANUP := true
+# The OpenAPI Generator CLI container image, adapted from https://openapi-generator.tech/#tryDocker
+IMAGE := openapitools/openapi-generator-cli
+# The following signature corresponds to v7.18.0
+TAG := sha256:be5c0a17c978ed4c39985312af3129882407581e07f2e3167cf777c908ffd52b
+# Arguments to pass to the OpenAPI Generator CLI
+ARGS :=
 
-# Build lightweight development container image for API client updates
-.PHONY: build-dev-image
-build-dev-image:
-	@echo "Building API client development container..."
-	$(CONTAINER_RUNTIME) build \
-		--tag $(DEV_IMAGE) \
-		--file Containerfile.api-client \
-		.
+# Interact directly with the tool
+.PHONY: openapi-generator-cli
+openapi-generator-cli:
+	$(CONTAINER_RUNTIME) run --rm -v $(PWD):/local:Z $(IMAGE)@$(TAG) $(ARGS)
 
-# Run yarn api-client:update in a containerized environment
-.PHONY: api-client-update
-api-client-update: build-dev-image
-	@echo "Running yarn api-client:update in containerized environment..."
-	$(CONTAINER_RUNTIME) run \
-		--rm \
-		--volume $(PWD):/workspace:Z \
-		--workdir /workspace \
-		--env HOME=/opt/app-root/src \
-		$(DEV_IMAGE) \
-		openapi-generator-cli generate
-	@echo "API client update completed successfully!"
-	@if [ "$(CLEANUP)" = "true" ]; then \
-		echo "Cleaning up development image..."; \
-		$(MAKE) clean-dev-image; \
-	fi
+# Generate something
+.PHONY: generate
+generate:
+	$(MAKE) openapi-generator-cli ARGS="generate $(ARGS)"
 
-# Alternative target for running with local OpenAPI spec
-.PHONY: api-client-update-local
-api-client-update-local: build-dev-image
-	@if [ ! -f "$(OPENAPI_SPEC)" ]; then \
-		echo "Error: OPENAPI_SPEC file not found. Usage: make api-client-update-local OPENAPI_SPEC=/path/to/openapi.yaml"; \
-		exit 1; \
-	fi
-	@echo "Running yarn api-client:update with local OpenAPI spec: $(OPENAPI_SPEC)"
-	@echo "Backing up current openapitools.json..."
-	@cp openapitools.json openapitools.json.backup
-	@echo "Copying local OpenAPI spec to project root..."
-	@cp "$(OPENAPI_SPEC)" ./openapi-local.yaml
-	@echo "Updating openapitools.json to use local spec..."
-	@sed -i.tmp 's|"inputSpec": "https://raw.githubusercontent.com/kubev2v/migration-planner/main/api/v1alpha1/openapi.yaml"|"inputSpec": "./openapi-local.yaml"|' openapitools.json
-	$(CONTAINER_RUNTIME) run \
-		--rm \
-		--volume $(PWD):/workspace:Z \
-		--workdir /workspace \
-		--env HOME=/opt/app-root/src \
-		$(DEV_IMAGE) \
-		openapi-generator-cli generate
-	@echo "Restoring original openapitools.json..."
-	@mv openapitools.json.backup openapitools.json
-	@echo "Cleaning up temporary files..."
-	@rm -f openapitools.json.tmp openapi-local.yaml
-	@echo "API client update with local spec completed successfully!"
-	@if [ "$(CLEANUP)" = "true" ]; then \
-		echo "Cleaning up development image..."; \
-		$(MAKE) clean-dev-image; \
-	fi
+# Updates the API client
+.PHONY: api-client
+api-client:
+	$(MAKE) generate ARGS="--generator-key api-client"
 
-# Clean up development images
-.PHONY: clean-dev-image
-clean-dev-image:
-	$(CONTAINER_RUNTIME) rmi $(DEV_IMAGE) 2>/dev/null || true
+# Updates the Agent client
+.PHONY: agent-client
+agent-client:
+	$(MAKE) generate ARGS="--generator-key agent-client"
+
+# Updates the Image client
+.PHONY: image-client
+image-client:
+	$(MAKE) generate ARGS="--generator-key image-client"
+
+# Clean up OpenAPI Generator CLI container image
+.PHONY: clean
+clean:
+	$(CONTAINER_RUNTIME) rmi $(IMAGE) 2>/dev/null || true
 
 # Show help
 .PHONY: help
 help:
-	@echo "Migration Planner UI Development Tasks"
+	@echo "Migration Planner UI Makefile"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  api-client-update       - Run yarn api-client:update in containerized environment"
-	@echo "  api-client-update-local - Run yarn api-client:update with local OpenAPI spec"
-	@echo "                           Usage: make api-client-update-local OPENAPI_SPEC=/path/to/openapi.yaml"
-	@echo "  build-dev-image        - Build API client development container image"
-	@echo "  clean-dev-image        - Remove API client development container image"
-	@echo "  help                   - Show this help message"
-	@echo ""
-	@echo "Options:"
-	@echo "  CLEANUP=true|false     - Auto-cleanup dev image after update (default: true)"
-	@echo "                           Usage: make api-client-update CLEANUP=false"
+	@echo "  openapi-generator-cli   Interact directly with the CLI tool"
+	@echo "  api-client              Update the API client (e.g., make api-client)"
+	@echo "  agent-client            Update the Agent client (e.g., make agent-client)"
+	@echo "  image-client            Update the Image client (e.g., make image-client)"
+	@echo "  generate                Run openapi-generator, optionally pass --generator-key <key> or other arguments"
+	@echo "                          See openapitools.json for keys (e.g., make generate ARGS=\"--generator-key api-client\")"
+	@echo "  clean                   Remove the OpenAPI Generator CLI container image"
+	@echo "  help                    Show this help message"
 	@echo ""
 	@echo "Container runtime: $(CONTAINER_RUNTIME)"
 
-# Default target
+# Default target to show help
 .DEFAULT_GOAL := help
