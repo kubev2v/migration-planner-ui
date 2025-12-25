@@ -8,17 +8,17 @@
     "url": "https://github.com/kubev2v/migration-planner-ui.git",
     "directory": "packages/ioc"
   },
+  "type": "module",
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
     }
   },
   "typesVersions": {
     "*": {
       ".": [
-        "./src/index.ts",
         "./dist/index.d.ts"
       ]
     }
@@ -29,22 +29,18 @@
   },
   "scripts": {
     "build": "yarn run -T tsc -b",
-    "bundle": "yarn build && yarn pack --out dist/%s-%v.tgz",
-    "clean": "rm -rf node_modules dist",
-    "lint": "yarn run -T eslint . --report-unused-disable-directives --max-warnings 0"
+    "bundle": "yarn build && yarn pack --out ../../out/%s-%v.tgz",
+    "clean": "rm -rf node_modules dist .tmp",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "format": "biome format --write ."
   },
   "devDependencies": {
-    "@patternfly/react-core": "*",
-    "@patternfly/react-icons": "*",
-    "@patternfly/react-tokens": "*",
     "react": "*",
     "react-dom": "*",
     "react-router-dom": "*"
   },
   "peerDependencies": {
-    "@patternfly/react-core": "^5.4.0",
-    "@patternfly/react-icons": "^5.4.0",
-    "@patternfly/react-tokens": "^5.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0"

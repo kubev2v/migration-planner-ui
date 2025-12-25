@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Context } from "../Context";
+import { Context } from "../Context.js";
 
 export function useInjection<T>(registeredInterfaceSymbol: symbol): T {
   const container = useContext(Context);
