@@ -1,46 +1,163 @@
-## @migration-planner-ui/api-client@1.0.0-alpha
+# @migration-planner-ui/api-client@1.0.0-alpha
 
-This generator creates TypeScript/JavaScript client that utilizes [Fetch API](https://fetch.spec.whatwg.org/). The generated Node module can be used in the following environments:
+A TypeScript SDK client for the raw.githubusercontent.com API.
 
-Environment
-* Node.js
-* Webpack
-* Browserify
+## Usage
 
-Language level
-* ES5 - you must have a Promises/A+ library installed
-* ES6
+First, install the SDK from npm.
 
-Module system
-* CommonJS
-* ES6 module system
+```bash
+npm install @migration-planner-ui/api-client --save
+```
 
-It can be used in both TypeScript and JavaScript. In TypeScript, the definition will be automatically resolved via `package.json`. ([Reference](https://www.typescriptlang.org/docs/handbook/declaration-files/consumption.html))
+Next, try it out.
+
+
+```ts
+import {
+  Configuration,
+  AssessmentApi,
+} from '@migration-planner-ui/api-client';
+import type { CreateAssessmentRequest } from '@migration-planner-ui/api-client';
+
+async function example() {
+  console.log("🚀 Testing @migration-planner-ui/api-client SDK...");
+  const api = new AssessmentApi();
+
+  const body = {
+    // AssessmentForm
+    assessmentForm: ...,
+  } satisfies CreateAssessmentRequest;
+
+  try {
+    const data = await api.createAssessment(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+
+## Documentation
+
+### API Endpoints
+
+All URIs are relative to *https://raw.githubusercontent.com*
+
+| Class | Method | HTTP request | Description
+| ----- | ------ | ------------ | -------------
+*AssessmentApi* | [**createAssessment**](docs/AssessmentApi.md#createassessment) | **POST** /api/v1/assessments | 
+*AssessmentApi* | [**deleteAssessment**](docs/AssessmentApi.md#deleteassessment) | **DELETE** /api/v1/assessments/{id} | 
+*AssessmentApi* | [**getAssessment**](docs/AssessmentApi.md#getassessment) | **GET** /api/v1/assessments/{id} | 
+*AssessmentApi* | [**listAssessments**](docs/AssessmentApi.md#listassessments) | **GET** /api/v1/assessments | 
+*AssessmentApi* | [**updateAssessment**](docs/AssessmentApi.md#updateassessment) | **PUT** /api/v1/assessments/{id} | 
+*HealthApi* | [**health**](docs/HealthApi.md#health) | **GET** /health | 
+*ImageApi* | [**getSourceDownloadURL**](docs/ImageApi.md#getsourcedownloadurl) | **GET** /api/v1/sources/{id}/image-url | 
+*ImageApi* | [**headImage**](docs/ImageApi.md#headimage) | **HEAD** /api/v1/sources/{id}/image | 
+*InfoApi* | [**getInfo**](docs/InfoApi.md#getinfo) | **GET** /api/v1/info | 
+*JobApi* | [**cancelJob**](docs/JobApi.md#canceljob) | **DELETE** /api/v1/assessments/jobs/{id} | 
+*JobApi* | [**createRVToolsAssessment**](docs/JobApi.md#creatervtoolsassessment) | **POST** /api/v1/assessments/rvtools | 
+*JobApi* | [**getJob**](docs/JobApi.md#getjob) | **GET** /api/v1/assessments/jobs/{id} | 
+*SourceApi* | [**createSource**](docs/SourceApi.md#createsource) | **POST** /api/v1/sources | 
+*SourceApi* | [**deleteSource**](docs/SourceApi.md#deletesource) | **DELETE** /api/v1/sources/{id} | 
+*SourceApi* | [**deleteSources**](docs/SourceApi.md#deletesources) | **DELETE** /api/v1/sources | 
+*SourceApi* | [**getSource**](docs/SourceApi.md#getsource) | **GET** /api/v1/sources/{id} | 
+*SourceApi* | [**listSources**](docs/SourceApi.md#listsources) | **GET** /api/v1/sources | 
+*SourceApi* | [**updateInventory**](docs/SourceApi.md#updateinventory) | **PUT** /api/v1/sources/{id}/inventory | 
+*SourceApi* | [**updateSource**](docs/SourceApi.md#updatesource) | **PUT** /api/v1/sources/{id} | 
+
+
+### Models
+
+- [Agent](docs/Agent.md)
+- [AgentProxy](docs/AgentProxy.md)
+- [Assessment](docs/Assessment.md)
+- [AssessmentForm](docs/AssessmentForm.md)
+- [AssessmentUpdate](docs/AssessmentUpdate.md)
+- [Datastore](docs/Datastore.md)
+- [DiskSizeTierSummary](docs/DiskSizeTierSummary.md)
+- [DiskTypeSummary](docs/DiskTypeSummary.md)
+- [Histogram](docs/Histogram.md)
+- [Host](docs/Host.md)
+- [Info](docs/Info.md)
+- [Infra](docs/Infra.md)
+- [Inventory](docs/Inventory.md)
+- [InventoryData](docs/InventoryData.md)
+- [Ipv4Config](docs/Ipv4Config.md)
+- [Job](docs/Job.md)
+- [JobStatus](docs/JobStatus.md)
+- [Label](docs/Label.md)
+- [MigrationIssue](docs/MigrationIssue.md)
+- [ModelError](docs/ModelError.md)
+- [Network](docs/Network.md)
+- [OsInfo](docs/OsInfo.md)
+- [PresignedUrl](docs/PresignedUrl.md)
+- [Snapshot](docs/Snapshot.md)
+- [Source](docs/Source.md)
+- [SourceCreate](docs/SourceCreate.md)
+- [SourceInfra](docs/SourceInfra.md)
+- [SourceUpdate](docs/SourceUpdate.md)
+- [Status](docs/Status.md)
+- [UpdateInventory](docs/UpdateInventory.md)
+- [VCenter](docs/VCenter.md)
+- [VMResourceBreakdown](docs/VMResourceBreakdown.md)
+- [VMs](docs/VMs.md)
+- [VmNetwork](docs/VmNetwork.md)
+
+### Authorization
+
+Endpoints do not require authorization.
+
+
+## About
+
+This TypeScript SDK client supports the [Fetch API](https://fetch.spec.whatwg.org/)
+and is automatically generated by the
+[OpenAPI Generator](https://openapi-generator.tech) project:
+
+- API version: `undefined`
+- Package version: `1.0.0-alpha`
+- Generator version: `7.18.0`
+- Build package: `org.openapitools.codegen.languages.TypeScriptFetchClientCodegen`
+
+The generated npm module supports the following:
+
+- Environments
+  * Node.js
+  * Webpack
+  * Browserify
+- Language levels
+  * ES5 - you must have a Promises/A+ library installed
+  * ES6
+- Module systems
+  * CommonJS
+  * ES6 module system
+
+
+## Development
 
 ### Building
 
-To build and compile the typescript sources to javascript use:
-```
+To build the TypeScript source code, you need to have Node.js and npm installed.
+After cloning the repository, navigate to the project directory and run:
+
+```bash
 npm install
 npm run build
 ```
 
 ### Publishing
 
-First build the package then run `npm publish`
+Once you've built the package, you can publish it to npm:
 
-### Consuming
-
-navigate to the folder of your consuming project and run one of the following commands.
-
-_published:_
-
-```
-npm install @migration-planner-ui/api-client@1.0.0-alpha --save
+```bash
+npm publish
 ```
 
-_unPublished (not recommended):_
+## License
 
-```
-npm install PATH_TO_GENERATED_PACKAGE --save
-```
+[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.html)

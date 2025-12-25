@@ -1,3 +1,3 @@
 /* tslint:disable */
 /* eslint-disable */
-export * from "./ModelError.js";
+export * from './ModelError.js';
