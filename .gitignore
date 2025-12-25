@@ -30,3 +30,6 @@ yarn-error.log*
 
 # CI temp directory
 docker-config/
+
+# Bundle artifacts
+out
