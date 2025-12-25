@@ -2,7 +2,7 @@
 
 CONTAINER_RUNTIME := $(shell command -v podman 2> /dev/null || echo docker)
 # The OpenAPI Generator CLI container image, adapted from https://openapi-generator.tech/#tryDocker
-IMAGE := jkilzi/openapi-generator-cli
+IMAGE := quay.io/jkilzi/openapi-generator-cli
 TAG := 7.18.0
 # Arguments to pass to the OpenAPI Generator CLI
 ARGS :=
@@ -10,7 +10,7 @@ ARGS :=
 # Interact directly with the tool
 .PHONY: openapi-generator-cli
 openapi-generator-cli:
-	$(CONTAINER_RUNTIME) run --name openapi-generator-cli --rm -v $(PWD):/opt/app-root/src $(IMAGE):$(TAG) $(ARGS)
+	$(CONTAINER_RUNTIME) run --name openapi-generator-cli --rm -v $(PWD):/opt/app-root/src/workspace $(IMAGE):$(TAG) $(ARGS)
 
 # Generate something
 .PHONY: generate
@@ -35,7 +35,7 @@ image-client:
 # Clean up OpenAPI Generator CLI container image
 .PHONY: clean
 clean:
-	$(CONTAINER_RUNTIME) rmi $(IMAGE) 2>/dev/null || true
+	$(CONTAINER_RUNTIME) rmi $(IMAGE)
 
 # Show help
 .PHONY: help
