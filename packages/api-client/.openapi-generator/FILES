@@ -1,3 +1,5 @@
+.gitignore
+.npmignore
 README.md
 src/apis/AssessmentApi.ts
 src/apis/HealthApi.ts
@@ -5,6 +7,7 @@ src/apis/ImageApi.ts
 src/apis/InfoApi.ts
 src/apis/JobApi.ts
 src/apis/SourceApi.ts
+src/apis/index.ts
 src/index.ts
 src/models/Agent.ts
 src/models/AgentProxy.ts

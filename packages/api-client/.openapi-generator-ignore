@@ -22,9 +22,7 @@
 # Then explicitly reverse the ignore rule for a single file:
 #!docs/README.md
 
-src/apis/index.ts
 package.json
-tsconfig.esm.json
-tsconfig.json
+tsconfig*.json
 .gitignore
 .npmignore

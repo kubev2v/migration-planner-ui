@@ -1,14 +1,13 @@
 {
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+    "tsBuildInfoFile": "./.tmp/tsconfig.tsbuildinfo",
     "composite": true,
     "declaration": true,
-    "target": "es6",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "rootDir": "src",
+    "declarationMap": true,
     "outDir": "dist",
-    "typeRoots": ["node_modules/@types"]
-  },
-  "exclude": ["dist", "node_modules"]
+    "rootDir": "src",
+    "target": "es6",
+    "module": "nodenext",
+    "moduleResolution": "nodenext"
+  }
 }
