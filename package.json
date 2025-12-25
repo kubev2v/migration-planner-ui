@@ -13,7 +13,7 @@
     "api-client:update": "yarn run -T openapi-generator-cli generate"
   },
   "devDependencies": {
-    "@eslint/js": "^8.57.0",
+    "@biomejs/biome": "^1.9.4",
     "@openapitools/openapi-generator-cli": "^2.13.5",
     "@types/eslint__js": "^8.42.3",
     "@types/lodash": "^4",
