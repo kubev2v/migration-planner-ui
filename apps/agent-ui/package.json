@@ -1,15 +1,17 @@
 {
-  "name": "agent",
+  "name": "agent-ui",
   "private": true,
   "version": "1.0.0-alpha",
   "type": "module",
   "scripts": {
     "start": "yarn run -T vite --host 127.0.0.1 --port 3001",
     "build": "yarn run -T tsc -b && yarn run -T vite build",
-    "bundle": "yarn build && yarn pack --out dist/%s-%v.tgz",
+    "bundle": "yarn build && yarn pack --out ../../out/%s-%v.tgz",
     "clean": "rm -rf node_modules dist",
     "preview": "yarn run -T vite preview --host 127.0.0.1 --port 4001",
-    "lint": "yarn run -T eslint . --report-unused-disable-directives --max-warnings 0"
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "format": "biome format --write ."
   },
   "dependencies": {
     "@emotion/css": "^11.13.0",

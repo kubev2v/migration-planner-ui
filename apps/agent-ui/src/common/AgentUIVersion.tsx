@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
 import type { AgentApiInterface } from "@migration-planner-ui/agent-client/apis";
 import { useInjection } from "@migration-planner-ui/ioc";
-import { Symbols } from "#/main/Symbols";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { Symbols } from "../main/Symbols.ts";
 
 export const AgentUIVersion: React.FC = () => {
   const agentApi = useInjection<AgentApiInterface>(Symbols.AgentApi);
@@ -14,8 +15,7 @@ export const AgentUIVersion: React.FC = () => {
         const statusReply = await agentApi.getAgentVersion();
         setVersionInfo(statusReply);
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Unknown error occurred";
+        const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
         console.error("Error fetching agent version:", err);
         setError(`Failed to fetch version: ${errorMessage}`);
       }

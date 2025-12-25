@@ -5,5 +5,5 @@ export enum FormStates {
   CredentialsAccepted = "credentialsAccepted",
   CredentialsRejected = "credentialsRejected",
   InvalidCredentials = "invalidCredentials",
-  GatheringInventory = "gatheringInventory"
+  GatheringInventory = "gatheringInventory",
 }

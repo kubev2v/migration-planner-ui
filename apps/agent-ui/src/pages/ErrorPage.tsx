@@ -1,22 +1,22 @@
-import React from "react";
 import { css, keyframes } from "@emotion/css";
 import {
-  Bullseye,
-  Card,
-  Button,
-  TextContent,
-  Text,
-  ButtonProps,
   Backdrop,
-  EmptyStateIcon,
+  Bullseye,
+  Button,
+  type ButtonProps,
+  Card,
   EmptyState,
-  EmptyStateBody,
   EmptyStateActions,
+  EmptyStateBody,
   EmptyStateFooter,
+  EmptyStateIcon,
+  Text,
+  TextContent,
 } from "@patternfly/react-core";
-import { WarningTriangleIcon, ErrorCircleOIcon } from "@patternfly/react-icons";
-import globalWarningColor100 from "@patternfly/react-tokens/dist/esm/global_warning_color_100";
-import globalDangerColor100 from "@patternfly/react-tokens/dist/esm/global_danger_color_100";
+import { ErrorCircleOIcon, WarningTriangleIcon } from "@patternfly/react-icons";
+import { global_danger_color_100 } from "@patternfly/react-tokens";
+import { global_warning_color_100 } from "@patternfly/react-tokens";
+import type React from "react";
 import { useLocation, useParams } from "react-router-dom";
 
 const bounce = keyframes`
@@ -78,13 +78,11 @@ const ErrorPage: React.FC<Props> = (props) => {
             <EmptyStateBody>
               <EmptyStateIcon
                 className={classes.icon}
-                icon={
-                  parseInt(code) < 500 ? WarningTriangleIcon : ErrorCircleOIcon
-                }
+                icon={Number.parseInt(code) < 500 ? WarningTriangleIcon : ErrorCircleOIcon}
                 color={
-                  parseInt(code) < 500
-                    ? globalWarningColor100.value
-                    : globalDangerColor100.value
+                  Number.parseInt(code) < 500
+                    ? global_warning_color_100.value
+                    : global_danger_color_100.value
                 }
               />
               <TextContent>

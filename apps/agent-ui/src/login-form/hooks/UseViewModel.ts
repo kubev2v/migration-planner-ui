@@ -1,21 +1,18 @@
-import { useState, useRef, useCallback, useMemo } from "react";
-import { useAsync, useTitle } from "react-use";
-import { useNavigate } from "react-router-dom";
-import { AlertVariant } from "@patternfly/react-core";
-import {
-  SourceStatus,
-  type Credentials,
-} from "@migration-planner-ui/agent-client/models";
 import type { AgentApiInterface } from "@migration-planner-ui/agent-client/apis";
+import { type Credentials, SourceStatus } from "@migration-planner-ui/agent-client/models";
 import { useInjection } from "@migration-planner-ui/ioc";
-import { newAbortSignal } from "#/common/AbortSignal";
+import { AlertVariant } from "@patternfly/react-core";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAsync, useTitle } from "react-use";
+import { newAbortSignal } from "../../common/AbortSignal.ts";
+import type { FormControlValidatedStateVariant } from "../../login-form/Aliases.ts";
 import {
   DATA_SHARING_ALLOWED_DEFAULT_STATE,
   REQUEST_TIMEOUT_MS,
-} from "#/login-form/Constants";
-import { FormStates } from "#/login-form/FormStates";
-import { FormControlValidatedStateVariant } from "#/login-form/Aliases";
-import { Symbols } from "#/main/Symbols";
+} from "../../login-form/Constants.ts";
+import { FormStates } from "../../login-form/FormStates.ts";
+import { Symbols } from "../../main/Symbols.ts";
 
 export interface LoginFormViewModelInterface {
   formState: FormStates;
@@ -43,9 +40,7 @@ export interface LoginFormViewModelInterface {
   isDataSharingChecked: boolean;
 }
 
-const _computeFormControlVariant = (
-  formState: FormStates
-): FormControlValidatedStateVariant => {
+const _computeFormControlVariant = (formState: FormStates): FormControlValidatedStateVariant => {
   switch (formState) {
     case FormStates.CredentialsAccepted:
       return "success";
@@ -60,13 +55,11 @@ const _computeFormControlVariant = (
 export const useViewModel = (): LoginFormViewModelInterface => {
   useTitle("Login");
   const navigateTo = useNavigate();
-  const [formState, setFormState] = useState<FormStates>(
-    FormStates.CheckingStatus
-  );
+  const [formState, setFormState] = useState<FormStates>(FormStates.CheckingStatus);
   const formRef = useRef<HTMLFormElement>();
   const agentApi = useInjection<AgentApiInterface>(Symbols.AgentApi);
   const [isDataSharingAllowed, setIsDataSharingAllowed] = useState<boolean>(
-    DATA_SHARING_ALLOWED_DEFAULT_STATE
+    DATA_SHARING_ALLOWED_DEFAULT_STATE,
   );
   const [urlValue, setUrlValue] = useState<string>("");
   const [usernameValue, setUsernameValue] = useState<string>("");
@@ -126,12 +119,10 @@ export const useViewModel = (): LoginFormViewModelInterface => {
     }, []),
     shouldDisableFormControl: useMemo(
       () =>
-        [
-          FormStates.CheckingStatus,
-          FormStates.Submitting,
-          FormStates.CredentialsAccepted,
-        ].includes(formState),
-      [formState]
+        [FormStates.CheckingStatus, FormStates.Submitting, FormStates.CredentialsAccepted].includes(
+          formState,
+        ),
+      [formState],
     ),
     alertVariant: useMemo(() => {
       switch (formState) {
@@ -186,7 +177,7 @@ export const useViewModel = (): LoginFormViewModelInterface => {
           FormStates.Submitting,
           FormStates.GatheringInventory,
         ].includes(formState),
-      [formState]
+      [formState],
     ),
     handleSubmit: useCallback<React.FormEventHandler<HTMLFormElement>>(
       async (event) => {
@@ -211,14 +202,11 @@ export const useViewModel = (): LoginFormViewModelInterface => {
         };
         const signal = newAbortSignal(
           REQUEST_TIMEOUT_MS,
-          "The server didn't respond in a timely fashion."
+          "The server didn't respond in a timely fashion.",
         );
-        const [statusCodeOK, error] = await agentApi.putCredentials(
-          credentials,
-          {
-            signal,
-          }
-        );
+        const [statusCodeOK, error] = await agentApi.putCredentials(credentials, {
+          signal,
+        });
 
         const status = statusCodeOK ?? error.code;
         switch (status) {
@@ -243,14 +231,7 @@ export const useViewModel = (): LoginFormViewModelInterface => {
             break;
         }
       },
-      [
-        agentApi,
-        navigateTo,
-        urlValue,
-        usernameValue,
-        passwordValue,
-        isDataSharingAllowed,
-      ]
+      [agentApi, navigateTo, urlValue, usernameValue, passwordValue, isDataSharingAllowed],
     ),
     handleChangeDataSharingAllowed: useCallback((checked) => {
       setIsDataSharingAllowed(checked);

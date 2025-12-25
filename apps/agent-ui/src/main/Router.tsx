@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 
 export const router = createBrowserRouter([
   {
@@ -10,9 +9,7 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     lazy: async () => {
-      const { default: AgentLoginPage } = await import(
-        "#/pages/AgentLoginPage"
-      );
+      const { default: AgentLoginPage } = await import("../pages/AgentLoginPage.tsx");
 
       return {
         Component: AgentLoginPage,
@@ -22,7 +19,7 @@ export const router = createBrowserRouter([
   {
     path: "/error/:code",
     lazy: async () => {
-      const { default: ErrorPage } = await import("#/pages/ErrorPage");
+      const { default: ErrorPage } = await import("../pages/ErrorPage.tsx");
 
       return {
         Component: ErrorPage,
@@ -32,7 +29,7 @@ export const router = createBrowserRouter([
   {
     path: "*",
     lazy: async () => {
-      const { default: ErrorPage } = await import("#/pages/ErrorPage");
+      const { default: ErrorPage } = await import("../pages/ErrorPage.tsx");
 
       return {
         element: (
