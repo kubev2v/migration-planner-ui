@@ -5,11 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Agent",
+            "name": "Debug (agent-ui)",
             "type": "chrome",
             "request": "launch",
             "url": "http://127.0.0.1:3001",
-            "webRoot": "${workspaceFolder}/apps/agent-ui"
+            "webRoot": "${workspaceFolder}/apps/agent-ui",
+            "server": {
+                "cwd": "${workspaceFolder}/apps/agent-ui",
+                "command": "yarn start"
+            }
         }
     ]
 }
