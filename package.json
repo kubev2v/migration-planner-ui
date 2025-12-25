@@ -12,13 +12,12 @@
     "check:all": "yarn workspaces foreach --all -p run check",
     "check:fix:all": "yarn workspaces foreach --all -p run check:fix",
     "format:all": "yarn workspaces foreach --all -p run format",
-    "update:api-client": "openapi-generator-cli generate --generator-key api-client",
-    "update:agent-client": "openapi-generator-cli generate --generator-key agent-client",
-    "update:image-client": "openapi-generator-cli generate --generator-key image-client"
+    "update:api-client": "make api-client",
+    "update:agent-client": "make agent-client",
+    "update:image-client": "make image-client"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@openapitools/openapi-generator-cli": "^2.13.5",
     "@types/lodash": "^4",
     "@types/node": "^25.0.3",
     "@types/react": "^18.3.3",

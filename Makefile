@@ -2,16 +2,15 @@
 
 CONTAINER_RUNTIME := $(shell command -v podman 2> /dev/null || echo docker)
 # The OpenAPI Generator CLI container image, adapted from https://openapi-generator.tech/#tryDocker
-IMAGE := openapitools/openapi-generator-cli
-# The following signature corresponds to v7.18.0
-TAG := sha256:be5c0a17c978ed4c39985312af3129882407581e07f2e3167cf777c908ffd52b
+IMAGE := jkilzi/openapi-generator-cli
+TAG := 7.18.0
 # Arguments to pass to the OpenAPI Generator CLI
 ARGS :=
 
 # Interact directly with the tool
 .PHONY: openapi-generator-cli
 openapi-generator-cli:
-	$(CONTAINER_RUNTIME) run --rm -v $(PWD):/local:Z $(IMAGE)@$(TAG) $(ARGS)
+	$(CONTAINER_RUNTIME) run --name openapi-generator-cli --rm -v $(PWD):/opt/app-root/src $(IMAGE):$(TAG) $(ARGS)
 
 # Generate something
 .PHONY: generate
