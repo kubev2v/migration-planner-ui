@@ -1,0 +1,57 @@
+{
+  "name": "@migration-planner-ui/image-client",
+  "version": "1.0.0-alpha",
+  "description": "OpenAPI client for the Migration Planner Image API",
+  "author": "Jonathan Kilzi <jkilzi@redhat.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kubev2v/migration-planner-ui.git",
+    "directory": "packages/image-client"
+  },
+  "type": "module",
+  "exports": {
+    "./apis": {
+      "import": "./dist/apis/index.js",
+      "types": "./dist/apis/index.d.ts",
+      "default": "./src/apis/index.ts"
+    },
+    "./models": {
+      "import": "./dist/models/index.js",
+      "types": "./dist/models/index.d.ts",
+      "default": "./src/models/index.ts"
+    },
+    "./runtime": {
+      "import": "./dist/runtime.js",
+      "types": "./dist/runtime.d.ts",
+      "default": "./src/runtime.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "apis": [
+        "./dist/apis/index.d.ts"
+      ],
+      "models": [
+        "./dist/models/index.d.ts"
+      ],
+      "runtime": [
+        "./dist/runtime.d.ts"
+      ]
+    }
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn run -T tsc -b",
+    "bundle": "yarn build && yarn pack --out ../../out/%s-%v.tgz",
+    "clean": "rm -rf node_modules dist .tmp",
+    "check": "echo 'Skipping check: this package contains mostly generated code'",
+    "check:fix": "echo 'Skipping check:fix: this package contains mostly generated code'",
+    "format": "echo 'Skipping format: this package contains mostly generated code'"
+  }
+}
