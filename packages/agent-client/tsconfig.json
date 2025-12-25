@@ -1,17 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "rootDir": "src",
-    "outDir": "dist",
-    "paths": {
-      "#/*": ["./src/*"]
-    },
+    "tsBuildInfoFile": "./.tmp/tsconfig.tsbuildinfo",
     "composite": true,
     "declaration": true,
-    "useDefineForClassFields": true,
-    "jsx": "react-jsx",
-  },
-  "exclude": ["dist", "node_modules"]
+    "declarationMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "target": "es6",
+    "module": "nodenext",
+    "moduleResolution": "nodenext"
+  }
 }

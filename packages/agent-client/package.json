@@ -1,31 +1,32 @@
 {
   "name": "@migration-planner-ui/agent-client",
   "version": "1.0.0-alpha",
-  "description": "A client for Migration Planner Agent API",
+  "description": "A client for the Migration Planner Agent API",
   "author": "Jonathan Kilzi <jkilzi@redhat.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/jkilzi/migration-planner-ui.git",
     "directory": "packages/agent-client"
   },
+  "type": "module",
   "exports": {
-    "./apis": [
-      "./src/apis/index.ts",
-      "./dist/apis/index.d.ts"
-    ],
-    "./models": [
-      "./src/models/index.ts",
-      "./dist/models/index.d.ts"
-    ]
+    "./apis": {
+      "import": "./dist/apis/index.js",
+      "types": "./dist/apis/index.d.ts",
+      "default": "./src/apis/index.ts"
+    },
+    "./models": {
+      "import": "./dist/models/index.js",
+      "types": "./dist/models/index.d.ts",
+      "default": "./src/models/index.ts"
+    }
   },
   "typesVersions": {
     "*": {
       "apis": [
-        "./src/apis/index.ts",
         "./dist/apis/index.d.ts"
       ],
       "models": [
-        "./src/models/index.ts",
         "./dist/models/index.d.ts"
       ]
     }
@@ -34,10 +35,15 @@
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "yarn run -T tsc -b",
-    "bundle": "yarn build && yarn pack --out dist/%s-%v.tgz",
-    "clean": "rm -rf node_modules dist",
-    "lint": "yarn run -T eslint . --report-unused-disable-directives --max-warnings 0"
+    "bundle": "yarn build && yarn pack --out ../../out/%s-%v.tgz",
+    "clean": "rm -rf node_modules dist .tmp",
+    "check": "echo 'Skipping check: this package contains mostly generated code'",
+    "check:fix": "echo 'Skipping check:fix: this package contains mostly generated code'",
+    "format": "echo 'Skipping format: this package contains mostly generated code'"
   }
 }

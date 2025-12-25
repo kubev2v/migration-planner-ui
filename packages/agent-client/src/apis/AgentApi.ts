@@ -1,9 +1,4 @@
-import {
-  Either,
-  Credentials,
-  StatusReply,
-  CredentialsError,
-} from "../models";
+import { Credentials, CredentialsError, Either, StatusReply } from "../models/index.js";
 
 interface Configuration {
   basePath: string;
@@ -12,11 +7,11 @@ interface Configuration {
 export interface AgentApiInterface {
   putCredentials(
     credentials: Credentials,
-    options?: RequestInit & { pathParams?: string[] }
+    options?: RequestInit & { pathParams?: string[] },
   ): Promise<Either<number, CredentialsError>>;
   getStatus(options?: RequestInit): Promise<StatusReply>;
-  getAgentVersion():Promise<string>;
-  getServiceUiUrl():Promise<string>;
+  getAgentVersion(): Promise<string>;
+  getServiceUiUrl(): Promise<string>;
 }
 
 export class AgentApi implements AgentApiInterface {
@@ -39,7 +34,7 @@ export class AgentApi implements AgentApiInterface {
 
   async putCredentials(
     credentials: Credentials,
-    options?: RequestInit & { pathParams?: string[] }
+    options?: RequestInit & { pathParams?: string[] },
   ): Promise<Either<number, CredentialsError>> {
     const request = new Request(this.configuration.basePath + "/credentials", {
       method: "PUT",
@@ -64,7 +59,7 @@ export class AgentApi implements AgentApiInterface {
 
   async getAgentVersion(): Promise<string> {
     const request = new Request(this.configuration.basePath + "/version", {
-      method: "GET"
+      method: "GET",
     });
 
     const response = await fetch(request);
@@ -73,7 +68,7 @@ export class AgentApi implements AgentApiInterface {
   }
   async getServiceUiUrl(): Promise<string> {
     const request = new Request(this.configuration.basePath + "/url", {
-      method: "GET"
+      method: "GET",
     });
 
     const response = await fetch(request);

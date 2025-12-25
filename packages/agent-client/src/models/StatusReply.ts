@@ -1,4 +1,4 @@
-import { SourceStatus } from "./SourceStatus";
+import { SourceStatus } from "./SourceStatus.js";
 
 export interface StatusReply {
   status: SourceStatus;
