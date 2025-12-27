@@ -528,27 +528,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@migration-planner-ui/agent-client@npm:^0.0.11":
-  version: 0.0.11
-  resolution: "@migration-planner-ui/agent-client@npm:0.0.11"
-  checksum: 10c0/4fe2c6ced89f7b546a78dea5f390c3e5f16c434fbafcb4b7982a6fc0a5255e0667629a3e36be98dcf857837ee46d0d26382d3a1aee88724dca9f930d4a15e8dc
-  languageName: node
-  linkType: hard
-
-"@migration-planner-ui/agent-client@workspace:packages/agent-client":
+"@migration-planner-ui/agent-client@workspace:*, @migration-planner-ui/agent-client@workspace:packages/agent-client":
   version: 0.0.0-use.local
   resolution: "@migration-planner-ui/agent-client@workspace:packages/agent-client"
   languageName: unknown
   linkType: soft
 
-"@migration-planner-ui/api-client@npm:^0.0.11":
-  version: 0.0.11
-  resolution: "@migration-planner-ui/api-client@npm:0.0.11"
-  checksum: 10c0/4603e40438da02930690b80f9507864cbc6204cf880e46b81a446cb663a65a323f1849f978b784dfc058c2e190c2c86270e6dcf5e56a501cbbd7308d4c0dc48b
-  languageName: node
-  linkType: hard
-
-"@migration-planner-ui/api-client@workspace:packages/api-client":
+"@migration-planner-ui/api-client@workspace:*, @migration-planner-ui/api-client@workspace:packages/api-client":
   version: 0.0.0-use.local
   resolution: "@migration-planner-ui/api-client@workspace:packages/api-client"
   languageName: unknown
@@ -1014,8 +1000,8 @@ __metadata:
   resolution: "agent-ui@workspace:apps/agent-ui"
   dependencies:
     "@emotion/css": "npm:^11.13.0"
-    "@migration-planner-ui/agent-client": "npm:^0.0.11"
-    "@migration-planner-ui/api-client": "npm:^0.0.11"
+    "@migration-planner-ui/agent-client": "workspace:*"
+    "@migration-planner-ui/api-client": "workspace:*"
     "@patternfly/react-core": "npm:^5.4.0"
     "@patternfly/react-icons": "npm:^5.4.0"
     "@patternfly/react-table": "npm:^5.4.0"
