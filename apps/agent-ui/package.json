@@ -9,9 +9,9 @@
     "bundle": "yarn build && yarn pack --out ../../out/%s-%v.tgz",
     "clean": "rm -rf node_modules dist",
     "preview": "yarn run -T vite preview --host 127.0.0.1 --port 4001",
-    "check": "biome check .",
-    "check:fix": "biome check --write .",
-    "format": "biome format --write ."
+    "check": "yarn run -T biome check .",
+    "check:fix": "yarn run -T biome check --write .",
+    "format": "yarn run -T biome format --write ."
   },
   "dependencies": {
     "@emotion/css": "^11.13.0",
