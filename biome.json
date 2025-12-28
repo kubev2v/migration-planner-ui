@@ -1,49 +1,24 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "vcs": {
-    "enabled": true,
-    "clientKind": "git",
-    "useIgnoreFile": true
-  },
-  "files": {
-    "ignore": ["**/dist", "**/node_modules", "**/.tmp", "**/*.json"]
-  },
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineEnding": "lf",
-    "lineWidth": 100
-  },
-  "organizeImports": {
-    "enabled": true
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "correctness": {
-        "noUnusedVariables": {
-          "level": "warn"
-        }
-      },
-      "suspicious": {
-        "noExplicitAny": "warn"
-      },
-      "a11y": {
-        "recommended": true
-      }
-    }
-  },
-  "javascript": {
-    "globals": ["console", "process", "Buffer", "__dirname", "__filename"]
-  },
-  "overrides": [
-    {
-      "include": ["packages/**"],
-      "linter": {
-        "enabled": false
-      }
-    }
-  ]
+	"$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"includes": ["**", "!**/dist", "!**/node_modules", "!**/.tmp", "!**/.cache"]
+	},
+	"assist": { "actions": { "source": { "organizeImports": "on" } } },
+	"javascript": {
+		"globals": ["console", "process", "Buffer", "__dirname", "__filename"]
+	},
+	"formatter": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true
+		}
+	}
 }

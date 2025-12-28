@@ -31,9 +31,9 @@
     "build": "yarn run -T tsc -b",
     "bundle": "yarn build && yarn pack --out ../../out/%s-%v.tgz",
     "clean": "rm -rf node_modules dist .tmp",
-    "check": "biome check .",
-    "check:fix": "biome check --write .",
-    "format": "biome format --write ."
+    "check": "yarn run -T biome check .",
+    "check:fix": "yarn run -T biome check --write .",
+    "format": "yarn run -T biome format --write ."
   },
   "devDependencies": {
     "react": "*",
