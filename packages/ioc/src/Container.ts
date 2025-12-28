@@ -11,7 +11,10 @@ export class Container {
     return value;
   }
 
-  register<T = unknown>(registeredInterfaceSymbol: symbol, value: T): Container {
+  register<T = unknown>(
+    registeredInterfaceSymbol: symbol,
+    value: T,
+  ): Container {
     this.#registry[registeredInterfaceSymbol] = value;
 
     return this;

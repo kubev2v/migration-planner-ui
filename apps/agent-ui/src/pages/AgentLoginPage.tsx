@@ -1,7 +1,7 @@
 import { Backdrop, Bullseye } from "@patternfly/react-core";
 import type React from "react";
-import { LoginForm } from "../login-form/LoginForm.tsx";
 import { useViewModel } from "../login-form/hooks/UseViewModel.ts";
+import { LoginForm } from "../login-form/LoginForm.tsx";
 
 const AgentLoginPage: React.FC = () => {
   const vm = useViewModel();

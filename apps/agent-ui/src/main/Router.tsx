@@ -1,4 +1,4 @@
-import { Navigate, createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 export const router = createBrowserRouter([
   {
@@ -9,7 +9,9 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     lazy: async () => {
-      const { default: AgentLoginPage } = await import("../pages/AgentLoginPage.tsx");
+      const { default: AgentLoginPage } = await import(
+        "../pages/AgentLoginPage.tsx"
+      );
 
       return {
         Component: AgentLoginPage,

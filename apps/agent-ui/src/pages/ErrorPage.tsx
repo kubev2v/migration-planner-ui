@@ -14,8 +14,10 @@ import {
   TextContent,
 } from "@patternfly/react-core";
 import { ErrorCircleOIcon, WarningTriangleIcon } from "@patternfly/react-icons";
-import { global_danger_color_100 } from "@patternfly/react-tokens";
-import { global_warning_color_100 } from "@patternfly/react-tokens";
+import {
+  global_danger_color_100,
+  global_warning_color_100,
+} from "@patternfly/react-tokens";
 import type React from "react";
 import { useLocation, useParams } from "react-router-dom";
 
@@ -78,7 +80,11 @@ const ErrorPage: React.FC<Props> = (props) => {
             <EmptyStateBody>
               <EmptyStateIcon
                 className={classes.icon}
-                icon={Number.parseInt(code) < 500 ? WarningTriangleIcon : ErrorCircleOIcon}
+                icon={
+                  Number.parseInt(code) < 500
+                    ? WarningTriangleIcon
+                    : ErrorCircleOIcon
+                }
                 color={
                   Number.parseInt(code) < 500
                     ? global_warning_color_100.value

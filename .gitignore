@@ -14,8 +14,9 @@
 node_modules
 dist
 *.local.*
+
+# Direnv CLI
 .envrc
-.secrets
 
 # Logs
 logs
@@ -38,4 +39,10 @@ out
 
 .npm/
 .npm-global/
+
+# Act CLI
 .cache/
+.env
+.input
+.secrets
+.vars

@@ -1,4 +1,7 @@
-export function newAbortSignal(delay?: number, abortMessage?: string): AbortSignal {
+export function newAbortSignal(
+  delay?: number,
+  abortMessage?: string,
+): AbortSignal {
   const abortController = new AbortController();
   const signal = abortController.signal;
 

@@ -55,15 +55,19 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
         <TextContent>
           <Text component="h2">Migration Discovery VM</Text>
           <Text>
-            The migration discovery VM requires access to your VMware environment to execute a
-            discovery process that gathers essential data, including network topology, storage
-            configuration, and VM inventory. The process leverages this information to provide
-            recommendations for a seamless migration to OpenShift Virtualization.
+            The migration discovery VM requires access to your VMware
+            environment to execute a discovery process that gathers essential
+            data, including network topology, storage configuration, and VM
+            inventory. The process leverages this information to provide
+            recommendations for a seamless migration to OpenShift
+            Virtualization.
           </Text>
         </TextContent>
       </CardHeader>
 
-      <Divider style={{ backgroundColor: "#f5f5f5", height: "10px", border: "none" }} />
+      <Divider
+        style={{ backgroundColor: "#f5f5f5", height: "10px", border: "none" }}
+      />
 
       <CardBody
         id="card-body-note"
@@ -73,19 +77,26 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
           padding: "1rem",
         }}
       >
-        <TextContent style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <TextContent
+          style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+        >
           <InfoCircleIcon color="#007bff" />
           <Text component="p" style={{ color: "#002952", fontWeight: "bold" }}>
             Access control
           </Text>
         </TextContent>
-        <Text component="p" style={{ marginTop: "0.5rem", marginLeft: "1.5rem" }}>
-          A VMware user account with read-only permissions is sufficient for secure access during
-          the discovery process.
+        <Text
+          component="p"
+          style={{ marginTop: "0.5rem", marginLeft: "1.5rem" }}
+        >
+          A VMware user account with read-only permissions is sufficient for
+          secure access during the discovery process.
         </Text>
       </CardBody>
 
-      <Divider style={{ backgroundColor: "#f5f5f5", height: "10px", border: "none" }} />
+      <Divider
+        style={{ backgroundColor: "#f5f5f5", height: "10px", border: "none" }}
+      />
 
       <CardBody id="card-body-description">
         <Form ref={vm.formRef} onSubmit={vm.handleSubmit} id="login-form">
@@ -114,7 +125,10 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
             {vm.urlControlHelperText && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={vm.urlControlStateVariant} id="url-helper-text">
+                  <HelperTextItem
+                    variant={vm.urlControlStateVariant}
+                    id="url-helper-text"
+                  >
                     {vm.urlControlHelperText}
                   </HelperTextItem>
                 </HelperText>
@@ -204,7 +218,9 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
               name="isDataSharingAllowed"
               label="I agree to share aggregated data about my environment with Red Hat."
               aria-label="Share aggregated data"
-              onChange={(_event, checked) => vm.handleChangeDataSharingAllowed(checked)}
+              onChange={(_event, checked) =>
+                vm.handleChangeDataSharingAllowed(checked)
+              }
               isChecked={vm.isDataSharingChecked}
             />
           </FormGroup>
@@ -221,13 +237,14 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
                   </AlertActionLink>
                 }
               >
-                {vm.alertDescriptionList && vm.alertDescriptionList.length > 0 && (
-                  <List>
-                    {vm.alertDescriptionList.map(({ id, text }) => (
-                      <ListItem key={id}>{text}</ListItem>
-                    ))}
-                  </List>
-                )}
+                {vm.alertDescriptionList &&
+                  vm.alertDescriptionList.length > 0 && (
+                    <List>
+                      {vm.alertDescriptionList.map(({ id, text }) => (
+                        <ListItem key={id}>{text}</ListItem>
+                      ))}
+                    </List>
+                  )}
               </Alert>
             </FormGroup>
           )}
@@ -268,7 +285,9 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
                 <Button
                   type="submit"
                   variant="primary"
-                  isDisabled={vm.shouldDisableFormControl || !vm.isDataSharingChecked}
+                  isDisabled={
+                    vm.shouldDisableFormControl || !vm.isDataSharingChecked
+                  }
                   form="login-form"
                 >
                   Log in
@@ -286,7 +305,12 @@ export const LoginForm: React.FC<LoginForm.Props> = (props) => {
                 </Button>
                 <Button
                   variant="secondary"
-                  onClick={() => window.open(`${getConfigurationBasePath()}/inventory`, "_blank")}
+                  onClick={() =>
+                    window.open(
+                      `${getConfigurationBasePath()}/inventory`,
+                      "_blank",
+                    )
+                  }
                   style={{ marginLeft: "16px" }}
                 >
                   Download Inventory
