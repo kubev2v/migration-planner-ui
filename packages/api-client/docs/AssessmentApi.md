@@ -1,6 +1,6 @@
 # AssessmentApi
 
-All URIs are relative to *https://raw.githubusercontent.com*
+All URIs are relative to **
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
