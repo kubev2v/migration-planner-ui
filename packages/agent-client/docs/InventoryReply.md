@@ -1,22 +1,24 @@
 
-# ModelError
+# InventoryReply
 
 
 ## Properties
 
 Name | Type
 ------------ | -------------
-`message` | string
+`agentId` | string
+`inventory` | [Inventory](Inventory.md)
 
 ## Example
 
 ```typescript
-import type { ModelError } from '@migration-planner-ui/agent-client'
+import type { InventoryReply } from '@migration-planner-ui/agent-client'
 
 // TODO: Update the object below with actual values
 const example = {
-  "message": null,
-} satisfies ModelError
+  "agentId": null,
+  "inventory": null,
+} satisfies InventoryReply
 
 console.log(example)
 
@@ -25,7 +27,7 @@ const exampleJSON: string = JSON.stringify(example)
 console.log(exampleJSON)
 
 // Parse the JSON string back to an object
-const exampleParsed = JSON.parse(exampleJSON) as ModelError
+const exampleParsed = JSON.parse(exampleJSON) as InventoryReply
 console.log(exampleParsed)
 ```
 

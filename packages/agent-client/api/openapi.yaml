@@ -1,0 +1,262 @@
+# Generated from: Migration Planner (undocumented API for the Agent UI)
+# Commit: e12120720e22a0a537aeb107b0db2875bcb3b105
+#
+# This OpenAPI specification documents the API endpoints used by the agent-ui
+# to interact with the agent server. The endpoints are defined in:
+# internal/agent/rest.go in the RegisterApi function.
+#
+# This file was AI generated, assisted by Cursor IDE with the following prompt:
+# Prompt:
+#   Analyze how the agent-ui is interacting with the apis implemented in this module.
+#   Find where are these API endpoints defined.
+#   Generate an openapi.yaml spec file for this API. For an example, use the file located at api/v1alpha1/agent/openapi.yaml"
+openapi: 3.0.1
+info:
+  title: Migration Planner Agent UI API
+  version: undefined
+  description: API endpoints for the agent UI to interact with the migration discovery VM
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: /
+paths:
+  /api/v1/status:
+    get:
+      tags:
+        - agent-ui
+      description: Get the current status of the agent
+      operationId: getAgentStatus
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusReply"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/v1/version:
+    get:
+      tags:
+        - agent-ui
+      description: Get the version of the agent
+      operationId: getAgentVersion
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionReply"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/v1/url:
+    get:
+      tags:
+        - agent-ui
+      description: Get the planner service UI URL
+      operationId: getPlannerUrl
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceUIReply"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/v1/credentials:
+    put:
+      tags:
+        - agent-ui
+      description: Submit VMware credentials for the discovery process
+      operationId: submitCredentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Credentials"
+        required: true
+      responses:
+        "204":
+          description: Credentials accepted and saved successfully
+        "400":
+          description: Bad Request - Invalid request body or missing required fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized - Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: Unprocessable Entity - Invalid URL format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/v1/inventory:
+    get:
+      tags:
+        - agent-ui
+      description: Download the collected inventory data
+      operationId: getInventory
+      responses:
+        "200":
+          description: OK
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: attachment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryReply"
+        "404":
+          description: Not Found - Inventory not yet collected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    StatusReply:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Current status of the agent
+          enum:
+            - waiting-for-credentials
+            - gathering-initial-inventory
+            - up-to-date
+            - error
+            - not-connected
+            - source-gone
+        connected:
+          type: string
+          description: Whether the agent is connected to the planner service
+          example: "true"
+        statusInfo:
+          type: string
+          description: Human-readable status information
+        agentStateUpdateSuccessful:
+          type: string
+          description: Whether the last agent state update was successful
+          example: "true"
+        agentStateUpdateErrMessage:
+          type: string
+          description: Error message if agent state update failed
+        inventoryUpdateSuccessful:
+          type: string
+          description: Whether the last inventory update was successful
+          example: "true"
+        inventoryUpdateErrMessage:
+          type: string
+          description: Error message if inventory update failed
+      required:
+        - status
+        - connected
+        - statusInfo
+
+    VersionReply:
+      type: object
+      properties:
+        version:
+          type: string
+          description: Version of the agent
+      required:
+        - version
+
+    ServiceUIReply:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: URL of the planner service UI
+      required:
+        - url
+
+    Credentials:
+      type: object
+      description: VMware credentials for the discovery process
+      properties:
+        url:
+          type: string
+          format: uri
+          description: URL of the VMware vCenter server
+          example: "https://vcenter.example.com"
+        username:
+          type: string
+          description: Username for VMware authentication
+          example: "user@example.com"
+        password:
+          type: string
+          format: password
+          description: Password for VMware authentication
+        isDataSharingAllowed:
+          type: boolean
+          description: Whether the user agrees to share aggregated data with Red Hat
+          default: false
+      required:
+        - url
+        - username
+        - password
+
+    InventoryReply:
+      type: object
+      properties:
+        agentId:
+          type: string
+          format: uuid
+          description: ID of the agent that collected the inventory
+        inventory:
+          $ref: "./shared-components.yaml#/components/schemas/Inventory"
+          description: The collected inventory data
+      required:
+        - agentId
+        - inventory
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+      required:
+        - message

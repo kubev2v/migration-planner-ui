@@ -18,7 +18,7 @@
         }
       },
       "agent-client": {
-        "inputSpec": "https://raw.githubusercontent.com/kubev2v/migration-planner/main/api/v1alpha1/agent/openapi.yaml",
+        "inputSpec": "packages/agent-client/api/openapi.yaml",
         "output": "packages/agent-client",
         "generatorName": "typescript-fetch",
         "additionalProperties": {

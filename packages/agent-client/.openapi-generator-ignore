@@ -27,3 +27,4 @@ package.json
 tsconfig*.json
 .gitignore
 .npmignore
+api/*

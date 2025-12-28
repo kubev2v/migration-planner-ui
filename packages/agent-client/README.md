@@ -1,6 +1,6 @@
 # @migration-planner-ui/agent-client@1.0.0-alpha
 
-A TypeScript SDK client for the raw.githubusercontent.com API.
+A TypeScript SDK client for the localhost API.
 
 ## Usage
 
@@ -16,23 +16,16 @@ Next, try it out.
 ```ts
 import {
   Configuration,
-  AgentApi,
+  AgentUiApi,
 } from '@migration-planner-ui/agent-client';
-import type { UpdateAgentStatusRequest } from '@migration-planner-ui/agent-client';
+import type { GetAgentStatusRequest } from '@migration-planner-ui/agent-client';
 
 async function example() {
   console.log("🚀 Testing @migration-planner-ui/agent-client SDK...");
-  const api = new AgentApi();
-
-  const body = {
-    // string | ID the agent
-    id: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
-    // AgentStatusUpdate (optional)
-    agentStatusUpdate: ...,
-  } satisfies UpdateAgentStatusRequest;
+  const api = new AgentUiApi();
 
   try {
-    const data = await api.updateAgentStatus(body);
+    const data = await api.getAgentStatus();
     console.log(data);
   } catch (error) {
     console.error(error);
@@ -48,19 +41,20 @@ example().catch(console.error);
 
 ### API Endpoints
 
-All URIs are relative to *https://raw.githubusercontent.com*
+All URIs are relative to *http://localhost*
 
 | Class | Method | HTTP request | Description
 | ----- | ------ | ------------ | -------------
-*AgentApi* | [**updateAgentStatus**](docs/AgentApi.md#updateagentstatus) | **PUT** /api/v1/agents/{id}/status | 
-*SourceApi* | [**updateSourceInventory**](docs/SourceApi.md#updatesourceinventory) | **PUT** /api/v1/sources/{id}/status | 
+*AgentUiApi* | [**getAgentStatus**](docs/AgentUiApi.md#getagentstatus) | **GET** /api/v1/status | 
+*AgentUiApi* | [**getAgentVersion**](docs/AgentUiApi.md#getagentversion) | **GET** /api/v1/version | 
+*AgentUiApi* | [**getInventory**](docs/AgentUiApi.md#getinventory) | **GET** /api/v1/inventory | 
+*AgentUiApi* | [**getPlannerUrl**](docs/AgentUiApi.md#getplannerurl) | **GET** /api/v1/url | 
+*AgentUiApi* | [**submitCredentials**](docs/AgentUiApi.md#submitcredentials) | **PUT** /api/v1/credentials | 
 
 
 ### Models
 
-- [Agent](docs/Agent.md)
-- [AgentProxy](docs/AgentProxy.md)
-- [AgentStatusUpdate](docs/AgentStatusUpdate.md)
+- [Credentials](docs/Credentials.md)
 - [Datastore](docs/Datastore.md)
 - [DiskSizeTierSummary](docs/DiskSizeTierSummary.md)
 - [DiskTypeSummary](docs/DiskTypeSummary.md)
@@ -69,19 +63,17 @@ All URIs are relative to *https://raw.githubusercontent.com*
 - [Infra](docs/Infra.md)
 - [Inventory](docs/Inventory.md)
 - [InventoryData](docs/InventoryData.md)
-- [Ipv4Config](docs/Ipv4Config.md)
-- [Label](docs/Label.md)
+- [InventoryReply](docs/InventoryReply.md)
 - [MigrationIssue](docs/MigrationIssue.md)
 - [ModelError](docs/ModelError.md)
 - [Network](docs/Network.md)
 - [OsInfo](docs/OsInfo.md)
-- [Source](docs/Source.md)
-- [SourceInfra](docs/SourceInfra.md)
-- [SourceStatusUpdate](docs/SourceStatusUpdate.md)
+- [ServiceUIReply](docs/ServiceUIReply.md)
+- [StatusReply](docs/StatusReply.md)
 - [VCenter](docs/VCenter.md)
 - [VMResourceBreakdown](docs/VMResourceBreakdown.md)
 - [VMs](docs/VMs.md)
-- [VmNetwork](docs/VmNetwork.md)
+- [VersionReply](docs/VersionReply.md)
 
 ### Authorization
 

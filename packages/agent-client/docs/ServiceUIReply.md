@@ -1,22 +1,22 @@
 
-# ModelError
+# ServiceUIReply
 
 
 ## Properties
 
 Name | Type
 ------------ | -------------
-`message` | string
+`url` | string
 
 ## Example
 
 ```typescript
-import type { ModelError } from '@migration-planner-ui/agent-client'
+import type { ServiceUIReply } from '@migration-planner-ui/agent-client'
 
 // TODO: Update the object below with actual values
 const example = {
-  "message": null,
-} satisfies ModelError
+  "url": null,
+} satisfies ServiceUIReply
 
 console.log(example)
 
@@ -25,7 +25,7 @@ const exampleJSON: string = JSON.stringify(example)
 console.log(exampleJSON)
 
 // Parse the JSON string back to an object
-const exampleParsed = JSON.parse(exampleJSON) as ModelError
+const exampleParsed = JSON.parse(exampleJSON) as ServiceUIReply
 console.log(exampleParsed)
 ```
 

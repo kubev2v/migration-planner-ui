@@ -1,22 +1,29 @@
 
-# ModelError
+# Credentials
 
+VMware credentials for the discovery process
 
 ## Properties
 
 Name | Type
 ------------ | -------------
-`message` | string
+`url` | string
+`username` | string
+`password` | string
+`isDataSharingAllowed` | boolean
 
 ## Example
 
 ```typescript
-import type { ModelError } from '@migration-planner-ui/agent-client'
+import type { Credentials } from '@migration-planner-ui/agent-client'
 
 // TODO: Update the object below with actual values
 const example = {
-  "message": null,
-} satisfies ModelError
+  "url": https://vcenter.example.com,
+  "username": user@example.com,
+  "password": null,
+  "isDataSharingAllowed": null,
+} satisfies Credentials
 
 console.log(example)
 
@@ -25,7 +32,7 @@ const exampleJSON: string = JSON.stringify(example)
 console.log(exampleJSON)
 
 // Parse the JSON string back to an object
-const exampleParsed = JSON.parse(exampleJSON) as ModelError
+const exampleParsed = JSON.parse(exampleJSON) as Credentials
 console.log(exampleParsed)
 ```
 

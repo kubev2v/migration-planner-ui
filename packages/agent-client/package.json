@@ -19,6 +19,11 @@
       "import": "./dist/models/index.js",
       "types": "./dist/models/index.d.ts",
       "default": "./src/models/index.ts"
+    },
+    "./runtime": {
+      "import": "./dist/runtime.js",
+      "types": "./dist/runtime.d.ts",
+      "default": "./src/runtime.ts"
     }
   },
   "typesVersions": {
@@ -28,6 +33,9 @@
       ],
       "models": [
         "./dist/models/index.d.ts"
+      ],
+      "runtime": [
+        "./dist/runtime.d.ts"
       ]
     }
   },
