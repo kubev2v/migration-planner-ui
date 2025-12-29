@@ -29,6 +29,7 @@ yarn-error.log*
 .vscode/*
 !.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
 
 # CI temp directory
