@@ -8,14 +8,25 @@ on:
       - ready_for_review
     branches:
       - main
-      - releases/*
 jobs:
-  check-and-build-all:
+  detect-changed-workspaces:
+    runs-on: ubuntu-latest
+    outputs:
+      workspaces: ${{ steps.detect.outputs.workspaces }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: detect
+        uses: ./.github/actions/detect-changed-workspaces
+  checks:
+    needs: detect-changed-workspaces
     # Execute lint and build when a PR is ready
     if: ${{ ! github.event.pull_request.draft }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        workspace: ${{ fromJSON(needs.detect-changed-workspaces.outputs.workspaces) }}
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/install-dependencies
-      - run: yarn check:all
-      - run: yarn build:all
+      - run: yarn workspace $(basename ${{ matrix.workspace }}) run check
+      - run: yarn workspace $(basename ${{ matrix.workspace }}) run build

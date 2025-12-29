@@ -1,0 +1,29 @@
+name: Detect changed workspaces
+description: Build a JSON matrix of changed workspaces
+outputs:
+  workspaces:
+    description: 'JSON array of changed workspaces (e.g., ["apps/foo","packages/bar"])'
+    value: ${{ steps.matrix.outputs.workspaces }}
+runs:
+  using: composite
+  steps:
+    - id: changes
+      uses: dorny/paths-filter@v3
+      with:
+        list-files: json
+        filters: |
+          workspaces:
+            - 'apps/*/**'
+            - 'packages/*/**'
+    - id: matrix
+      shell: bash
+      run: |
+        set -euo pipefail
+        all_files_json='${{ steps.changes.outputs.workspaces_files }}'
+        all_files_json=${all_files_json:-'[]'}
+        all_files=$(jq -r '.[]?' <<< "$all_files_json")
+        workspaces=$(printf '%s\n' "$all_files" \
+          | awk -F/ 'NF>1 {print $1 "/" $2}' \
+          | sort -u)
+        jq -nc --argjson arr "$(printf '%s\n' "$workspaces" | jq -R . | jq -s .)" '$arr' > /tmp/matrix.json
+        echo "workspaces=$(cat /tmp/matrix.json)" >> "$GITHUB_OUTPUT"
