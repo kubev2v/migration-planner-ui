@@ -1,5 +1,4 @@
 name: Pull request
-
 on:
   pull_request:
     types:
@@ -10,55 +9,13 @@ on:
     branches:
       - main
       - releases/*
-
-env:
-  NODE_OPTIONS: '--max-old-space-size=8192'
 jobs:
-  preflight-check:
-  # Prevents running the workflow when a PR is marked as draft.
-    runs-on: ubuntu-latest
-    outputs:
-      skip: ${{ steps.check.outputs.skip }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      
-      - name: Enable Corepack
-        run: |
-          corepack enable
-  
-      - name: Check if PR is draft
-        id: check
-        run: |
-          if [[ "${{ github.event.pull_request.draft }}" == "true" ]]; then
-            skip=true
-          else
-            skip=false
-          fi
-          echo "skip=${skip}" >> $GITHUB_OUTPUT
-          echo "skip=${skip}"
-
-  lint-and-build:
+  check-and-build-all:
     # Execute lint and build when a PR is ready
-    needs: preflight-check
-    if: needs.preflight-check.outputs.skip == 'false'
+    if: ${{ ! github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      
-      - name: Enable Corepack
-        run: |
-          corepack enable
-
-      - run: yarn install --immutable
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/install-deps
       - run: yarn check:all
       - run: yarn build:all
