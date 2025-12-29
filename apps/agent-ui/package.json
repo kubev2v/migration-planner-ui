@@ -1,5 +1,5 @@
 {
-  "name": "agent-ui",
+  "name": "@migration-planner-ui/agent-ui",
   "private": true,
   "version": "1.0.0-alpha",
   "type": "module",
