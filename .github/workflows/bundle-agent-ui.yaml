@@ -1,14 +1,10 @@
-name: Create and Push Agent TGZ to Main
+name: Bundles the agent-ui on-demand
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'apps/agent-ui/**'
+  workflow_dispatch:
 
 jobs:
-  build-and-push:
+  bundle-agent-ui:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
