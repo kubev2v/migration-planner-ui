@@ -11,29 +11,17 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      
-      - name: Enable Corepack
-        run: |
-          corepack enable
-
-      - name: Install dependencies
-        run: yarn install --immutable
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/install-dependencies
 
       - name: Build and bundle
         run: |
-          cd apps/agent-ui
-          yarn bundle
+          yarn workspace @migration-planner-ui/agent-ui bundle
 
       - name: Rename bundle
         run: |
-          if stat out/agent-ui*.tgz > /dev/null 2>&1; then
-            mv out/agent-ui*.tgz out/agent-ui-${{ github.sha }}.tgz
+          if stat out/@migration-planner-ui-agent-ui*.tgz > /dev/null 2>&1; then
+            mv out/@migration-planner-ui-agent-ui*.tgz out/agent-ui-${{ github.sha }}.tgz
           else
             echo "Error: No .tgz file found in out/agent-ui/"
             exit 1
