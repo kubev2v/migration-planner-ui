@@ -30,7 +30,6 @@ The root `package.json` provides workspace-wide scripts and dev dependencies tha
 - `yarn format:all` - Format code across all workspaces
 - `yarn api-client:update` - Regenerate the API client from OpenAPI spec
 - `yarn agent-client:update` - Regenerate the Agent client from OpenAPI spec
-- `yarn image-client:update` - Regenerate the Image client from OpenAPI spec
 
 **Shared Dev Dependencies:**
 - `@biomejs/biome` - Linting and formatting (configured in `biome.json`)
@@ -73,10 +72,6 @@ TypeScript client for the Migration Planner API, auto-generated from the OpenAPI
 ### `@migration-planner-ui/agent-client`
 
 TypeScript client for the Migration Planner Agent API. Similar to `api-client`, but specifically for agent-related operations. Auto-generated from the Agent API OpenAPI specification.
-
-### `@migration-planner-ui/image-client`
-
-TypeScript client for the Migration Planner Image API. Auto-generated from the Image API OpenAPI specification, providing type-safe access to image-related operations.
 
 ### `@migration-planner-ui/ioc`
 
@@ -156,7 +151,6 @@ The OpenAPI Generator CLI is configured via `openapitools.json` at the root of t
 
 - **`api-client`**: Generates from the main Migration Planner API spec
 - **`agent-client`**: Generates from the Agent API spec
-- **`image-client`**: Generates from the Image API spec
 
 ### Usage
 
@@ -165,7 +159,6 @@ The OpenAPI Generator CLI is configured via `openapitools.json` at the root of t
 # Update a specific client
 yarn update:api-client
 yarn update:agent-client
-yarn update:image-client
 ```
 
 **Via Makefile (isolated container execution, no extra dependencies needed):**
@@ -175,7 +168,6 @@ The Makefile provides a way to run the OpenAPI Generator CLI in isolation using 
 # Update a specific client
 make api-client
 make agent-client
-make image-client
 
 # Or use the generic generate target
 make generate ARGS="--generator-key api-client"

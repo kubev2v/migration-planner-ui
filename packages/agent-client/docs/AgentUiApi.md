@@ -1,6 +1,6 @@
 # AgentUiApi
 
-All URIs are relative to **
+All URIs are relative to *http://localhost*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
