@@ -37,6 +37,7 @@ docker-config/
 
 # Bundle artifacts
 out
+.tmp
 
 .npm/
 .npm-global/

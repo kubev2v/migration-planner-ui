@@ -6,7 +6,13 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/dist", "!**/node_modules", "!**/.tmp", "!**/.cache"]
+    "includes": [
+      "**",
+      "!**/dist/**",
+      "!**/node_modules/**",
+      "!**/.tmp/**",
+      "!**/.cache/**"
+    ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "javascript": {
