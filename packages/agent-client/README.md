@@ -1,6 +1,6 @@
-# @migration-planner-ui/agent-client@1.0.0-alpha
+# @migration-planner-ui/agent-client
 
-A TypeScript SDK client for the localhost API.
+A TypeScript SDK client for the Migration Planner Agent API.
 
 ## Usage
 

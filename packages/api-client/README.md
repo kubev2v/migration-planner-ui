@@ -1,6 +1,6 @@
-# @migration-planner-ui/api-client@1.0.0-alpha
+# @migration-planner-ui/api-client
 
-A TypeScript SDK client for the raw.githubusercontent.com API.
+A TypeScript SDK client for the Migration Planner API.
 
 ## Usage
 
