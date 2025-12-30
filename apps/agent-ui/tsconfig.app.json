@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
+    "tsBuildInfoFile": ".tmp/tsconfig.app.tsbuildinfo",
     "composite": true,
-    "tsBuildInfoFile": "../../node_modules/.tmp/agent-ui/tsconfig.app.tsbuildinfo",
     "target": "ES2020",
     "useDefineForClassFields": true,
     "emitDecoratorMetadata": true,
@@ -23,10 +23,7 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "paths": {
-      "#/*": ["./src/*"]
-    }
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
   "references": [

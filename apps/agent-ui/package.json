@@ -7,7 +7,7 @@
     "start": "yarn run -T vite --host 127.0.0.1 --port 3001",
     "build": "yarn run -T tsc -b && yarn run -T vite build",
     "bundle": "yarn build && yarn pack --out ../../out/%s-%v.tgz",
-    "clean": "rm -rf node_modules dist",
+    "clean": "rm -rf node_modules dist .tmp",
     "preview": "yarn run -T vite preview --host 127.0.0.1 --port 4001",
     "check": "yarn run -T biome check .",
     "check:fix": "yarn run -T biome check --write .",

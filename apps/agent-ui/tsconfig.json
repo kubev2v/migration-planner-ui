@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "tsBuildInfoFile": "../../node_modules/.tmp/agent-ui/tsconfig.tsbuildinfo",
+    "tsBuildInfoFile": ".tmp/tsconfig.tsbuildinfo",
     "composite": true
   },
   "files": [],

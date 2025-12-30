@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
-    "tsBuildInfoFile": "../../node_modules/.tmp/agent-ui/tsconfig.node.tsbuildinfo",
+    "tsBuildInfoFile": ".tmp/tsconfig.node.tsbuildinfo",
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
