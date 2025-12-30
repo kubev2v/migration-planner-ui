@@ -27,11 +27,6 @@ api-client:
 agent-client:
 	$(MAKE) generate ARGS="--generator-key agent-client"
 
-# Updates the Image client
-.PHONY: image-client
-image-client:
-	$(MAKE) generate ARGS="--generator-key image-client"
-
 # Clean up OpenAPI Generator CLI container image
 .PHONY: clean
 clean:
@@ -46,7 +41,6 @@ help:
 	@echo "  openapi-generator-cli   Interact directly with the CLI tool"
 	@echo "  api-client              Update the API client (e.g., make api-client)"
 	@echo "  agent-client            Update the Agent client (e.g., make agent-client)"
-	@echo "  image-client            Update the Image client (e.g., make image-client)"
 	@echo "  generate                Run openapi-generator, optionally pass --generator-key <key> or other arguments"
 	@echo "                          See openapitools.json for keys (e.g., make generate ARGS=\"--generator-key api-client\")"
 	@echo "  clean                   Remove the OpenAPI Generator CLI container image"
