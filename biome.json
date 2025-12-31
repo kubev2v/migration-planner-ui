@@ -11,7 +11,10 @@
       "!**/dist/**",
       "!**/node_modules/**",
       "!**/.tmp/**",
-      "!**/.cache/**"
+      "!**/.cache/**",
+      "!**/out/**",
+      "!packages/api-client/src/**",
+      "!packages/agent-client/src/**"
     ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
