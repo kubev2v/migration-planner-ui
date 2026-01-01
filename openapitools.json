@@ -10,7 +10,6 @@
         "generatorName": "typescript-fetch",
         "additionalProperties": {
           "npmName": "@migration-planner-ui/api-client",
-          "npmVersion": "1.0.0-alpha",
           "ensureUniqueParams": true,
           "supportsES6": true,
           "withInterfaces": true,
@@ -23,7 +22,6 @@
         "generatorName": "typescript-fetch",
         "additionalProperties": {
           "npmName": "@migration-planner-ui/agent-client",
-          "npmVersion": "1.0.0-alpha",
           "ensureUniqueParams": true,
           "supportsES6": true,
           "withInterfaces": true,

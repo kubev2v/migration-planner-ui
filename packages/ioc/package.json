@@ -3,6 +3,7 @@
   "version": "1.0.2-alpha",
   "description": "A basic IoC solution for React apps (inspired by InversifyJs)",
   "author": "Jonathan Kilzi <jkilzi@redhat.com>",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/kubev2v/migration-planner-ui.git",
