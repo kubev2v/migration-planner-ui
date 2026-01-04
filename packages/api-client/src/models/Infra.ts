@@ -138,7 +138,7 @@ export function InfraFromJSONTyped(json: any, ignoreDiscriminator: boolean): Inf
         return json;
     }
     return {
-        
+
         'totalHosts': json['totalHosts'],
         'totalDatacenters': json['totalDatacenters'] == null ? undefined : json['totalDatacenters'],
         'totalClusters': json['totalClusters'] == null ? undefined : json['totalClusters'],
@@ -149,8 +149,8 @@ export function InfraFromJSONTyped(json: any, ignoreDiscriminator: boolean): Inf
         'hostsPerCluster': json['hostsPerCluster'] == null ? undefined : json['hostsPerCluster'],
         'vmsPerCluster': json['vmsPerCluster'] == null ? undefined : json['vmsPerCluster'],
         'hostPowerStates': json['hostPowerStates'],
-        'networks': ((json['networks'] as Array<any>).map(NetworkFromJSON)),
-        'datastores': ((json['datastores'] as Array<any>).map(DatastoreFromJSON)),
+        'networks': json['networks'] == null ? undefined : ((json['networks'] as Array<any>).map(NetworkFromJSON)),
+        'datastores': json['datastores'] == null ? undefined : ((json['datastores'] as Array<any>).map(DatastoreFromJSON)),
     };
 }
 
@@ -164,7 +164,7 @@ export function InfraToJSONTyped(value?: Infra | null, ignoreDiscriminator: bool
     }
 
     return {
-        
+
         'totalHosts': value['totalHosts'],
         'totalDatacenters': value['totalDatacenters'],
         'totalClusters': value['totalClusters'],
