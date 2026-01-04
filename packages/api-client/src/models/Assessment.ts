@@ -110,7 +110,7 @@ export function AssessmentFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
+
         'id': json['id'],
         'name': json['name'],
         'ownerFirstName': json['ownerFirstName'] == null ? undefined : json['ownerFirstName'],
@@ -118,7 +118,7 @@ export function AssessmentFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'sourceType': json['sourceType'],
         'sourceId': json['sourceId'] == null ? undefined : json['sourceId'],
         'createdAt': (new Date(json['createdAt'])),
-        'snapshots': ((json['snapshots'] as Array<any>).map(SnapshotFromJSON)),
+        'snapshots': json['snapshots'] == null ? undefined : ((json['snapshots'] as Array<any>).map(SnapshotFromJSON)),
     };
 }
 
@@ -132,7 +132,7 @@ export function AssessmentToJSONTyped(value?: Assessment | null, ignoreDiscrimin
     }
 
     return {
-        
+
         'id': value['id'],
         'name': value['name'],
         'ownerFirstName': value['ownerFirstName'],

@@ -185,7 +185,7 @@ export function VMsFromJSONTyped(json: any, ignoreDiscriminator: boolean): VMs {
         return json;
     }
     return {
-        
+
         'total': json['total'],
         'totalMigratable': json['totalMigratable'],
         'totalMigratableWithWarnings': json['totalMigratableWithWarnings'] == null ? undefined : json['totalMigratableWithWarnings'],
@@ -201,8 +201,8 @@ export function VMsFromJSONTyped(json: any, ignoreDiscriminator: boolean): VMs {
         'powerStates': json['powerStates'],
         'os': json['os'] == null ? undefined : json['os'],
         'osInfo': json['osInfo'] == null ? undefined : (mapValues(json['osInfo'], OsInfoFromJSON)),
-        'notMigratableReasons': ((json['notMigratableReasons'] as Array<any>).map(MigrationIssueFromJSON)),
-        'migrationWarnings': ((json['migrationWarnings'] as Array<any>).map(MigrationIssueFromJSON)),
+        'notMigratableReasons': json['notMigratableReasons'] == null ? undefined : ((json['notMigratableReasons'] as Array<any>).map(MigrationIssueFromJSON)),
+        'migrationWarnings': json['migrationWarnings'] == null ? undefined : ((json['migrationWarnings'] as Array<any>).map(MigrationIssueFromJSON)),
     };
 }
 
@@ -216,7 +216,7 @@ export function VMsToJSONTyped(value?: VMs | null, ignoreDiscriminator: boolean 
     }
 
     return {
-        
+
         'total': value['total'],
         'totalMigratable': value['totalMigratable'],
         'totalMigratableWithWarnings': value['totalMigratableWithWarnings'],
