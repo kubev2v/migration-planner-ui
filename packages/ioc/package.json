@@ -24,6 +24,10 @@
       ]
     }
   },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "yarn run -T tsc -b",
     "bundle": "yarn build && yarn pack --out ../../out/%s-%v.tgz",
