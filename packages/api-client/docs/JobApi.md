@@ -1,6 +1,6 @@
 # JobApi
 
-All URIs are relative to *https://raw.githubusercontent.com*
+All URIs are relative to *http://localhost*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
