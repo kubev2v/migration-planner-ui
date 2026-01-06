@@ -17,14 +17,24 @@ openapi-generator-cli:
 generate:
 	$(MAKE) openapi-generator-cli ARGS="generate $(ARGS)"
 
+# Cleans up the API client
+.PHONY: _clean-api-client
+_clean-api-client:
+	rm -rf packages/api-client/src packages/api-client/docs;
+
 # Updates the API client
 .PHONY: api-client
-api-client:
+api-client: _clean-api-client
 	$(MAKE) generate ARGS="--generator-key api-client"
+
+# Cleans up the Agent client
+.PHONY: _clean-agent-client
+_clean-agent-client:
+	rm -rf packages/agent-client/src packages/agent-client/docs;
 
 # Updates the Agent client
 .PHONY: agent-client
-agent-client:
+agent-client: _clean-agent-client
 	$(MAKE) generate ARGS="--generator-key agent-client"
 
 # Clean up OpenAPI Generator CLI container image
