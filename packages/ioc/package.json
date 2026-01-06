@@ -47,6 +47,8 @@
     "react-router-dom": "^6.26.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ]
 }
