@@ -1,9 +1,9 @@
 {
-	"git.enableCommitSigning": true,
-	"git.alwaysSignOff": true,
-	"editor.formatOnSave": true,
-	"editor.codeActionsOnSave": {
-		"source.fixAll.biome": "explicit",
-        "source.organizeImports.biome": "explicit"
-	}
+  "git.enableCommitSigning": true,
+  "git.alwaysSignOff": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  }
 }
