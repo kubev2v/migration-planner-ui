@@ -5,7 +5,7 @@
     "version": "7.18.0",
     "generators": {
       "api-client": {
-        "inputSpec": "https://raw.githubusercontent.com/kubev2v/migration-planner/main/api/v1alpha1/openapi.yaml",
+        "inputSpec": "packages/api-client/api/patched-openapi.yaml",
         "output": "packages/api-client",
         "generatorName": "typescript-fetch",
         "additionalProperties": {
@@ -13,7 +13,8 @@
           "ensureUniqueParams": true,
           "supportsES6": true,
           "withInterfaces": true,
-          "importFileExtension": ".js"
+          "importFileExtension": ".js",
+          "withoutRuntimeChecks": true
         }
       },
       "agent-client": {
@@ -25,7 +26,8 @@
           "ensureUniqueParams": true,
           "supportsES6": true,
           "withInterfaces": true,
-          "importFileExtension": ".js"
+          "importFileExtension": ".js",
+          "withoutRuntimeChecks": true
         }
       }
     }

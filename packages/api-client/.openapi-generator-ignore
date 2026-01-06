@@ -27,3 +27,4 @@ tsconfig*.json
 .gitignore
 .npmignore
 README.md
+api/*
