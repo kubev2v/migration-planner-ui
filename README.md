@@ -215,3 +215,31 @@ The container automatically mounts the project directory, so generated files are
 - **Testing**: Run package-specific scripts or use workspace scripts from root
 - **Linting/Formatting**: Use `yarn check:all` and `yarn format:all` from root
 - **Updating API clients**: Use `yarn update:*-client` scripts or Makefile targets when backend APIs change
+
+## Testing Package Changes Locally
+
+When making changes to the generated client packages (`api-client` or `agent-client`), you may want to test them locally in a consuming application before publishing. The following procedure uses the `api-client` package for demonstration, but the same steps apply to `agent-client`.
+
+**Steps:**
+
+1. **Generate the updated client files:**
+   ```bash
+   make api-client
+   ```
+
+2. **Bundle the package** from the top-level directory:
+   ```bash
+   yarn workspace @migration-planner-ui/api-client bundle
+   ```
+
+3. **Locate the generated archive.** The output of the bundle command will display the path to the generated `.tgz` file:
+   ```
+   ➤ YN0000: Package archive generated in <path>/out/@migration-planner-ui-api-client-1.0.0-alpha.tgz
+   ```
+
+4. **Install the package in your consuming application** using the path from the previous step:
+   ```bash
+   npm i <path-to-tgz>
+   ```
+
+> ⚠️ **Warning:** Running `npm i <path-to-tgz>` will modify the consuming application's `package.json` and lock file. **These changes must NOT be committed to version control.** Make sure to revert these files before committing any other changes.
