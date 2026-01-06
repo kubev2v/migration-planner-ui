@@ -1,5 +1,6 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+  "root": true,
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -13,8 +14,8 @@
       "!**/.tmp/**",
       "!**/.cache/**",
       "!**/out/**",
-      "!packages/api-client/src/**",
-      "!packages/agent-client/src/**"
+      "!./packages/api-client/**",
+      "!./packages/agent-client/**"
     ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
@@ -31,5 +32,11 @@
     "rules": {
       "recommended": true
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["./packages/ioc/**"],
+      "linter": { "domains": { "react": "recommended" } }
+    }
+  ]
 }
