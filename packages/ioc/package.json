@@ -24,10 +24,6 @@
       ]
     }
   },
-  "sideEffects": false,
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "yarn run -T tsc -b",
     "bundle": "yarn build && yarn pack --out ../../out/%s-%v.tgz",
@@ -46,5 +42,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0"
   },
-  "stableVersion": "1.1.1"
+  "files": [
+    "dist"
+  ]
 }
