@@ -116,14 +116,13 @@ Registers a dependency with the container.
   - `value`: The value to register
 - **Returns:** The container instance (for method chaining)
 
-##### `get<T>(symbol: symbol): T`
+##### `get<T>(symbol: symbol): T | undefined`
 
 Retrieves a registered dependency from the container.
 
 - **Parameters:**
   - `symbol`: The symbol identifier of the dependency to retrieve
-- **Returns:** The registered dependency value
-- **Throws:** Returns `undefined` if the dependency is not registered
+- **Returns:** The registered dependency value, or `undefined` if not registered.
 
 ### `Provider`
 
@@ -141,7 +140,7 @@ A React hook that retrieves a dependency from the container.
 - **Parameters:**
   - `symbol`: The symbol identifier of the dependency to retrieve
 - **Returns:** The registered dependency value
-- **Throws:** `ReferenceError` if used outside of a `Provider`
+- **Throws:** `ReferenceError` if used outside a `Provider`
 
 ## Example
 
