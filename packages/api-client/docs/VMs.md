@@ -14,6 +14,7 @@ Name | Type
 `diskTypes` | [{ [key: string]: DiskTypeSummary; }](DiskTypeSummary.md)
 `distributionByCpuTier` | { [key: string]: number; }
 `distributionByMemoryTier` | { [key: string]: number; }
+`distributionByNicCount` | { [key: string]: number; }
 `ramGB` | [VMResourceBreakdown](VMResourceBreakdown.md)
 `diskGB` | [VMResourceBreakdown](VMResourceBreakdown.md)
 `diskCount` | [VMResourceBreakdown](VMResourceBreakdown.md)
@@ -39,6 +40,7 @@ const example = {
   "diskTypes": null,
   "distributionByCpuTier": null,
   "distributionByMemoryTier": null,
+  "distributionByNicCount": null,
   "ramGB": null,
   "diskGB": null,
   "diskCount": null,
