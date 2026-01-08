@@ -10,7 +10,7 @@ ARGS :=
 # Interact directly with the tool
 .PHONY: openapi-generator-cli
 openapi-generator-cli:
-	$(CONTAINER_RUNTIME) run --name openapi-generator-cli --rm -v $(PWD):/opt/app-root/src/workspace $(IMAGE):$(TAG) $(ARGS)
+	$(CONTAINER_RUNTIME) run --name openapi-generator-cli --rm -v $(PWD):/opt/app-root/src/workspace:Z --userns=keep-id -u $(shell id -u):$(shell id -g) $(IMAGE):$(TAG) $(ARGS)
 
 # Generate something
 .PHONY: generate
