@@ -1,8 +1,8 @@
 openapi: 3.0.1
 info:
   title: Migration Planner API
-  version: 0.4.0-bd435bf4
-  description: "Based on: https://github.com/kubev2v/migration-planner/blob/bd435bf4e63611a5d609f7c918e85dd57830fccf/api/v1alpha1/openapi.yaml"
+  version: 0.4.0-381e0e2f
+  description: "Based on: https://github.com/kubev2v/migration-planner/blob/381e0e2f0d99c996a1230d27470988d7cbe9e282/api/v1alpha1/openapi.yaml"
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -588,6 +588,69 @@ paths:
                 $ref: "#/components/schemas/Error"
         "500":
           description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/v1/assessments/{id}/cluster-requirements:
+    post:
+      tags:
+        - assessment
+      description: Calculate cluster requirements for an assessment
+      operationId: calculateAssessmentClusterRequirements
+      parameters:
+        - name: id
+          in: path
+          description: ID of the assessment
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClusterRequirementsRequest"
+        required: true
+      responses:
+        "200":
+          description: Cluster requirements calculation successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClusterRequirementsResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Assessment not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "503":
+          description: Service Unavailable
           content:
             application/json:
               schema:
@@ -1507,6 +1570,154 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Assessment"
+
+    ClusterRequirementsRequest:
+      type: object
+      description: Request payload for calculating cluster requirements
+      properties:
+        clusterId:
+          type: string
+          description: ID of the cluster to calculate requirements for
+          x-oapi-codegen-extra-tags:
+            validate: "required"
+        overCommitRatio:
+          type: string
+          enum: ["1:1", "1:2", "1:4", "1:6"]
+          x-enum-varnames: ["OneToOne", "OneToTwo", "OneToFour", "OneToSix"]
+          default: "1:4"
+          description: CPU over-commit ratio (e.g., "1:4")
+          x-oapi-codegen-extra-tags:
+            validate: "required"
+        workerNodeCPU:
+          type: integer
+          description: CPU cores per worker node
+          x-oapi-codegen-extra-tags:
+            validate: "required,min=2,max=200"
+        workerNodeMemory:
+          type: integer
+          description: Memory (GB) per worker node
+          x-oapi-codegen-extra-tags:
+            validate: "required,min=4,max=512"
+        controlPlaneSchedulable:
+          type: boolean
+          default: false
+          description: Allow workload scheduling on control plane nodes
+      required:
+        - clusterId
+        - overCommitRatio
+        - workerNodeCPU
+        - workerNodeMemory
+
+    ClusterRequirementsResponse:
+      type: object
+      description: Cluster requirements calculation results
+      properties:
+        clusterSizing:
+          $ref: "#/components/schemas/ClusterSizing"
+        resourceConsumption:
+          $ref: "#/components/schemas/SizingResourceConsumption"
+        inventoryTotals:
+          $ref: "#/components/schemas/InventoryTotals"
+      required:
+        - clusterSizing
+        - resourceConsumption
+        - inventoryTotals
+
+    InventoryTotals:
+      type: object
+      description: Inventory totals for the cluster
+      properties:
+        totalVMs:
+          type: integer
+          description: Total number of VMs in the cluster
+        totalCPU:
+          type: integer
+          description: Total CPU cores across all VMs in the cluster
+        totalMemory:
+          type: integer
+          description: Total memory (GB) across all VMs in the cluster
+      required:
+        - totalVMs
+        - totalCPU
+        - totalMemory
+
+    ClusterSizing:
+      type: object
+      description: Overall cluster sizing summary
+      properties:
+        totalNodes:
+          type: integer
+          description: Total number of nodes (worker + control plane)
+        workerNodes:
+          type: integer
+          description: Number of worker nodes
+        controlPlaneNodes:
+          type: integer
+          description: Number of control plane nodes
+        totalCPU:
+          type: integer
+          description: Total CPU cores across all nodes
+        totalMemory:
+          type: integer
+          description: Total memory (GB) across all nodes
+      required:
+        - totalNodes
+        - workerNodes
+        - controlPlaneNodes
+        - totalCPU
+        - totalMemory
+
+    SizingResourceConsumption:
+      type: object
+      description: Resource consumption across the cluster
+      properties:
+        cpu:
+          type: number
+          format: double
+          description: Total CPU requested
+        memory:
+          type: number
+          format: double
+          description: Total memory (GB) requested
+        limits:
+          $ref: "#/components/schemas/SizingResourceLimits"
+        overCommitRatio:
+          $ref: "#/components/schemas/SizingOverCommitRatio"
+      required:
+        - cpu
+        - memory
+
+    SizingResourceLimits:
+      type: object
+      description: Resource limits
+      properties:
+        cpu:
+          type: number
+          format: double
+          description: Total CPU limits
+        memory:
+          type: number
+          format: double
+          description: Total memory (GB) limits
+      required:
+        - cpu
+        - memory
+
+    SizingOverCommitRatio:
+      type: object
+      description: Over-commit ratios
+      properties:
+        cpu:
+          type: number
+          format: double
+          description: CPU over-commit ratio
+        memory:
+          type: number
+          format: double
+          description: Memory over-commit ratio
+      required:
+        - cpu
+        - memory
 
     Job:
       type: object

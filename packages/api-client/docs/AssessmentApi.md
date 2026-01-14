@@ -4,12 +4,89 @@ All URIs are relative to *http://localhost*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
+| [**calculateAssessmentClusterRequirements**](AssessmentApi.md#calculateassessmentclusterrequirements) | **POST** /api/v1/assessments/{id}/cluster-requirements |  |
 | [**createAssessment**](AssessmentApi.md#createassessment) | **POST** /api/v1/assessments |  |
 | [**deleteAssessment**](AssessmentApi.md#deleteassessment) | **DELETE** /api/v1/assessments/{id} |  |
 | [**getAssessment**](AssessmentApi.md#getassessment) | **GET** /api/v1/assessments/{id} |  |
 | [**listAssessments**](AssessmentApi.md#listassessments) | **GET** /api/v1/assessments |  |
 | [**updateAssessment**](AssessmentApi.md#updateassessment) | **PUT** /api/v1/assessments/{id} |  |
 
+
+
+## calculateAssessmentClusterRequirements
+
+> ClusterRequirementsResponse calculateAssessmentClusterRequirements(id, clusterRequirementsRequest)
+
+
+
+Calculate cluster requirements for an assessment
+
+### Example
+
+```ts
+import {
+  Configuration,
+  AssessmentApi,
+} from '@migration-planner-ui/api-client';
+import type { CalculateAssessmentClusterRequirementsRequest } from '@migration-planner-ui/api-client';
+
+async function example() {
+  console.log("🚀 Testing @migration-planner-ui/api-client SDK...");
+  const api = new AssessmentApi();
+
+  const body = {
+    // string | ID of the assessment
+    id: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+    // ClusterRequirementsRequest
+    clusterRequirementsRequest: ...,
+  } satisfies CalculateAssessmentClusterRequirementsRequest;
+
+  try {
+    const data = await api.calculateAssessmentClusterRequirements(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | `string` | ID of the assessment | [Defaults to `undefined`] |
+| **clusterRequirementsRequest** | [ClusterRequirementsRequest](ClusterRequirementsRequest.md) |  | |
+
+### Return type
+
+[**ClusterRequirementsResponse**](ClusterRequirementsResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Cluster requirements calculation successful |  -  |
+| **400** | Bad Request |  -  |
+| **401** | Unauthorized |  -  |
+| **403** | Forbidden |  -  |
+| **404** | Assessment not found |  -  |
+| **500** | Internal error |  -  |
+| **503** | Service Unavailable |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 
 
 ## createAssessment
