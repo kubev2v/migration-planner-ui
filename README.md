@@ -209,6 +209,12 @@ The container automatically mounts the project directory, so generated files are
    yarn check:all
    ```
 
+## Publish OCI image on Quay (local test)
+
+To locally reproduce the publishing of a minimal OCI image (only `dist/`) to Quay.io and test authentication/push, follow the guide at:
+
+- `docs/publish-to-quay-local.md`
+
 ## Development Workflow
 
 - **Making changes**: Work in the appropriate package or app directory
