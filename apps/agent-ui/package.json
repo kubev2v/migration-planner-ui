@@ -12,7 +12,8 @@
     "check": "yarn run -T biome check .",
     "check:fix": "yarn run -T biome check --write .",
     "format": "yarn run -T biome format --write .",
-    "test": "yarn run -T vitest run --reporter=default --coverage"
+    "test": "vitest run --reporter=default",
+    "test:ci": "vitest run --reporter=default --coverage"
   },
   "dependencies": {
     "@emotion/css": "^11.13.0",
@@ -31,6 +32,7 @@
     "dist"
   ],
   "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.0",
     "vitest": "^2.1.0"
   }
 }

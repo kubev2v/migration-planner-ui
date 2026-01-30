@@ -76,6 +76,10 @@ format-check:
 	# Formatting issues are enforced by Biome check
 	yarn check:all
 
+.PHONY: format-fix
+format-fix:
+	yarn check:fix:all
+
 .PHONY: type-check
 type-check:
 	yarn typecheck:all
@@ -86,7 +90,7 @@ security-scan:
 
 .PHONY: test
 test:
-	yarn test:all
+	yarn test:ci:all
 
 .PHONY: build
 build:

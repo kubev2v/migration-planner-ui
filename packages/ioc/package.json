@@ -32,6 +32,8 @@
     "build": "yarn run -T tsc -b",
     "bundle": "yarn build && yarn pack --out ../../out/%s-%v.tgz",
     "clean": "rm -rf node_modules dist .tmp",
+    "test": "echo \"No tests for ioc yet\"",
+    "test:ci": "echo \"No tests for ioc yet (CI)\"",
     "check": "yarn run -T biome check .",
     "check:fix": "yarn run -T biome check --write .",
     "format": "yarn run -T biome format --write ."

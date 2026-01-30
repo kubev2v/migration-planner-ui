@@ -24,6 +24,10 @@ logs
 yarn-debug.log*
 yarn-error.log*
 
+# Test coverage
+coverage/
+**/coverage/
+
 # Editor directories and files
 .DS_Store
 .vscode/*
