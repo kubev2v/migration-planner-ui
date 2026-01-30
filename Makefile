@@ -65,3 +65,29 @@ help:
 
 # Default target to show help
 .DEFAULT_GOAL := help
+
+# ---------- CI helper targets ----------
+.PHONY: lint-check
+lint-check:
+	yarn check:all
+
+.PHONY: format-check
+format-check:
+	# Formatting issues are enforced by Biome check
+	yarn check:all
+
+.PHONY: type-check
+type-check:
+	yarn typecheck:all
+
+.PHONY: security-scan
+security-scan:
+	yarn audit:all
+
+.PHONY: test
+test:
+	yarn test:all
+
+.PHONY: build
+build:
+	yarn build:all

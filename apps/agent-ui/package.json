@@ -11,7 +11,8 @@
     "preview": "yarn run -T vite preview --host 127.0.0.1 --port 4001",
     "check": "yarn run -T biome check .",
     "check:fix": "yarn run -T biome check --write .",
-    "format": "yarn run -T biome format --write ."
+    "format": "yarn run -T biome format --write .",
+    "test": "yarn run -T vitest run --reporter=default --coverage"
   },
   "dependencies": {
     "@emotion/css": "^11.13.0",
@@ -28,5 +29,8 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "devDependencies": {
+    "vitest": "^2.1.0"
+  }
 }
