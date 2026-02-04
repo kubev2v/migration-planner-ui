@@ -1,4 +1,4 @@
-name: Pull request
+name: Pull Request
 on:
   pull_request:
     types:
@@ -8,13 +8,61 @@ on:
       - ready_for_review
     branches:
       - main
+      - "release/*"
 jobs:
-  checks:
-    # Execute lint and build when a PR is ready
-    if: ${{ ! github.event.pull_request.draft }}
+  semantic-commit-check:
+    name: Validate PR title
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      # Skip semantic PR title validation for dependabot PRs
+      # Dependabot auto-generates titles like "Bump lodash from 4.0.0 to 4.1.0"
+      - if: github.actor != 'dependabot[bot]'
+        uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            build
+            chore
+            ci
+            docs
+            feat
+            fix
+            perf
+            refactor
+            style
+            test
+  lint-and-format:
+    needs: semantic-commit-check
+    if: ${{ !github.event.pull_request.draft && (needs.semantic-commit-check.result == 'success' || needs.semantic-commit-check.result == 'skipped') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/install-dependencies
       - run: yarn check:all
+  type-check:
+    needs: semantic-commit-check
+    if: ${{ !github.event.pull_request.draft && (needs.semantic-commit-check.result == 'success' || needs.semantic-commit-check.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/install-dependencies
+      - run: yarn typecheck:all
+  test:
+    needs: semantic-commit-check
+    if: ${{ !github.event.pull_request.draft && (needs.semantic-commit-check.result == 'success' || needs.semantic-commit-check.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/install-dependencies
+      - run: yarn test:all
+  build:
+    needs: semantic-commit-check
+    if: ${{ !github.event.pull_request.draft && (needs.semantic-commit-check.result == 'success' || needs.semantic-commit-check.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/install-dependencies
       - run: yarn build:all
