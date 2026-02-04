@@ -34,7 +34,8 @@
     "clean": "rm -rf node_modules dist .tmp",
     "check": "yarn run -T biome check .",
     "check:fix": "yarn run -T biome check --write .",
-    "format": "yarn run -T biome format --write ."
+    "test": "echo 'No tests configured for this package'",
+    "typecheck": "yarn run -T tsc -b --noEmit"
   },
   "devDependencies": {
     "react": "*",

@@ -53,9 +53,6 @@
     "build": "yarn run -T tsc -b",
     "bundle": "yarn build && yarn pack --out ../../out/%s-%v.tgz",
     "clean": "rm -rf node_modules dist .tmp",
-    "update": "rm -rf src docs && openapi-generator-cli generate -c ../../openapitools.json --generator-key api-client",
-    "check": "echo 'Skipping check: this package contains mostly generated code'",
-    "check:fix": "echo 'Skipping check:fix: this package contains mostly generated code'",
-    "format": "echo 'Skipping format: this package contains mostly generated code'"
+    "update": "rm -rf src docs && openapi-generator-cli generate -c ../../openapitools.json --generator-key api-client"
   }
 }
