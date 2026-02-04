@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  release:
+    types: [published]
 
 jobs:
   build-and-push:
@@ -26,16 +28,21 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
+          username: ${{ vars.QUAY_ROBOT_NAME }}
+          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
 
       - name: Extract metadata (tags, labels)
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.QUAY_IMAGE }}
+          images: ${{ vars.QUAY_IMAGE_REPO }}
           tags: |
-            type=raw,value=latest
+            # For push to main: tag as "latest"
+            type=raw,value=latest,enable=${{ github.event_name == 'push' }}
+            # For release: tag as "stable" + semver
+            type=raw,value=stable,enable=${{ github.event_name == 'release' }}
+            type=semver,pattern={{version}},enable=${{ github.event_name == 'release' }}
+            # Always include short SHA
             type=sha,prefix=,format=short
 
       - name: Build and push

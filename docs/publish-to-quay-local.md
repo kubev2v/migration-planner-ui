@@ -4,7 +4,11 @@ This document explains how to locally reproduce the CI workflow steps to:
 - build the project,
 - create a minimal `FROM scratch` OCI image that contains only the `dist/` folder,
 - authenticate to Quay.io,
-- and push the image tagged as `:latest` and `:<short-sha>`.
+- and push the image with the appropriate tags.
+
+The CI workflow (`.github/workflows/publish.yml`) handles two scenarios:
+- **Push to `main`**: tags the image as `:latest` and `:<short-sha>`
+- **GitHub release**: tags the image as `:stable`, `:<version>` (semver), and `:<short-sha>`
 
 Requirements:
 - Podman or Docker (on Fedora, Podman is recommended).
@@ -28,7 +32,7 @@ Pick the repository name within the organization (must be unique and usually low
 
 ```bash
 # Replace <your-repo> with the name you want to use inside the org
-export IMAGE="quay.io/assisted-migration/<your-repo>"
+export IMAGE="quay.io/<your-user-or-org>/migration-planner-agent-ui"
 
 # Quay user/robot and token (with write/create permissions)
 export QUAY_USERNAME="assisted-migration+<robot>"
@@ -84,7 +88,11 @@ COPY . /dist
 EOF
 ```
 
-## 6) Tag with short SHA and push
+## 6) Tag and push
+
+The tagging strategy depends on whether you're simulating a push to `main` or a release.
+
+### Option A: Simulate push to `main` (latest)
 
 ```bash
 SHORT_SHA=$(git rev-parse --short HEAD)
@@ -95,6 +103,27 @@ docker  tag "$IMAGE:latest" "$IMAGE:$SHORT_SHA" 2>/dev/null || true
 
 # Push (use your preferred runtime)
 podman push "$IMAGE:latest" || docker push "$IMAGE:latest"
+podman push "$IMAGE:$SHORT_SHA" || docker push "$IMAGE:$SHORT_SHA"
+```
+
+### Option B: Simulate a release (stable + version)
+
+```bash
+SHORT_SHA=$(git rev-parse --short HEAD)
+VERSION="1.0.0"  # Replace with your release version
+
+# Tags
+podman tag "$IMAGE:latest" "$IMAGE:stable" 2>/dev/null || true
+podman tag "$IMAGE:latest" "$IMAGE:$VERSION" 2>/dev/null || true
+podman tag "$IMAGE:latest" "$IMAGE:$SHORT_SHA" 2>/dev/null || true
+
+docker tag "$IMAGE:latest" "$IMAGE:stable" 2>/dev/null || true
+docker tag "$IMAGE:latest" "$IMAGE:$VERSION" 2>/dev/null || true
+docker tag "$IMAGE:latest" "$IMAGE:$SHORT_SHA" 2>/dev/null || true
+
+# Push (use your preferred runtime)
+podman push "$IMAGE:stable" || docker push "$IMAGE:stable"
+podman push "$IMAGE:$VERSION" || docker push "$IMAGE:$VERSION"
 podman push "$IMAGE:$SHORT_SHA" || docker push "$IMAGE:$SHORT_SHA"
 ```
 
@@ -122,19 +151,34 @@ tar -tf _img/*/layer.tar | head
 
 ## 8) Run the GitHub Actions workflow locally with act (optional)
 
-If you want to simulate the full pipeline:
+If you want to simulate the full pipeline using the consolidated workflow (`.github/workflows/publish.yml`):
+
+### Simulate push to `main`
 
 ```bash
 act push -j build-and-push \
-  -s QUAY_USERNAME="$QUAY_USERNAME" \
-  -s QUAY_PASSWORD="$QUAY_PASSWORD" \
-  -s QUAY_IMAGE="$IMAGE" \
+  --var QUAY_ROBOT_NAME="$QUAY_USERNAME" \
+  -s QUAY_ROBOT_TOKEN="$QUAY_PASSWORD" \
+  --var QUAY_IMAGE_REPO="$IMAGE" \
   -P ubuntu-latest=catthehacker/ubuntu:act-latest
+```
+
+### Simulate a release
+
+```bash
+act release -j build-and-push \
+  --var QUAY_ROBOT_NAME="$QUAY_USERNAME" \
+  -s QUAY_ROBOT_TOKEN="$QUAY_PASSWORD" \
+  --var QUAY_IMAGE_REPO="$IMAGE" \
+  -P ubuntu-latest=catthehacker/ubuntu:act-latest \
+  --eventpath /dev/stdin <<< '{"action": "published", "release": {"tag_name": "v1.0.0"}}'
 ```
 
 Requirements:
 - `act` installed.
 - A compatible runtime (Docker in most cases; with Podman it may require additional setup).
+
+Note: The workflow uses repository variables (`vars.QUAY_ROBOT_NAME`, `vars.QUAY_IMAGE_REPO`) and secrets (`secrets.QUAY_ROBOT_TOKEN`). With `act`, use `--var` for variables and `-s` for secrets.
 
 ## Troubleshooting
 
