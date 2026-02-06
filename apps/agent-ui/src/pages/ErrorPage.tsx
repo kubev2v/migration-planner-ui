@@ -5,19 +5,14 @@ import {
   Button,
   type ButtonProps,
   Card,
+  Content,
   EmptyState,
   EmptyStateActions,
   EmptyStateBody,
   EmptyStateFooter,
-  EmptyStateIcon,
-  Text,
-  TextContent,
+  Icon,
 } from "@patternfly/react-core";
 import { ErrorCircleOIcon, WarningTriangleIcon } from "@patternfly/react-icons";
-import {
-  global_danger_color_100,
-  global_warning_color_100,
-} from "@patternfly/react-tokens";
 import type React from "react";
 import { useLocation, useParams } from "react-router-dom";
 
@@ -73,29 +68,23 @@ const ErrorPage: React.FC<Props> = (props) => {
       <Bullseye>
         <Card
           style={{ width: "36rem", height: "38rem", justifyContent: "center" }}
-          isFlat
-          isRounded
         >
           <EmptyState>
+            <Icon
+              className={classes.icon}
+              size="xl"
+              status={Number.parseInt(code) < 500 ? "warning" : "danger"}
+            >
+              {Number.parseInt(code) < 500 ? (
+                <WarningTriangleIcon />
+              ) : (
+                <ErrorCircleOIcon />
+              )}
+            </Icon>
             <EmptyStateBody>
-              <EmptyStateIcon
-                className={classes.icon}
-                icon={
-                  Number.parseInt(code) < 500
-                    ? WarningTriangleIcon
-                    : ErrorCircleOIcon
-                }
-                color={
-                  Number.parseInt(code) < 500
-                    ? global_warning_color_100.value
-                    : global_danger_color_100.value
-                }
-              />
-              <TextContent>
-                <Text component="h1">{code}</Text>
-                <Text component="h2">{message}</Text>
-                {additionalDetails && <Text>{additionalDetails}</Text>}
-              </TextContent>
+              <Content component="h1">{code}</Content>
+              <Content component="h2">{message}</Content>
+              {additionalDetails && <Content>{additionalDetails}</Content>}
             </EmptyStateBody>
 
             {actions.length > 0 && (

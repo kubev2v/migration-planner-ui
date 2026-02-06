@@ -1,18 +1,25 @@
-import { Backdrop, Bullseye } from "@patternfly/react-core";
+import { Bullseye } from "@patternfly/react-core";
 import type React from "react";
-import { useViewModel } from "../login-form/hooks/UseViewModel.ts";
-import { LoginForm } from "../login-form/LoginForm.tsx";
+import { useLoginViewModel } from "../login-form/hooks/UseLoginViewModel";
+import { LoginCard } from "../login-form/LoginCard";
 
 const AgentLoginPage: React.FC = () => {
-  const vm = useViewModel();
+  const vm = useLoginViewModel();
 
   return (
-    <>
-      <Backdrop style={{ zIndex: 0 }} />
-      <Bullseye>
-        <LoginForm vm={vm} />
-      </Bullseye>
-    </>
+    <Bullseye
+      style={{ minHeight: "100vh", height: "100vh", overflow: "hidden" }}
+    >
+      <LoginCard
+        version={vm.version}
+        isDataShared={vm.isDataShared}
+        isCollecting={vm.isCollecting}
+        status={vm.status}
+        error={vm.error}
+        onCollect={vm.onCollect}
+        onCancel={vm.onCancel}
+      />
+    </Bullseye>
   );
 };
 

@@ -8,7 +8,7 @@ export default defineConfig((_env) => {
     server: {
       proxy: {
         "/agent/api/v1": {
-          target: process.env.VITE_API_BASE_URL || "http://localhost:3333",
+          target: process.env.VITE_API_BASE_URL || "http://localhost:8000",
           changeOrigin: true,
           rewrite: (path): string => path.replace(/^\/agent/, ""),
         },
