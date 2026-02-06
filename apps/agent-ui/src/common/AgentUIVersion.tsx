@@ -1,29 +1,31 @@
-import type { AgentUiApiInterface } from "@migration-planner-ui/agent-client/apis";
-import type { VersionReply } from "@migration-planner-ui/agent-client/models";
+import type { DefaultApiInterface } from "@migration-planner-ui/agent-client/apis";
+import type { AgentStatus } from "@migration-planner-ui/agent-client/models";
 import { useInjection } from "@migration-planner-ui/ioc";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Symbols } from "../main/Symbols.ts";
 
 export const AgentUIVersion: React.FC = () => {
-  const agentApi = useInjection<AgentUiApiInterface>(Symbols.AgentApi);
-  const [versionInfo, setVersionInfo] = useState<VersionReply | null>(null);
+  const agentApi = useInjection<DefaultApiInterface>(Symbols.AgentApi);
+  const [agentStatus, setAgentStatus] = useState<AgentStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchVersion = async (): Promise<void> => {
+    const fetchStatus = async (): Promise<void> => {
       try {
-        const statusReply = await agentApi.getAgentVersion();
-        setVersionInfo(statusReply);
+        // Note: The new API doesn't have a version endpoint
+        // Using getAgentStatus instead to verify API connectivity
+        const status = await agentApi.getAgentStatus();
+        setAgentStatus(status);
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : "Unknown error occurred";
-        console.error("Error fetching agent version:", err);
-        setError(`Failed to fetch version: ${errorMessage}`);
+        console.error("Error fetching agent status:", err);
+        setError(`Failed to fetch status: ${errorMessage}`);
       }
     };
 
-    fetchVersion();
+    fetchStatus();
   }, [agentApi]);
 
   if (error) {
@@ -34,7 +36,7 @@ export const AgentUIVersion: React.FC = () => {
     );
   }
 
-  if (!versionInfo) {
+  if (!agentStatus) {
     return (
       <div data-testid="agent-api-lib-version" hidden>
         Loading...
@@ -44,7 +46,7 @@ export const AgentUIVersion: React.FC = () => {
 
   return (
     <div data-testid="agent-api-lib-version" hidden>
-      {versionInfo.version}
+      Agent: {agentStatus.mode} - Connection: {agentStatus.consoleConnection}
     </div>
   );
 };

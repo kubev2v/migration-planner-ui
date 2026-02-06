@@ -1,262 +1,778 @@
-# Generated from: Migration Planner (undocumented API for the Agent UI)
-# Commit: e12120720e22a0a537aeb107b0db2875bcb3b105
-#
-# This OpenAPI specification documents the API endpoints used by the agent-ui
-# to interact with the agent server. The endpoints are defined in:
-# internal/agent/rest.go in the RegisterApi function.
-#
-# This file was AI generated, assisted by Cursor IDE with the following prompt:
-# Prompt:
-#   Analyze how the agent-ui is interacting with the apis implemented in this module.
-#   Find where are these API endpoints defined.
-#   Generate an openapi.yaml spec file for this API. For an example, use the file located at api/v1alpha1/agent/openapi.yaml"
-openapi: 3.0.1
+openapi: 3.0.3
 info:
-  title: Migration Planner Agent UI API
-  version: undefined
-  description: API endpoints for the agent UI to interact with the migration discovery VM
-  license:
-    name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Assisted Migration Agent API
+  version: v1
 servers:
-  - url: /
+  - url: /api/v1
 paths:
-  /api/v1/status:
+  /agent:
     get:
-      tags:
-        - agent-ui
-      description: Get the current status of the agent
+      summary: Get agent status
       operationId: getAgentStatus
       responses:
         "200":
-          description: OK
+          description: Agent status
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/StatusReply"
+                $ref: "#/components/schemas/AgentStatus"
         "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-
-  /api/v1/version:
-    get:
-      tags:
-        - agent-ui
-      description: Get the version of the agent
-      operationId: getAgentVersion
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/VersionReply"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-
-  /api/v1/url:
-    get:
-      tags:
-        - agent-ui
-      description: Get the planner service UI URL
-      operationId: getPlannerUrl
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ServiceUIReply"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-
-  /api/v1/credentials:
-    put:
-      tags:
-        - agent-ui
-      description: Submit VMware credentials for the discovery process
-      operationId: submitCredentials
+          description: Internal server error
+    post:
+      summary: Change agent mode
+      operationId: setAgentMode
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Credentials"
+              $ref: "#/components/schemas/AgentModeRequest"
+      responses:
+        "200":
+          description: Mode changed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentStatus"
+        "400":
+          description: Invalid request
+        "409":
+          description: Conflict
+        "500":
+          description: Internal server error
+
+  /collector:
+    get:
+      summary: Get collector status
+      operationId: getCollectorStatus
+      responses:
+        "200":
+          description: Collector status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectorStatus"
+        "500":
+          description: Internal server error
+    post:
+      summary: Start inventory collection
+      operationId: startCollector
+      requestBody:
         required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectorStartRequest"
+      responses:
+        "202":
+          description: Collection started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectorStatus"
+        "400":
+          description: Invalid request
+        "409":
+          description: Collection already in progress
+        "500":
+          description: Internal server error
+    delete:
+      summary: Stop collection
+      operationId: stopCollector
       responses:
         "204":
-          description: Credentials accepted and saved successfully
-        "400":
-          description: Bad Request - Invalid request body or missing required fields
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Unauthorized - Invalid credentials
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "422":
-          description: Unprocessable Entity - Invalid URL format
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          description: Collection stopped
         "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          description: Internal server error
 
-  /api/v1/inventory:
+  /inventory:
     get:
-      tags:
-        - agent-ui
-      description: Download the collected inventory data
+      summary: Get collected inventory
       operationId: getInventory
       responses:
         "200":
-          description: OK
-          headers:
-            Content-Disposition:
-              schema:
-                type: string
-                example: attachment
+          description: Collected inventory
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/InventoryReply"
+                $ref: "https://raw.githubusercontent.com/kubev2v/migration-planner/main/api/v1alpha1/openapi.yaml#/components/schemas/Inventory"
         "404":
-          description: Not Found - Inventory not yet collected
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          description: Inventory not available
         "500":
-          description: Internal Server Error
+          description: Internal server error
+
+  /vms:
+    get:
+      summary: Get list of VMs with filtering and pagination
+      operationId: getVMs
+      parameters:
+        - name: minIssues
+          in: query
+          description: Filter VMs with at least this many issues
+          schema:
+            type: integer
+            minimum: 0
+          example: 1
+        - name: clusters
+          in: query
+          description: Filter by clusters (OR logic - matches VMs in any of the specified clusters)
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          example: ["cluster1", "cluster2"]
+        - name: diskSizeMin
+          in: query
+          description: Minimum disk size in MB
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+          example: 102400
+        - name: diskSizeMax
+          in: query
+          description: Maximum disk size in MB
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+          example: 512000
+        - name: memorySizeMin
+          in: query
+          description: Minimum memory size in MB
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+          example: 8192
+        - name: memorySizeMax
+          in: query
+          description: Maximum memory size in MB
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+          example: 32768
+        - name: status
+          in: query
+          description: Filter by status (OR logic - matches VMs with any of the specified statuses)
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          example: ["status1", "status2"]
+        - name: sort
+          in: query
+          description: Sort fields with direction (e.g., "name:asc" or "cluster:desc,name:asc"). Valid fields are name, vCenterState, cluster, diskSize, memory, issues.
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          example: ["cluster:asc", "name:desc"]
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+        - name: pageSize
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: List of VMs
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/VMListResponse"
+        "400":
+          description: Invalid request parameters
+        "500":
+          description: Internal server error
+
+  /vms/{id}:
+    get:
+      summary: Get details about a vm
+      operationId: GetVM
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: VM id
+          schema:
+            type: string
+      responses:
+        "200":
+          description: VM details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VMDetails"
+        "404":
+          description: VM not found
+        "500":
+          description: Internal server error
+
+  /vms/{id}/inspector:
+    get:
+      summary: Get inspection status for a specific VM
+      operationId: getVMInspectionStatus
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: VM ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: VM inspection status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VmInspectionStatus"
+        "404":
+          description: VM not found
+        "500":
+          description: Internal server error
+    delete:
+      summary: Remove VM from inspection queue
+      operationId: removeVMFromInspection
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: VMs removed from queue
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VmInspectionStatus"
+        "400":
+          description: Invalid request
+        "404":
+          description: Inspector not running
+        "500":
+          description: Internal server error
+
+  /vms/inspector:
+    get:
+      summary: Get inspector status
+      operationId: getInspectorStatus
+      responses:
+        "200":
+          description: Inspector status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InspectorStatus"
+        "500":
+          description: Internal server error
+    post:
+      summary: Start inspection for VMs
+      operationId: startInspection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InspectorStartRequest"
+      responses:
+        "202":
+          description: Inspection started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InspectorStatus"
+        "400":
+          description: Invalid request
+        "409":
+          description: Inspector already running
+        "500":
+          description: Internal server error
+    patch:
+      summary: Add more VMs to inspection queue
+      operationId: addVMsToInspection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VMIdArray"
+            example: ["vm-1236", "vm-1237"]
+      responses:
+        "202":
+          description: VMs added to inspection queue
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InspectorStatus"
+        "400":
+          description: Invalid request
+        "404":
+          description: Inspector not running
+        "500":
+          description: Internal server error
+    delete:
+      summary: Stop inspector entirely
+      operationId: stopInspection
+      responses:
+        "200":
+          description: VMs removed from queue
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InspectorStatus"
+        "400":
+          description: Already in canceling state
+        "404":
+          description: Inspector not running
+        "500":
+          description: Internal server error
+  /vddk:
+    post:
+      summary: Upload VDDK tarball
+      requestBody:
+        required: true
+        content:
+          multiple/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: VDDK tarball
+      responses:
+        "200":
+          description: Upload successfull
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - md5
+                  - bytes
+                properties:
+                  md5:
+                    type: string
+                    description: md5 sum of the uploaded tarball
+                  bytes:
+                    type: integer
+                    format: int64
+                    description: written bytes
+        "413":
+          description: File exceeds 64MB limit
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
 
 components:
   schemas:
-    StatusReply:
+    CollectorStartRequest:
       type: object
-      properties:
-        status:
-          type: string
-          description: Current status of the agent
-          enum:
-            - waiting-for-credentials
-            - gathering-initial-inventory
-            - up-to-date
-            - error
-            - not-connected
-            - source-gone
-        connected:
-          type: string
-          description: Whether the agent is connected to the planner service
-          example: "true"
-        statusInfo:
-          type: string
-          description: Human-readable status information
-        agentStateUpdateSuccessful:
-          type: string
-          description: Whether the last agent state update was successful
-          example: "true"
-        agentStateUpdateErrMessage:
-          type: string
-          description: Error message if agent state update failed
-        inventoryUpdateSuccessful:
-          type: string
-          description: Whether the last inventory update was successful
-          example: "true"
-        inventoryUpdateErrMessage:
-          type: string
-          description: Error message if inventory update failed
-      required:
-        - status
-        - connected
-        - statusInfo
-
-    VersionReply:
-      type: object
-      properties:
-        version:
-          type: string
-          description: Version of the agent
-      required:
-        - version
-
-    ServiceUIReply:
-      type: object
-      properties:
-        url:
-          type: string
-          format: uri
-          description: URL of the planner service UI
-      required:
-        - url
-
-    Credentials:
-      type: object
-      description: VMware credentials for the discovery process
-      properties:
-        url:
-          type: string
-          format: uri
-          description: URL of the VMware vCenter server
-          example: "https://vcenter.example.com"
-        username:
-          type: string
-          description: Username for VMware authentication
-          example: "user@example.com"
-        password:
-          type: string
-          format: password
-          description: Password for VMware authentication
-        isDataSharingAllowed:
-          type: boolean
-          description: Whether the user agrees to share aggregated data with Red Hat
-          default: false
       required:
         - url
         - username
         - password
+      properties:
+        url:
+          type: string
+          format: uri
+          description: vCenter URL
+        username:
+          type: string
+        password:
+          type: string
+          format: password
 
-    InventoryReply:
+    CollectorStatus:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - ready
+            - connecting
+            - connected
+            - collecting
+            - parsing
+            - collected
+            - error
+        error:
+          type: string
+          description: Error message when status is error
+
+    AgentStatus:
+      type: object
+      required:
+        - mode
+        - console_connection
+      properties:
+        mode:
+          type: string
+          enum:
+            - connected
+            - disconnected
+          description: Target mode for the agent
+        console_connection:
+          type: string
+          enum:
+            - disconnected
+            - connected
+          description: Current console connection status
+        error:
+          type: string
+          description: Connection error description
+
+    AgentModeRequest:
+      type: object
+      required:
+        - mode
+      properties:
+        mode:
+          type: string
+          enum:
+            - connected
+            - disconnected
+
+    VmInspectionStatus:
+      type: object
+      required:
+        - state
+      properties:
+        state:
+          type: string
+          enum:
+            - pending
+            - running
+            - completed
+            - canceled
+            - error
+            - not_found
+          description: Current inspection state
+        error:
+          type: string
+          description: Error message when state is error
+        results:
+          type: object
+          description: Inspection results
+
+    VM:
+      type: object
+      required:
+        - name
+        - id
+        - vCenterState
+        - cluster
+        - diskSize
+        - memory
+        - issueCount
+        - inspection
+      properties:
+        name:
+          type: string
+          description: VM name
+        id:
+          type: string
+          description: VM ID
+        vCenterState:
+          type: string
+          description: vCenter state (e.g., poweredOn, poweredOff, suspended)
+        cluster:
+          type: string
+          description: Cluster name
+        diskSize:
+          type: integer
+          format: int64
+          description: Total disk size in MB
+        memory:
+          type: integer
+          format: int64
+          description: Memory size in MB
+        issueCount:
+          type: integer
+          description: Number of issues found for this VM
+        inspection:
+          $ref: "#/components/schemas/VmInspectionStatus"
+
+    VMDetails:
+      type: object
+      required:
+        - id
+        - name
+        - powerState
+        - connectionState
+        - cpuCount
+        - coresPerSocket
+        - memoryMB
+        - disks
+        - nics
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the VM in vCenter
+        name:
+          type: string
+          description: Display name of the VM
+        uuid:
+          type: string
+          description: Universally unique identifier assigned by vCenter
+        firmware:
+          type: string
+          description: Firmware type used by the VM (bios or efi)
+        powerState:
+          type: string
+          description: Current power state of the VM (poweredOn, poweredOff, or suspended)
+        connectionState:
+          type: string
+          description: State of the connection between vCenter and the VM's host (connected, disconnected, orphaned, or inaccessible)
+        host:
+          type: string
+          description: Reference to the ESXi host where the VM is running
+        datacenter:
+          type: string
+          description: Name of the datacenter containing the VM
+        cluster:
+          type: string
+          description: Name of the cluster containing the VM
+        folder:
+          type: string
+          description: Reference to the inventory folder containing the VM
+        cpuCount:
+          type: integer
+          format: int32
+          description: Total number of virtual CPUs allocated to the VM
+        coresPerSocket:
+          type: integer
+          format: int32
+          description: Number of CPU cores per virtual socket
+        cpuAffinity:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: List of physical CPU IDs the VM is pinned to for scheduling
+        memoryMB:
+          type: integer
+          format: int32
+          description: Amount of memory allocated to the VM in megabytes
+        guestName:
+          type: string
+          description: Full name of the guest operating system as reported by VMware Tools
+        guestId:
+          type: string
+          description: VMware identifier for the guest OS type (e.g., rhel8_64Guest)
+        hostName:
+          type: string
+          description: Hostname of the guest OS as reported by VMware Tools
+        ipAddress:
+          type: string
+          description: Primary IP address of the guest OS as reported by VMware Tools
+        storageUsed:
+          type: integer
+          format: int64
+          description: Total storage space consumed by the VM in bytes
+        isTemplate:
+          type: boolean
+          description: Whether the VM is a template rather than a regular VM
+        faultToleranceEnabled:
+          type: boolean
+          description: Whether VMware Fault Tolerance is enabled, which maintains a live shadow VM for instant failover
+        nestedHVEnabled:
+          type: boolean
+          description: Whether nested virtualization is enabled, allowing hypervisors to run inside the VM
+        toolsStatus:
+          type: string
+          description: Installation status of VMware Tools (toolsNotInstalled, toolsNotRunning, toolsOld, toolsOk)
+        toolsRunningStatus:
+          type: string
+          description: Whether VMware Tools is currently running in the guest OS
+        disks:
+          type: array
+          items:
+            $ref: "#/components/schemas/VMDisk"
+          description: List of virtual disks attached to the VM
+        nics:
+          type: array
+          items:
+            $ref: "#/components/schemas/VMNIC"
+          description: List of virtual network interface cards attached to the VM
+        devices:
+          type: array
+          items:
+            $ref: "#/components/schemas/VMDevice"
+          description: List of other virtual devices attached to the VM
+        guestNetworks:
+          type: array
+          items:
+            $ref: "#/components/schemas/GuestNetwork"
+          description: Network configuration inside the guest OS as reported by VMware Tools
+        issues:
+          type: array
+          items:
+            type: string
+          description: List of issue identifiers affecting this VM
+        inspection:
+          $ref: "#/components/schemas/VmInspectionStatus"
+          description: Current inspection status for this VM
+
+    VMDisk:
       type: object
       properties:
-        agentId:
+        key:
+          type: integer
+          format: int32
+          description: Unique key identifying this disk within the VM
+        file:
           type: string
-          format: uuid
-          description: ID of the agent that collected the inventory
-        inventory:
-          $ref: "./shared-components.yaml#/components/schemas/Inventory"
-          description: The collected inventory data
-      required:
-        - agentId
-        - inventory
+          description: Path to the VMDK file in the datastore
+        capacity:
+          type: integer
+          format: int64
+          description: Disk capacity in bytes
+        shared:
+          type: boolean
+          description: Whether this disk is shared between multiple VMs
+        rdm:
+          type: boolean
+          description: Whether this is a Raw Device Mapping (direct LUN access)
+        bus:
+          type: string
+          description: Bus type (e.g., scsi, ide, sata, nvme)
+        mode:
+          type: string
+          description: Disk mode (e.g., persistent, independent_persistent, independent_nonpersistent)
 
-    Error:
+    VMNIC:
       type: object
       properties:
-        message:
+        mac:
           type: string
-          description: Error message
+          description: MAC address of the virtual NIC
+        network:
+          type: string
+          description: Reference to the network this NIC is connected to
+        index:
+          type: integer
+          description: Index of the NIC within the VM
+
+    VMDevice:
+      type: object
+      properties:
+        kind:
+          type: string
+          description: Type of virtual device (e.g., cdrom, floppy, usb, serial, parallel)
+
+    GuestNetwork:
+      type: object
+      properties:
+        device:
+          type: string
+          description: Name of the network device inside the guest OS
+        mac:
+          type: string
+          description: MAC address as seen by the guest OS
+        ip:
+          type: string
+          description: IP address assigned to this interface
+        prefixLength:
+          type: integer
+          format: int32
+          description: Network prefix length (subnet mask in CIDR notation)
+        network:
+          type: string
+          description: Network name as reported by the guest OS
+
+    VMListResponse:
+      type: object
       required:
-        - message
+        - vms
+        - total
+        - page
+        - pageCount
+      properties:
+        vms:
+          type: array
+          items:
+            $ref: "#/components/schemas/VM"
+        total:
+          type: integer
+          description: Total number of VMs matching the filter
+        page:
+          type: integer
+          description: Current page number
+        pageCount:
+          type: integer
+          description: Total number of pages
+
+    InspectorStatus:
+      type: object
+      required:
+        - state
+      properties:
+        state:
+          type: string
+          enum:
+            - ready
+            - Initiating
+            - running
+            - canceling
+            - canceled
+            - completed
+            - error
+          description: Inspector state
+        error:
+          type: string
+          description: Error message when state is error
+
+    InspectorStartRequest:
+      type: object
+      required:
+        - VcenterCredentials
+        - vmIds
+      properties:
+        VcenterCredentials:
+          $ref: "#/components/schemas/VcenterCredentials"
+        vmIds:
+          $ref: "#/components/schemas/VMIdArray"
+
+    VMIdArray:
+      type: array
+      items:
+        type: string
+      description: Array of VM id
+
+    VcenterCredentials:
+      required:
+        - url
+        - username
+        - password
+      properties:
+        url:
+          type: string
+          format: uri
+          description: vCenter URL
+        username:
+          type: string
+        password:
+          type: string
+          format: password

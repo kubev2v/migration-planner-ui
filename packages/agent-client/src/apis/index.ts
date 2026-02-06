@@ -1,3 +1,3 @@
 /* tslint:disable */
 /* eslint-disable */
-export * from './AgentUiApi.js';
+export * from './DefaultApi.js';

@@ -1,6 +1,6 @@
 import "@patternfly/react-core/dist/styles/base.css";
 
-import { AgentUiApi } from "@migration-planner-ui/agent-client/apis";
+import { DefaultApi } from "@migration-planner-ui/agent-client/apis";
 import { Configuration } from "@migration-planner-ui/agent-client/runtime";
 import {
   Container,
@@ -16,9 +16,12 @@ import { Symbols } from "./Symbols.ts";
 
 export const getConfigurationBasePath = (): string => {
   if (import.meta.env.PROD) {
-    return `${window.location.origin}/api/v1`;
+    // In production, use HTTPS
+    const origin = window.location.origin.replace(/^http:/, "https:");
+    return `${origin}/api/v1`;
   }
 
+  // In development, use the current origin (allows HTTP for local dev)
   return `${window.location.origin}/agent/api/v1`;
 };
 
@@ -27,7 +30,7 @@ function getConfiguredContainer(): Container {
     basePath: getConfigurationBasePath(),
   });
   const container = new Container();
-  container.register(Symbols.AgentApi, new AgentUiApi(agentApiConfig));
+  container.register(Symbols.AgentApi, new DefaultApi(agentApiConfig));
 
   return container;
 }

@@ -19,6 +19,16 @@ export const router = createBrowserRouter([
     },
   },
   {
+    path: "/report",
+    lazy: async () => {
+      const { ReportPage } = await import("../pages/Report/index");
+
+      return {
+        Component: ReportPage,
+      };
+    },
+  },
+  {
     path: "/error/:code",
     lazy: async () => {
       const { default: ErrorPage } = await import("../pages/ErrorPage.tsx");

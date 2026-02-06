@@ -1,0 +1,85 @@
+import {
+  Card,
+  CardBody,
+  CardTitle,
+  Content,
+  Flex,
+  FlexItem,
+  Icon,
+} from "@patternfly/react-core";
+import { InfoCircleIcon } from "@patternfly/react-icons";
+import type React from "react";
+import MigrationChart from "./MigrationChart";
+
+interface OSDistributionProps {
+  osData: {
+    [osName: string]: {
+      count: number;
+      supported: boolean;
+      upgradeRecommendation: string;
+    };
+  };
+  isExportMode?: boolean;
+}
+
+export const OSDistribution: React.FC<OSDistributionProps> = ({
+  osData,
+  isExportMode = false,
+}) => {
+  const hasUpgradeRecommendation = Object.values(osData).some(
+    (o) => o.upgradeRecommendation && o.upgradeRecommendation.trim() !== "",
+  );
+
+  const dataEntries = Object.entries(osData).filter(([os]) => os.trim() !== "");
+  const sorted = dataEntries.sort(([, a], [, b]) => b.count - a.count);
+
+  const chartData = sorted.map(([os, osInfo]) => ({
+    name: os,
+    count: osInfo.count,
+    legendCategory: osInfo.supported
+      ? "Supported by Red Hat"
+      : "Not supported by Red Hat",
+    infoText: osInfo.upgradeRecommendation,
+  }));
+
+  const customLegend = {
+    "Supported by Red Hat": "#28a745",
+    "Not supported by Red Hat": "#d9534f",
+  };
+
+  return (
+    <Card
+      className={isExportMode ? "dashboard-card-print" : "dashboard-card"}
+      id="os-distribution"
+    >
+      <CardTitle>
+        <i className="fas fa-database" /> Operating Systems
+      </CardTitle>
+      <CardBody>
+        {hasUpgradeRecommendation ? (
+          <Flex
+            alignItems={{ default: "alignItemsCenter" }}
+            spaceItems={{ default: "spaceItemsSm" }}
+          >
+            <FlexItem>
+              <Icon status="info">
+                <InfoCircleIcon />
+              </Icon>
+            </FlexItem>
+            <FlexItem>
+              <Content component="p">
+                <strong>OS must be upgraded to be supported</strong>
+              </Content>
+            </FlexItem>
+          </Flex>
+        ) : null}
+        <MigrationChart
+          data={chartData}
+          legend={customLegend}
+          maxHeight="350px"
+          barHeight={12}
+        />
+      </CardBody>
+    </Card>
+  );
+};
