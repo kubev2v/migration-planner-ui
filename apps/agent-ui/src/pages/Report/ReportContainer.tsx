@@ -1,9 +1,5 @@
 import type { DefaultApiInterface } from "@migration-planner-ui/agent-client/apis";
-import type {
-  AgentStatus,
-  Inventory,
-  VM,
-} from "@migration-planner-ui/agent-client/models";
+import type { Inventory, VM } from "@migration-planner-ui/agent-client/models";
 import { useInjection } from "@migration-planner-ui/ioc";
 import {
   Content,
@@ -21,6 +17,7 @@ import {
 } from "@patternfly/react-core";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { useAgentStatus } from "../../common/AgentStatusContext";
 import {
   DataSharingAlert,
   DataSharingModal,
@@ -32,8 +29,8 @@ import { Header } from "./Header";
 
 export const ReportContainer: React.FC = () => {
   const agentApi = useInjection<DefaultApiInterface>(Symbols.AgentApi);
+  const { agentStatus, refetch: refetchAgentStatus } = useAgentStatus();
   const [inventory, setInventory] = useState<Inventory | null>(null);
-  const [agentStatus, setAgentStatus] = useState<AgentStatus | null>(null);
   const [vmsList, setVmsList] = useState<VM[]>([]);
   const [vmsLoading, setVmsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -44,17 +41,13 @@ export const ReportContainer: React.FC = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isShareLoading, setIsShareLoading] = useState(false);
   const [shareError, setShareError] = useState<string | null>(null);
-  // Fetch inventory and agent status
+  // Fetch inventory only (agent status comes from context)
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [inventoryData, statusData] = await Promise.all([
-          agentApi.getInventory(),
-          agentApi.getAgentStatus(),
-        ]);
+        const inventoryData = await agentApi.getInventory();
         setInventory(inventoryData);
-        setAgentStatus(statusData);
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : "Failed to load data";
@@ -171,9 +164,8 @@ export const ReportContainer: React.FC = () => {
     setShareError(null); // Clear any previous errors
     try {
       await agentApi.setAgentMode({ agentModeRequest: { mode: "connected" } });
-      // Refresh agent status
-      const updatedStatus = await agentApi.getAgentStatus();
-      setAgentStatus(updatedStatus);
+      // Refresh agent status from context
+      await refetchAgentStatus();
       // Clear error and close modal on success
       setShareError(null);
       setIsShareModalOpen(false);

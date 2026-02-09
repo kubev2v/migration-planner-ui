@@ -10,6 +10,7 @@ import { Spinner } from "@patternfly/react-core";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
+import { AgentStatusProvider } from "../common/AgentStatusContext.tsx";
 import { AgentUIVersion } from "../common/AgentUIVersion.tsx";
 import { router } from "./Router.tsx";
 import { Symbols } from "./Symbols.ts";
@@ -48,10 +49,12 @@ function main(): void {
   ReactDOM.createRoot(root).render(
     <React.StrictMode>
       <DependencyInjectionProvider container={container}>
-        <React.Suspense fallback={<Spinner />}>
-          <AgentUIVersion />
-          <RouterProvider router={router} />
-        </React.Suspense>
+        <AgentStatusProvider>
+          <React.Suspense fallback={<Spinner />}>
+            <AgentUIVersion />
+            <RouterProvider router={router} />
+          </React.Suspense>
+        </AgentStatusProvider>
       </DependencyInjectionProvider>
     </React.StrictMode>,
   );
