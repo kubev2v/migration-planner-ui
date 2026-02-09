@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Content,
   Modal,
@@ -13,6 +14,7 @@ interface DataSharingModalProps {
   onConfirm: () => void;
   onCancel: () => void;
   isLoading?: boolean;
+  error?: string | null;
 }
 
 export const DataSharingModal: React.FC<DataSharingModalProps> = ({
@@ -20,6 +22,7 @@ export const DataSharingModal: React.FC<DataSharingModalProps> = ({
   onConfirm,
   onCancel,
   isLoading = false,
+  error = null,
 }) => {
   return (
     <Modal
@@ -31,6 +34,16 @@ export const DataSharingModal: React.FC<DataSharingModalProps> = ({
     >
       <ModalHeader title="Share data" labelId="data-sharing-modal-title" />
       <ModalBody id="data-sharing-modal-body">
+        {error && (
+          <Alert
+            variant="danger"
+            title="Error"
+            isInline
+            style={{ marginBottom: "1rem" }}
+          >
+            {error}
+          </Alert>
+        )}
         <Content component="p">
           By sharing data with Red Hat, you gain access to exclusive cloud
           capabilities and enhanced insights.
@@ -48,10 +61,10 @@ export const DataSharingModal: React.FC<DataSharingModalProps> = ({
           isLoading={isLoading}
           isDisabled={isLoading}
         >
-          Share
+          {error ? "Retry" : "Share"}
         </Button>
         <Button variant="link" onClick={onCancel} isDisabled={isLoading}>
-          Cancel
+          {error ? "Close" : "Cancel"}
         </Button>
       </ModalFooter>
     </Modal>

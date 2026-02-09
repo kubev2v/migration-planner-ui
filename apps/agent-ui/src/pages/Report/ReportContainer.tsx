@@ -43,6 +43,7 @@ export const ReportContainer: React.FC = () => {
   const [isClusterSelectOpen, setIsClusterSelectOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isShareLoading, setIsShareLoading] = useState(false);
+  const [shareError, setShareError] = useState<string | null>(null);
   // Fetch inventory and agent status
   useEffect(() => {
     const fetchData = async () => {
@@ -167,20 +168,30 @@ export const ReportContainer: React.FC = () => {
 
   const handleShareConfirm = async () => {
     setIsShareLoading(true);
+    setShareError(null); // Clear any previous errors
     try {
       await agentApi.setAgentMode({ agentModeRequest: { mode: "connected" } });
       // Refresh agent status
       const updatedStatus = await agentApi.getAgentStatus();
       setAgentStatus(updatedStatus);
+      // Clear error and close modal on success
+      setShareError(null);
       setIsShareModalOpen(false);
     } catch (err) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to enable data sharing. Please try again.";
+      setShareError(errorMessage);
       console.error("Error changing agent mode:", err);
+      // Keep modal open on error so user can retry
     } finally {
       setIsShareLoading(false);
     }
   };
 
   const handleShareCancel = () => {
+    setShareError(null); // Clear error when cancelling
     setIsShareModalOpen(false);
   };
 
@@ -295,6 +306,7 @@ export const ReportContainer: React.FC = () => {
         onConfirm={handleShareConfirm}
         onCancel={handleShareCancel}
         isLoading={isShareLoading}
+        error={shareError}
       />
     </PageSection>
   );

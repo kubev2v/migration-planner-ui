@@ -103,7 +103,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <VMMigrationStatus
                 data={{
                   migratable: vms.totalMigratable || 0,
-                  nonMigratable: (vms.total || 0) - (vms.totalMigratable || 0),
+                  nonMigratable: Math.max(
+                    0,
+                    (vms.total || 0) - (vms.totalMigratable || 0),
+                  ),
                 }}
                 isExportMode={isExportMode}
               />

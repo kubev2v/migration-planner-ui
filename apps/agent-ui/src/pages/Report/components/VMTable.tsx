@@ -408,6 +408,9 @@ export const VMTable: React.FC<VMTableProps> = ({
         {state === "suspended" && (
           <ExclamationTriangleIcon color="var(--pf-t--global--icon--color--status--warning--default)" />
         )}
+        {state === "poweredOn" && hasIssues && (
+          <ExclamationTriangleIcon color="var(--pf-t--global--icon--color--status--warning--default)" />
+        )}
         {state === "poweredOn" && !hasIssues && (
           <CheckCircleIcon color="var(--pf-t--global--icon--color--status--success--default)" />
         )}

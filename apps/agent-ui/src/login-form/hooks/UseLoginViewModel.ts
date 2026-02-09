@@ -113,7 +113,7 @@ export const useLoginViewModel = (): LoginViewModelInterface => {
   }, [isCollecting, agentApi, navigate]);
 
   const onCollect = useCallback(
-    async (credentials: Credentials) => {
+    async (credentials: Credentials, _isDataShared: boolean) => {
       setError(null);
       setIsCollecting(true);
       setStatus("connecting");
@@ -137,6 +137,7 @@ export const useLoginViewModel = (): LoginViewModelInterface => {
           { signal },
         );
         // Status will be updated by the polling effect
+        // Note: _isDataShared is accepted for interface compatibility but not currently used in the API
       } catch (err) {
         setIsCollecting(false);
         setStatus(null);
