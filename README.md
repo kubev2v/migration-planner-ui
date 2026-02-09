@@ -208,6 +208,13 @@ The container automatically mounts the project directory, so generated files are
    ```bash
    yarn check:all
    ```
+
+## Local Development
+
+For detailed instructions on setting up a complete local development environment with the Migration Planner backend and Agent, see:
+
+- `docs/DEVELOPMENT.md`
+
 ## Publish OCI image on Quay (local test)
 
 To locally reproduce the publishing of a minimal OCI image (only `dist/`) to Quay.io and test authentication/push, follow the guide at:

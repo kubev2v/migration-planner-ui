@@ -13,6 +13,7 @@ import {
 import { DataProcessorIcon } from "@patternfly/react-icons";
 import type React from "react";
 import { useMemo, useState } from "react";
+import { dashboardStyles } from "./dashboardStyles";
 import MigrationDonutChart from "./MigrationDonutChart";
 
 interface CpuAndMemoryOverviewProps {
@@ -94,7 +95,9 @@ export const CpuAndMemoryOverview: React.FC<CpuAndMemoryOverviewProps> = ({
 
   return (
     <Card
-      className={isExportMode ? "dashboard-card-print" : "dashboard-card"}
+      className={
+        isExportMode ? dashboardStyles.cardPrint : dashboardStyles.card
+      }
       id="cpu-memory-overview"
     >
       <CardTitle>

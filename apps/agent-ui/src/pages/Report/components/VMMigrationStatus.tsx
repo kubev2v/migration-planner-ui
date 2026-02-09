@@ -1,6 +1,7 @@
 import { Card, CardBody, CardTitle } from "@patternfly/react-core";
 import { VirtualMachineIcon } from "@patternfly/react-icons";
 import type React from "react";
+import { dashboardStyles } from "./dashboardStyles";
 import MigrationDonutChart from "./MigrationDonutChart";
 
 interface VmMigrationStatusProps {
@@ -37,7 +38,9 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
 
   return (
     <Card
-      className={isExportMode ? "dashboard-card-print" : "dashboard-card"}
+      className={
+        isExportMode ? dashboardStyles.cardPrint : dashboardStyles.card
+      }
       id="vm-migration-status"
     >
       <CardTitle>

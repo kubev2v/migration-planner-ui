@@ -9,6 +9,7 @@ import {
 } from "@patternfly/react-core";
 import { DesktopIcon, InfoCircleIcon } from "@patternfly/react-icons";
 import type React from "react";
+import { dashboardStyles } from "./dashboardStyles";
 import MigrationChart from "./MigrationChart";
 
 interface OSDistributionProps {
@@ -49,7 +50,9 @@ export const OSDistribution: React.FC<OSDistributionProps> = ({
 
   return (
     <Card
-      className={isExportMode ? "dashboard-card-print" : "dashboard-card"}
+      className={
+        isExportMode ? dashboardStyles.cardPrint : dashboardStyles.card
+      }
       id="os-distribution"
     >
       <CardTitle>

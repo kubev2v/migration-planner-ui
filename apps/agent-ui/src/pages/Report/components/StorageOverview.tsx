@@ -8,6 +8,7 @@ import {
 import { DatabaseIcon } from "@patternfly/react-icons";
 import type React from "react";
 import { useMemo } from "react";
+import { dashboardStyles } from "./dashboardStyles";
 import MigrationDonutChart from "./MigrationDonutChart";
 
 interface DiskTierData {
@@ -79,7 +80,9 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
 
   return (
     <Card
-      className={isExportMode ? "dashboard-card-print" : "dashboard-card"}
+      className={
+        isExportMode ? dashboardStyles.cardPrint : dashboardStyles.card
+      }
       id="storage-overview"
     >
       <CardTitle>

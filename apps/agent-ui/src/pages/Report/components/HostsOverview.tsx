@@ -9,6 +9,7 @@ import {
 import { ServerIcon } from "@patternfly/react-icons";
 import type React from "react";
 import { useMemo } from "react";
+import { dashboardStyles } from "./dashboardStyles";
 import MigrationDonutChart from "./MigrationDonutChart";
 
 interface HostsOverviewProps {
@@ -77,7 +78,9 @@ export const HostsOverview: React.FC<HostsOverviewProps> = ({
 
   return (
     <Card
-      className={isExportMode ? "dashboard-card-print" : "dashboard-card"}
+      className={
+        isExportMode ? dashboardStyles.cardPrint : dashboardStyles.card
+      }
       id="hosts-overview"
     >
       <CardTitle>

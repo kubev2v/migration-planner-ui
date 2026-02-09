@@ -2,6 +2,7 @@ import type { MigrationIssue } from "@migration-planner-ui/agent-client/models";
 import { Card, CardBody, CardTitle, Icon } from "@patternfly/react-core";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 import type React from "react";
+import { dashboardStyles } from "./dashboardStyles";
 import { ReportTable } from "./ReportTable";
 
 interface WarningsTableProps {
@@ -15,7 +16,9 @@ export const WarningsTable: React.FC<WarningsTableProps> = ({
 }) => {
   return (
     <Card
-      className={isExportMode ? "dashboard-card-print" : "dashboard-card"}
+      className={
+        isExportMode ? dashboardStyles.cardPrint : dashboardStyles.card
+      }
       id="warnings-table"
     >
       <CardTitle>

@@ -1,5 +1,4 @@
-import "./ClustersOverview.css";
-
+import { css } from "@emotion/css";
 import type { InventoryData } from "@migration-planner-ui/agent-client/models";
 import {
   Card,
@@ -17,6 +16,7 @@ import { DatabaseIcon } from "@patternfly/react-icons";
 import type React from "react";
 import { useMemo, useState } from "react";
 
+import { dashboardStyles } from "./dashboardStyles";
 import MigrationDonutChart from "./MigrationDonutChart";
 
 interface ClustersOverviewProps {
@@ -32,6 +32,103 @@ const VIEW_MODE_LABELS: Record<ViewMode, string> = {
   dataCenterDistribution: "Cluster distribution by data center",
   vmByCluster: "VM distribution by cluster",
   cpuOverCommitment: "Cluster CPU over commitment",
+};
+
+// Emotion styles
+const styles = {
+  cpuOvercommitBoxes: css`
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 124px 0 16px;
+    flex-wrap: wrap;
+
+    @media (max-width: 1200px) {
+      margin: 72px 0 12px;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      margin: 40px 0 8px;
+      gap: 16px;
+    }
+  `,
+
+  cpuOvercommitBox: css`
+    color: #000;
+    min-width: 120px;
+    height: 64px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    padding: 0 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 768px) {
+      min-width: 96px;
+      height: 56px;
+      font-size: 18px;
+      padding: 0 12px;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 480px) {
+      min-width: 88px;
+      height: 48px;
+      font-size: 16px;
+      border-radius: 8px;
+    }
+  `,
+
+  cpuOvercommitLegend: css`
+    display: flex;
+    justify-content: center;
+    gap: 6px 24px;
+    flex-wrap: wrap;
+    margin-top: 20%;
+
+    @media (max-width: 1200px) {
+      margin-top: 20%;
+      gap: 6px 20px;
+    }
+
+    @media (max-width: 768px) {
+      margin-top: 20%;
+      gap: 6px 16px;
+    }
+  `,
+
+  cpuOvercommitLegendItem: css`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  `,
+
+  cpuOvercommitLegendSwatch: css`
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+
+    @media (max-width: 768px) {
+      width: 10px;
+      height: 10px;
+    }
+  `,
+
+  cpuOvercommitLegendText: css`
+    font-size: 16px;
+
+    @media (max-width: 768px) {
+      font-size: 16px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 14px;
+    }
+  `,
 };
 
 // Extended palette to avoid repeating colors when we have >4 slices
@@ -211,7 +308,9 @@ export const ClustersOverview: React.FC<ClustersOverviewProps> = ({
 
   return (
     <Card
-      className={isExportMode ? "dashboard-card-print" : "dashboard-card"}
+      className={
+        isExportMode ? dashboardStyles.cardPrint : dashboardStyles.card
+      }
       id="clusters-overview"
       data-export-block={isExportMode ? "3.1" : undefined}
       style={{ overflow: "hidden" }}
@@ -283,28 +382,28 @@ export const ClustersOverview: React.FC<ClustersOverviewProps> = ({
             </div>
           ) : (
             <>
-              <div className="cpu-overcommit__boxes">
+              <div className={styles.cpuOvercommitBoxes}>
                 {chartData.map((item) => (
                   <div
                     key={`cpu-box-${item.legendCategory}`}
-                    className="cpu-overcommit__box"
+                    className={styles.cpuOvercommitBox}
                     style={{ background: legend[item.legendCategory] }}
                   >
                     {item.countDisplay}
                   </div>
                 ))}
               </div>
-              <div className="cpu-overcommit__legend">
+              <div className={styles.cpuOvercommitLegend}>
                 {chartData.map((item) => (
                   <div
                     key={`cpu-legend-${item.legendCategory}`}
-                    className="cpu-overcommit__legend-item"
+                    className={styles.cpuOvercommitLegendItem}
                   >
                     <span
-                      className="cpu-overcommit__legend-swatch"
+                      className={styles.cpuOvercommitLegendSwatch}
                       style={{ background: legend[item.legendCategory] }}
                     />
-                    <span className="cpu-overcommit__legend-text">
+                    <span className={styles.cpuOvercommitLegendText}>
                       {item.legendCategory} ({item.countDisplay})
                     </span>
                   </div>

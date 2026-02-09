@@ -26,6 +26,6 @@
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
+    "editor.defaultFormatter": "biomejs.biome"
   }
 }

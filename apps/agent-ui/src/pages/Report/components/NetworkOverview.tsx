@@ -17,6 +17,7 @@ import {
 import { TopologyIcon } from "@patternfly/react-icons";
 import type React from "react";
 import { useMemo, useState } from "react";
+import { dashboardStyles } from "./dashboardStyles";
 
 import MigrationDonutChart from "./MigrationDonutChart";
 
@@ -250,7 +251,9 @@ export const NetworkOverview: React.FC<NetworkOverviewProps> = ({
 
   return (
     <Card
-      className={isExportMode ? "dashboard-card-print" : "dashboard-card"}
+      className={
+        isExportMode ? dashboardStyles.cardPrint : dashboardStyles.card
+      }
       id="network-overview"
       style={{ overflow: "hidden" }}
     >
