@@ -46,11 +46,10 @@ export const LoginFormComponent: React.FC<LoginFormComponentProps> = ({
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (isFormValid && !isLoading && !isDisabled) {
-      // Ensure URL ends with /sdk for the backend
-      let processedUrl = url.trim();
+      // Normalize URL by removing trailing slash first
+      let processedUrl = url.trim().replace(/\/$/, "");
+      // Only append /sdk if it doesn't already end with /sdk
       if (!processedUrl.endsWith("/sdk")) {
-        // Remove trailing slash if present before adding /sdk
-        processedUrl = processedUrl.replace(/\/$/, "");
         processedUrl = `${processedUrl}/sdk`;
       }
       collect({ url: processedUrl, username, password });

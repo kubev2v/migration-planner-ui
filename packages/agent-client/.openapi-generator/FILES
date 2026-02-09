@@ -28,7 +28,6 @@ docs/VMResourceBreakdown.md
 docs/VMs.md
 docs/VcenterCredentials.md
 docs/VddkPost200Response.md
-docs/VddkPostRequest.md
 docs/VmInspectionStatus.md
 src/apis/DefaultApi.ts
 src/apis/index.ts
@@ -62,7 +61,6 @@ src/models/VMResourceBreakdown.ts
 src/models/VMs.ts
 src/models/VcenterCredentials.ts
 src/models/VddkPost200Response.ts
-src/models/VddkPostRequest.ts
 src/models/VmInspectionStatus.ts
 src/models/index.ts
 src/runtime.ts

@@ -13,6 +13,7 @@ import {
   MenuToggle,
   type MenuToggleElement,
 } from "@patternfly/react-core";
+import { DatabaseIcon } from "@patternfly/react-icons";
 import type React from "react";
 import { useMemo, useState } from "react";
 
@@ -82,11 +83,7 @@ export const ClustersOverview: React.FC<ClustersOverviewProps> = ({
 
       const withValue = entries
         .map(([clusterName, data]) => {
-          const raw = (
-            data?.infra as unknown as {
-              cpuOverCommitment?: unknown;
-            }
-          )?.cpuOverCommitment;
+          const raw = data?.infra?.cpuOverCommitment;
           const value = parseCpuOverCommitment(raw);
           return { clusterName, value };
         })
@@ -228,7 +225,7 @@ export const ClustersOverview: React.FC<ClustersOverviewProps> = ({
           <FlexItem>
             <div>
               <div>
-                <i className="fas fa-database" /> Clusters
+                <DatabaseIcon /> Clusters
               </div>
               {!isExportMode && (
                 <div style={{ color: "#6a6e73", fontSize: "0.85rem" }}>

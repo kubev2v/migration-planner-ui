@@ -52,6 +52,7 @@ type SortableColumn =
 const statusLabels: Record<string, string> = {
   poweredOn: "Powered on",
   poweredOff: "Powered off",
+  suspended: "Suspended",
 };
 
 // Disk size ranges in MB (displayed as TB)
@@ -396,18 +397,18 @@ export const VMTable: React.FC<VMTableProps> = ({
 
   // Render status cell with icon
   const renderStatus = (vm: VM) => {
-    const state = vm.vCenterState || "green";
+    const state = vm.vCenterState || "poweredOff";
     const hasIssues = (vm.issueCount || 0) > 0;
 
     return (
       <span>
-        {state === "red" && (
+        {state === "poweredOff" && (
           <ExclamationCircleIcon color="var(--pf-t--global--icon--color--status--danger--default)" />
         )}
-        {state === "yellow" && (
+        {state === "suspended" && (
           <ExclamationTriangleIcon color="var(--pf-t--global--icon--color--status--warning--default)" />
         )}
-        {state === "green" && !hasIssues && (
+        {state === "poweredOn" && !hasIssues && (
           <CheckCircleIcon color="var(--pf-t--global--icon--color--status--success--default)" />
         )}
         {statusLabels[state] || state}
@@ -440,7 +441,7 @@ export const VMTable: React.FC<VMTableProps> = ({
             <ToolbarItem>
               <Dropdown
                 isOpen={isFilterOpen}
-                onSelect={() => {}}
+                onSelect={() => { }}
                 onOpenChange={setIsFilterOpen}
                 toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
                   <MenuToggle

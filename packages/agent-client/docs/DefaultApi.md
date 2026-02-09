@@ -18,7 +18,7 @@ All URIs are relative to */api/v1*
 | [**startInspection**](DefaultApi.md#startinspection) | **POST** /vms/inspector | Start inspection for VMs |
 | [**stopCollector**](DefaultApi.md#stopcollector) | **DELETE** /collector | Stop collection |
 | [**stopInspection**](DefaultApi.md#stopinspection) | **DELETE** /vms/inspector | Stop inspector entirely |
-| [**vddkPost**](DefaultApi.md#vddkpostoperation) | **POST** /vddk | Upload VDDK tarball |
+| [**vddkPost**](DefaultApi.md#vddkpost) | **POST** /vddk | Upload VDDK tarball |
 
 
 
@@ -943,7 +943,7 @@ No authorization required
 
 ## vddkPost
 
-> VddkPost200Response vddkPost(vddkPostRequest)
+> VddkPost200Response vddkPost(file)
 
 Upload VDDK tarball
 
@@ -954,16 +954,16 @@ import {
   Configuration,
   DefaultApi,
 } from '@migration-planner-ui/agent-client';
-import type { VddkPostOperationRequest } from '@migration-planner-ui/agent-client';
+import type { VddkPostRequest } from '@migration-planner-ui/agent-client';
 
 async function example() {
   console.log("🚀 Testing @migration-planner-ui/agent-client SDK...");
   const api = new DefaultApi();
 
   const body = {
-    // VddkPostRequest
-    vddkPostRequest: ...,
-  } satisfies VddkPostOperationRequest;
+    // Blob | VDDK tarball
+    file: BINARY_DATA_HERE,
+  } satisfies VddkPostRequest;
 
   try {
     const data = await api.vddkPost(body);
@@ -982,7 +982,7 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **vddkPostRequest** | [VddkPostRequest](VddkPostRequest.md) |  | |
+| **file** | `Blob` | VDDK tarball | [Defaults to `undefined`] |
 
 ### Return type
 
@@ -994,7 +994,7 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: `multiple/form-data`
+- **Content-Type**: `multipart/form-data`
 - **Accept**: `application/json`
 
 

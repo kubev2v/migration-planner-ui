@@ -14,6 +14,7 @@ import {
   MenuToggle,
   type MenuToggleElement,
 } from "@patternfly/react-core";
+import { TopologyIcon } from "@patternfly/react-icons";
 import type React from "react";
 import { useMemo, useState } from "react";
 
@@ -262,7 +263,7 @@ export const NetworkOverview: React.FC<NetworkOverviewProps> = ({
           <FlexItem>
             <div>
               <div>
-                <i className="fas fa-network-wired" /> Networks
+                <TopologyIcon /> Networks
               </div>
               {!isExportMode && viewMode === "networkDistribution" && (
                 <div style={{ color: "#6a6e73", fontSize: "0.85rem" }}>

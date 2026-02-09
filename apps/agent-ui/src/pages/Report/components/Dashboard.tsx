@@ -48,43 +48,43 @@ export const Dashboard: React.FC<DashboardProps> = ({
   // Transform osInfo to include both count and supported fields
   const osData = vms.osInfo
     ? Object.entries(vms.osInfo).reduce(
-        (acc, [osName, osInfo]) => {
-          acc[osName] = {
-            count: osInfo.count,
-            supported: osInfo.supported,
-            upgradeRecommendation: osInfo.upgradeRecommendation || "",
-          };
-          return acc;
-        },
-        {} as {
-          [osName: string]: {
-            count: number;
-            supported: boolean;
-            upgradeRecommendation: string;
-          };
-        },
-      )
+      (acc, [osName, osInfo]) => {
+        acc[osName] = {
+          count: osInfo.count,
+          supported: osInfo.supported,
+          upgradeRecommendation: osInfo.upgradeRecommendation || "",
+        };
+        return acc;
+      },
+      {} as {
+        [osName: string]: {
+          count: number;
+          supported: boolean;
+          upgradeRecommendation: string;
+        };
+      },
+    )
     : Object.entries(vms.os || {}).reduce(
-        (acc, [osName, count]) => {
-          acc[osName] = {
-            count: count,
-            supported: true,
-            upgradeRecommendation: "",
-          };
-          return acc;
-        },
-        {} as {
-          [osName: string]: {
-            count: number;
-            supported: boolean;
-            upgradeRecommendation: string;
-          };
-        },
-      );
+      (acc, [osName, count]) => {
+        acc[osName] = {
+          count: count,
+          supported: true,
+          upgradeRecommendation: "",
+        };
+        return acc;
+      },
+      {} as {
+        [osName: string]: {
+          count: number;
+          supported: boolean;
+          upgradeRecommendation: string;
+        };
+      },
+    );
 
   if (!clusterFound && !isAggregateView) {
     return (
-      <PageSection hasBodyWrapper={false}>
+      <PageSection hasBodyWrapper={false} className="dashboard-container">
         <Grid hasGutter>
           <GridItem span={12}>
             No data is available for the selected cluster.
@@ -95,7 +95,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   }
 
   return (
-    <PageSection hasBodyWrapper={false}>
+    <PageSection hasBodyWrapper={false} className="dashboard-container">
       <Grid hasGutter>
         <GridItem span={12} data-export-block={isExportMode ? "2" : undefined}>
           <Gallery hasGutter minWidths={{ default: "40%" }}>

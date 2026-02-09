@@ -5,6 +5,7 @@ import {
   Flex,
   FlexItem,
 } from "@patternfly/react-core";
+import { DatabaseIcon } from "@patternfly/react-icons";
 import type React from "react";
 import { useMemo } from "react";
 import MigrationDonutChart from "./MigrationDonutChart";
@@ -87,7 +88,7 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
           alignItems={{ default: "alignItemsCenter" }}
         >
           <FlexItem>
-            <i className="fas fa-database" /> Disks
+            <DatabaseIcon /> Disks
           </FlexItem>
         </Flex>
       </CardTitle>

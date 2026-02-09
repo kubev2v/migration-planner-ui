@@ -7,7 +7,7 @@ import {
   FlexItem,
   Icon,
 } from "@patternfly/react-core";
-import { InfoCircleIcon } from "@patternfly/react-icons";
+import { DesktopIcon, InfoCircleIcon } from "@patternfly/react-icons";
 import type React from "react";
 import MigrationChart from "./MigrationChart";
 
@@ -53,7 +53,7 @@ export const OSDistribution: React.FC<OSDistributionProps> = ({
       id="os-distribution"
     >
       <CardTitle>
-        <i className="fas fa-database" /> Operating Systems
+        <DesktopIcon /> Operating Systems
       </CardTitle>
       <CardBody>
         {hasUpgradeRecommendation ? (

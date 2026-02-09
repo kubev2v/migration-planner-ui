@@ -29,5 +29,4 @@ export * from './VMResourceBreakdown.js';
 export * from './VMs.js';
 export * from './VcenterCredentials.js';
 export * from './VddkPost200Response.js';
-export * from './VddkPostRequest.js';
 export * from './VmInspectionStatus.js';

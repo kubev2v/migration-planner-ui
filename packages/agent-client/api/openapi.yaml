@@ -348,7 +348,7 @@ paths:
       requestBody:
         required: true
         content:
-          multiple/form-data:
+          multipart/form-data:
             schema:
               type: object
               required:

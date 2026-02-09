@@ -25,7 +25,6 @@ import type {
   VMDetails,
   VMListResponse,
   VddkPost200Response,
-  VddkPostRequest,
   VmInspectionStatus,
 } from '../models/index.js';
 import {
@@ -49,8 +48,6 @@ import {
     VMListResponseToJSON,
     VddkPost200ResponseFromJSON,
     VddkPost200ResponseToJSON,
-    VddkPostRequestFromJSON,
-    VddkPostRequestToJSON,
     VmInspectionStatusFromJSON,
     VmInspectionStatusToJSON,
 } from '../models/index.js';
@@ -96,8 +93,8 @@ export interface StartInspectionRequest {
     inspectorStartRequest: InspectorStartRequest;
 }
 
-export interface VddkPostOperationRequest {
-    vddkPostRequest: VddkPostRequest;
+export interface VddkPostRequest {
+    file: Blob;
 }
 
 /**
@@ -323,17 +320,17 @@ export interface DefaultApiInterface {
     /**
      * 
      * @summary Upload VDDK tarball
-     * @param {VddkPostRequest} vddkPostRequest 
+     * @param {Blob} file VDDK tarball
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApiInterface
      */
-    vddkPostRaw(requestParameters: VddkPostOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VddkPost200Response>>;
+    vddkPostRaw(requestParameters: VddkPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VddkPost200Response>>;
 
     /**
      * Upload VDDK tarball
      */
-    vddkPost(requestParameters: VddkPostOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VddkPost200Response>;
+    vddkPost(requestParameters: VddkPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VddkPost200Response>;
 
 }
 
@@ -854,11 +851,11 @@ export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
     /**
      * Upload VDDK tarball
      */
-    async vddkPostRaw(requestParameters: VddkPostOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VddkPost200Response>> {
-        if (requestParameters['vddkPostRequest'] == null) {
+    async vddkPostRaw(requestParameters: VddkPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VddkPost200Response>> {
+        if (requestParameters['file'] == null) {
             throw new runtime.RequiredError(
-                'vddkPostRequest',
-                'Required parameter "vddkPostRequest" was null or undefined when calling vddkPost().'
+                'file',
+                'Required parameter "file" was null or undefined when calling vddkPost().'
             );
         }
 
@@ -866,7 +863,25 @@ export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'multiple/form-data';
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters['file'] != null) {
+            formParams.append('file', requestParameters['file'] as any);
+        }
 
 
         let urlPath = `/vddk`;
@@ -876,7 +891,7 @@ export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: VddkPostRequestToJSON(requestParameters['vddkPostRequest']),
+            body: formParams,
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => VddkPost200ResponseFromJSON(jsonValue));
@@ -885,7 +900,7 @@ export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
     /**
      * Upload VDDK tarball
      */
-    async vddkPost(requestParameters: VddkPostOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VddkPost200Response> {
+    async vddkPost(requestParameters: VddkPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VddkPost200Response> {
         const response = await this.vddkPostRaw(requestParameters, initOverrides);
         return await response.value();
     }

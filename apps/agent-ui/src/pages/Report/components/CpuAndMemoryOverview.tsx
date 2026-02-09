@@ -10,6 +10,7 @@ import {
   MenuToggle,
   type MenuToggleElement,
 } from "@patternfly/react-core";
+import { DataProcessorIcon } from "@patternfly/react-icons";
 import type React from "react";
 import { useMemo, useState } from "react";
 import MigrationDonutChart from "./MigrationDonutChart";
@@ -104,7 +105,7 @@ export const CpuAndMemoryOverview: React.FC<CpuAndMemoryOverviewProps> = ({
           <FlexItem>
             <div>
               <div>
-                <i className="fas fa-microchip" /> CPU &amp; memory
+                <DataProcessorIcon /> CPU &amp; memory
               </div>
               {!isExportMode && (
                 <div>

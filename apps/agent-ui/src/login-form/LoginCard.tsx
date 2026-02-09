@@ -30,8 +30,11 @@ import { LoginFormComponent } from "./LoginFormComponent";
 
 const getProgressInfo = (
   status: CollectorStatus["status"] | null,
+  error?: ApiError | null,
 ): { percentage: number; statusText: string } => {
   switch (status) {
+    case "ready":
+      return { percentage: 0, statusText: "Ready to start" };
     case "connecting":
       return { percentage: 25, statusText: "Connecting to vCenter..." };
     case "connected":
@@ -43,6 +46,15 @@ const getProgressInfo = (
       return { percentage: 75, statusText: "Collecting inventory data..." };
     case "parsing":
       return { percentage: 90, statusText: "Parsing..." };
+    case "collected":
+      return { percentage: 100, statusText: "Collection complete" };
+    case "error":
+      return {
+        percentage: 0,
+        statusText: error?.message
+          ? `Error: ${error.message}`
+          : "Collection failed",
+      };
     default:
       return { percentage: 0, statusText: "" };
   }
@@ -69,7 +81,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({
 }) => {
   const [isDataShared, setIsDataShared] = useState(initialIsDataShared);
 
-  const progressInfo = useMemo(() => getProgressInfo(status), [status]);
+  const progressInfo = useMemo(() => getProgressInfo(status, error), [status, error]);
 
   const handleCollect = (credentials: Credentials) => {
     onCollect(credentials, isDataShared);

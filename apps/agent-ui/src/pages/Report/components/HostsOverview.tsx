@@ -6,6 +6,7 @@ import {
   Flex,
   FlexItem,
 } from "@patternfly/react-core";
+import { ServerIcon } from "@patternfly/react-icons";
 import type React from "react";
 import { useMemo } from "react";
 import MigrationDonutChart from "./MigrationDonutChart";
@@ -87,7 +88,7 @@ export const HostsOverview: React.FC<HostsOverviewProps> = ({
           <FlexItem>
             <div>
               <div>
-                <i className="fas fa-server" /> Host distribution by model
+                <ServerIcon /> Host distribution by model
               </div>
               {!isExportMode && <div>Top 5 models</div>}
             </div>

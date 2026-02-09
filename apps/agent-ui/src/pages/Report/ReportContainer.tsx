@@ -179,7 +179,7 @@ export const ReportContainer: React.FC = () => {
           <Header
             totalVMs={totalVMs}
             totalClusters={totalClusters}
-            isConnected
+            isConnected={isDataShared}
           />
         </StackItem>
 
