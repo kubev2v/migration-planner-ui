@@ -74,8 +74,33 @@ export const ReportContainer: React.FC = () => {
     const fetchVMs = async () => {
       try {
         setVmsLoading(true);
-        const response = await agentApi.getVMs({ page: 1, pageSize: 100 });
-        setVmsList(response.vms || []);
+        const pageSize = 100;
+        let allVMs: VM[] = [];
+        let currentPage = 1;
+        let totalVMs = 0;
+
+        // Fetch first page to get total count
+        const firstResponse = await agentApi.getVMs({
+          page: currentPage,
+          pageSize,
+        });
+        allVMs = firstResponse.vms || [];
+        totalVMs = firstResponse.total || 0;
+
+        // Calculate total pages needed
+        const totalPages = Math.ceil(totalVMs / pageSize);
+
+        // Fetch remaining pages if there are more
+        while (currentPage < totalPages) {
+          currentPage++;
+          const response = await agentApi.getVMs({
+            page: currentPage,
+            pageSize,
+          });
+          allVMs = [...allVMs, ...(response.vms || [])];
+        }
+
+        setVmsList(allVMs);
       } catch (err) {
         console.error("Error fetching VMs:", err);
         setVmsList([]);

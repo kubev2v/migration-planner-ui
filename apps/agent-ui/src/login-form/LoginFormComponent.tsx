@@ -88,7 +88,6 @@ export const LoginFormComponent: React.FC<LoginFormComponentProps> = ({
           type="password"
           value={password}
           onChange={(_event, value) => setPassword(value)}
-          placeholder="••••••••"
           isRequired
           isDisabled={isDisabled || isLoading}
         />

@@ -35,7 +35,7 @@ export const useLoginViewModel = (): LoginViewModelInterface => {
   const [isCollecting, setIsCollecting] = useState<boolean>(false);
   const [status, setStatus] = useState<CollectorStatus["status"] | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
-  
+
   // Track consecutive polling failures to surface persistent errors
   const pollFailuresRef = useRef<number>(0);
 
@@ -57,7 +57,7 @@ export const useLoginViewModel = (): LoginViewModelInterface => {
         );
 
         const collectorStatus = await agentApi.getCollectorStatus({ signal });
-        
+
         // Clear failure counter on successful response
         pollFailuresRef.current = 0;
         setStatus(collectorStatus.status);
@@ -75,14 +75,16 @@ export const useLoginViewModel = (): LoginViewModelInterface => {
       } catch (err) {
         // Handle AbortError (timeout) separately - log but don't show error to user
         if (err instanceof Error && err.name === "AbortError") {
-          console.warn("Collector status poll timed out, will retry on next interval");
+          console.warn(
+            "Collector status poll timed out, will retry on next interval",
+          );
           // Don't increment failure counter for timeouts - they're expected to retry
         } else {
           // Increment consecutive failure counter
           pollFailuresRef.current += 1;
           console.error(
             `Error polling collector status (failure ${pollFailuresRef.current}/${MAX_POLL_FAILURES}):`,
-            err
+            err,
           );
 
           // If threshold exceeded, surface error to user and stop polling
@@ -111,7 +113,7 @@ export const useLoginViewModel = (): LoginViewModelInterface => {
   }, [isCollecting, agentApi, navigate]);
 
   const onCollect = useCallback(
-    async (credentials: Credentials, dataSharingAllowed: boolean) => {
+    async (credentials: Credentials) => {
       setError(null);
       setIsCollecting(true);
       setStatus("connecting");

@@ -164,7 +164,7 @@ export const CpuAndMemoryOverview: React.FC<CpuAndMemoryOverviewProps> = ({
           subTitle={
             viewMode === "memoryTiers"
               ? typeof memoryTotalGB === "number"
-                ? `${memoryTotalGB} GB`
+                ? `${memoryTotalGB.toLocaleString()} GB`
                 : undefined
               : typeof cpuTotalCores === "number"
                 ? `${cpuTotalCores.toLocaleString()} Cores`

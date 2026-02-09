@@ -39,8 +39,7 @@ export function ReportTable<DataItem>(
           <Tr key={`row-${idx}-${String(item[fields[0]])}`}>
             {fields.map((f) => (
               <Td key={String(f)} hasRightBorder={!withoutBorder}>
-                {" "}
-                {item[f] === "" || item[f] === undefined
+                {item[f] === "" || item[f] == null
                   ? "-"
                   : typeof item[f] === "boolean"
                     ? item[f]

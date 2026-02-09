@@ -39,7 +39,9 @@ const MigrationChart: React.FC<MigrationChartProps> = ({
         const key = `${current.legendCategory}`;
         if (!acc.seen.has(key)) {
           acc.seen.add(key);
-          acc.result.push({ [key]: legendColors[(acc.seen.size - 1) % legendColors.length] });
+          acc.result.push({
+            [key]: legendColors[(acc.seen.size - 1) % legendColors.length],
+          });
         }
         return acc;
       },

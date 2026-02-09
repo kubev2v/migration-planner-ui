@@ -1,5 +1,7 @@
 import type { CollectorStatus } from "@migration-planner-ui/agent-client/models";
 import {
+  Backdrop,
+  Bullseye,
   Card,
   CardBody,
   CardHeader,
@@ -81,125 +83,126 @@ export const LoginCard: React.FC<LoginCardProps> = ({
 }) => {
   const [isDataShared, setIsDataShared] = useState(initialIsDataShared);
 
-  const progressInfo = useMemo(() => getProgressInfo(status, error), [status, error]);
+  const progressInfo = useMemo(
+    () => getProgressInfo(status, error),
+    [status, error],
+  );
 
   const handleCollect = (credentials: Credentials) => {
     onCollect(credentials, isDataShared);
   };
 
   return (
-    <Card
-      style={{
-        maxWidth: "40rem",
-        width: "100%",
-        maxHeight: "100vh",
-        overflowY: "auto",
-      }}
-    >
-      <CardHeader>
-        <Flex direction={{ default: "column" }} gap={{ default: "gapMd" }}>
-          <FlexItem>
-            <RedHatLogo />
-          </FlexItem>
+    <Backdrop>
+      <Bullseye>
+        <Card>
+          <CardHeader>
+            <Flex direction={{ default: "column" }} gap={{ default: "gapMd" }}>
+              <FlexItem>
+                <RedHatLogo />
+              </FlexItem>
 
-          <Flex
-            justifyContent={{
-              default: "justifyContentSpaceBetween",
-            }}
-          >
-            <FlexItem>
-              <Title headingLevel="h1" size="2xl">
-                Migration assessment
-              </Title>
-            </FlexItem>
-            {version && (
-              <FlexItem>
-                <Content component="small">Agent ver. {version}</Content>
-              </FlexItem>
-            )}
-          </Flex>
-
-          <FlexItem>
-            <Flex
-              gap={{ default: "gapSm" }}
-              alignItems={{ default: "alignItemsCenter" }}
-            >
-              <FlexItem>
-                <Content component="p">Migration Discovery VM</Content>
-              </FlexItem>
-              <FlexItem>
-                <Popover bodyContent="The migration discovery VM requires access to your VMware environment to execute a discovery process that gathers essential data, including network topology, storage configuration, and VM inventory. The process leverages this information to provide recommendations for a seamless migration to OpenShift Virtualization.">
-                  <OutlinedQuestionCircleIcon />
-                </Popover>
-              </FlexItem>
-            </Flex>
-          </FlexItem>
-
-          <FlexItem>
-            <Title headingLevel="h2" size="xl">
-              vCenter login
-            </Title>
-          </FlexItem>
-
-          <FlexItem>
-            <Flex
-              gap={{ default: "gapSm" }}
-              alignItems={{
-                default: "alignItemsFlexStart",
-              }}
-            >
-              <FlexItem>
-                <Icon status="info">
-                  <InfoCircleIcon />
-                </Icon>
-              </FlexItem>
-              <FlexItem>
-                <strong>Access control</strong>
-              </FlexItem>
               <Flex
-                direction={{ default: "column" }}
-                gap={{ default: "gapXs" }}
+                justifyContent={{
+                  default: "justifyContentSpaceBetween",
+                }}
               >
                 <FlexItem>
-                  <Content component="p">
-                    A VMware user account with read-only permissions is
-                    sufficient for secure access during the discovery process.
-                  </Content>
+                  <Title headingLevel="h1" size="2xl">
+                    Migration assessment
+                  </Title>
                 </FlexItem>
+                {version && (
+                  <FlexItem>
+                    <Content component="small">Agent ver. {version}</Content>
+                  </FlexItem>
+                )}
               </Flex>
+
+              <FlexItem>
+                <Flex
+                  gap={{ default: "gapSm" }}
+                  alignItems={{ default: "alignItemsCenter" }}
+                >
+                  <FlexItem>
+                    <Content component="p">Migration Discovery VM</Content>
+                  </FlexItem>
+                  <FlexItem>
+                    <Popover bodyContent="The migration discovery VM requires access to your VMware environment to execute a discovery process that gathers essential data, including network topology, storage configuration, and VM inventory. The process leverages this information to provide recommendations for a seamless migration to OpenShift Virtualization.">
+                      <OutlinedQuestionCircleIcon />
+                    </Popover>
+                  </FlexItem>
+                </Flex>
+              </FlexItem>
+
+              <FlexItem>
+                <Title headingLevel="h2" size="xl">
+                  vCenter login
+                </Title>
+              </FlexItem>
+
+              <FlexItem>
+                <Flex
+                  gap={{ default: "gapSm" }}
+                  alignItems={{
+                    default: "alignItemsFlexStart",
+                  }}
+                >
+                  <FlexItem>
+                    <Icon status="info">
+                      <InfoCircleIcon />
+                    </Icon>
+                  </FlexItem>
+                  <FlexItem>
+                    <strong>Access control</strong>
+                  </FlexItem>
+                  <Flex
+                    direction={{ default: "column" }}
+                    gap={{ default: "gapXs" }}
+                  >
+                    <FlexItem>
+                      <Content component="p">
+                        A VMware user account with read-only permissions is
+                        sufficient for secure access during the discovery
+                        process.
+                      </Content>
+                    </FlexItem>
+                  </Flex>
+                </Flex>
+              </FlexItem>
             </Flex>
-          </FlexItem>
-        </Flex>
-      </CardHeader>
+          </CardHeader>
 
-      <Divider />
+          <Divider />
 
-      <CardBody>
-        <LoginFormComponent
-          collect={handleCollect}
-          cancelCollection={onCancel}
-          isLoading={isCollecting}
-          dataSharingComponent={
-            <DataSharingCheckbox
-              isChecked={isDataShared}
-              onChange={setIsDataShared}
-              isDisabled={isCollecting}
+          <CardBody>
+            <LoginFormComponent
+              collect={handleCollect}
+              cancelCollection={onCancel}
+              isLoading={isCollecting}
+              dataSharingComponent={
+                <DataSharingCheckbox
+                  isChecked={isDataShared}
+                  onChange={setIsDataShared}
+                  isDisabled={isCollecting}
+                />
+              }
+              informationComponent={
+                <Information error={error}>
+                  <PrivacyNote />
+                </Information>
+              }
+              progressComponent={
+                <CollectionProgress
+                  percentage={progressInfo.percentage}
+                  statusText={progressInfo.statusText}
+                />
+              }
             />
-          }
-          informationComponent={
-            <Information error={error}>
-              <PrivacyNote />
-            </Information>
-          }
-          progressComponent={
-            <CollectionProgress
-              percentage={progressInfo.percentage}
-              statusText={progressInfo.statusText}
-            />
-          }
-        />
-      </CardBody>
-    </Card>
+          </CardBody>
+        </Card>
+      </Bullseye>
+    </Backdrop>
   );
 };
 

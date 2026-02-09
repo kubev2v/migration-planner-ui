@@ -35,7 +35,7 @@ interface MigrationDonutChartProps {
     datum: {
       x: string;
       y: number;
-      countDisplay?: string;
+      countDisplay?: string | number;
       legendCategory: string;
     };
     percent: number;
@@ -147,7 +147,7 @@ const MigrationDonutChart: React.FC<MigrationDonutChartProps> = ({
             x: string;
             y: number;
             legendCategory: string;
-            countDisplay?: string;
+            countDisplay?: string | number;
           };
         }) => {
           const percent = totalY > 0 ? (Number(datum.y) / totalY) * 100 : 0;

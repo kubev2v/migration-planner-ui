@@ -58,20 +58,20 @@ const statusLabels: Record<string, string> = {
 // Disk size ranges in MB (displayed as TB)
 const diskSizeRanges = [
   { label: "0-10 TB", min: 0, max: 10 * 1024 * 1024 },
-  { label: "11-20 TB", min: 11 * 1024 * 1024, max: 20 * 1024 * 1024 },
-  { label: "21-50 TB", min: 21 * 1024 * 1024, max: 50 * 1024 * 1024 },
-  { label: "50+ TB", min: 50 * 1024 * 1024, max: undefined },
+  { label: "11-20 TB", min: 10 * 1024 * 1024 + 1, max: 20 * 1024 * 1024 },
+  { label: "21-50 TB", min: 20 * 1024 * 1024 + 1, max: 50 * 1024 * 1024 },
+  { label: "50+ TB", min: 50 * 1024 * 1024 + 1, max: undefined },
 ];
 
 // Memory size ranges in MB (displayed as GB)
 const memorySizeRanges = [
   { label: "0-4 GB", min: 0, max: 4 * 1024 },
-  { label: "5-16 GB", min: 5 * 1024, max: 16 * 1024 },
-  { label: "17-32 GB", min: 17 * 1024, max: 32 * 1024 },
-  { label: "33-64 GB", min: 33 * 1024, max: 64 * 1024 },
-  { label: "65-128 GB", min: 65 * 1024, max: 128 * 1024 },
-  { label: "129-256 GB", min: 129 * 1024, max: 256 * 1024 },
-  { label: "256+ GB", min: 256 * 1024, max: undefined },
+  { label: "5-16 GB", min: 4 * 1024 + 1, max: 16 * 1024 },
+  { label: "17-32 GB", min: 16 * 1024 + 1, max: 32 * 1024 },
+  { label: "33-64 GB", min: 32 * 1024 + 1, max: 64 * 1024 },
+  { label: "65-128 GB", min: 64 * 1024 + 1, max: 128 * 1024 },
+  { label: "129-256 GB", min: 128 * 1024 + 1, max: 256 * 1024 },
+  { label: "256+ GB", min: 256 * 1024 + 1, max: undefined },
 ];
 
 const MB_IN_GB = 1024;
@@ -441,7 +441,7 @@ export const VMTable: React.FC<VMTableProps> = ({
             <ToolbarItem>
               <Dropdown
                 isOpen={isFilterOpen}
-                onSelect={() => { }}
+                onSelect={() => {}}
                 onOpenChange={setIsFilterOpen}
                 toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
                   <MenuToggle
@@ -583,11 +583,11 @@ export const VMTable: React.FC<VMTableProps> = ({
         <Tbody>
           {loading ? (
             <Tr>
-              <Td colSpan={columns.length + 2}>Loading...</Td>
+              <Td colSpan={columns.length}>Loading...</Td>
             </Tr>
           ) : paginatedVMs.length === 0 ? (
             <Tr>
-              <Td colSpan={columns.length + 2}>No virtual machines found</Td>
+              <Td colSpan={columns.length}>No virtual machines found</Td>
             </Tr>
           ) : (
             paginatedVMs.map((vm) => (

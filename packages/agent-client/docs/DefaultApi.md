@@ -1001,7 +1001,7 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-| **200** | Upload successfull |  -  |
+| **200** | Upload successful |  -  |
 | **413** | File exceeds 64MB limit |  -  |
 | **400** | Bad request |  -  |
 | **500** | Internal server error |  -  |
