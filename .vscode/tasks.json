@@ -1,0 +1,13 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Wait for Agent API to be ready",
+            "type": "shell",
+            "command": "while ! curl -s http://0.0.0.0:8000/ > /dev/null; do sleep 1; done",
+            "presentation": {
+                "close": true
+            }
+        }
+    ]
+}

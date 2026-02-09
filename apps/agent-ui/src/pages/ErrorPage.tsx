@@ -63,8 +63,7 @@ const ErrorPage: React.FC<Props> = (props) => {
   const [primaryAction, ...otherActions] = actions;
 
   return (
-    <>
-      <Backdrop style={{ zIndex: 0 }} />
+    <Backdrop>
       <Bullseye>
         <Card
           style={{ width: "36rem", height: "38rem", justifyContent: "center" }}
@@ -102,7 +101,7 @@ const ErrorPage: React.FC<Props> = (props) => {
           </EmptyState>
         </Card>
       </Bullseye>
-    </>
+    </Backdrop>
   );
 };
 

@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug (agent-ui)",
+      "name": "Agent UI",
       "type": "chrome",
       "request": "launch",
       "url": "http://127.0.0.1:3001",
@@ -13,7 +13,32 @@
       "server": {
         "cwd": "${workspaceFolder}/apps/agent-ui",
         "command": "yarn start"
+      },
+      "preLaunchTask": "Wait for Agent API to be ready",
+      "presentation": {
+        "hidden": true
       }
+    },
+    {
+      "name": "Agent API",
+      "request": "launch",
+      "type": "node-terminal",
+      "envFile": "${workspaceFolder}/../assisted-migration-agent/.envrc",
+      "command": "make run",
+      "cwd": "${workspaceFolder}/../assisted-migration-agent",
+      "presentation": {
+        "hidden": true
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug",
+      "configurations": [
+        "Agent API",
+        "Agent UI"
+      ],
+      "stopAll": true
     }
   ]
 }
