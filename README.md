@@ -215,7 +215,17 @@ For detailed instructions on setting up a complete local development environment
 
 - `docs/DEVELOPMENT.md`
 
-## Publish OCI image on Quay (local test)
+## Building Container Images
+
+### Konflux Build (Recommended for Production)
+
+The agent-ui image is built using Konflux, Red Hat's CI/CD platform, which publishes to `quay.io/redhat-user-workloads/`. This ensures Enterprise Contract compliance and integration with Red Hat infrastructure.
+
+For setup and usage instructions, see:
+
+- `docs/konflux-build.md`
+
+### Local Build and Publish to Quay
 
 To locally reproduce the publishing of a minimal OCI image (only `dist/`) to Quay.io and test authentication/push, follow the guide at:
 
