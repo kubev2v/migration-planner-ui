@@ -9,6 +9,7 @@ Name | Type
 `total` | number
 `totalMigratable` | number
 `totalMigratableWithWarnings` | number
+`totalWithSharedDisks` | number
 `cpuCores` | [VMResourceBreakdown](VMResourceBreakdown.md)
 `diskSizeTier` | [{ [key: string]: DiskSizeTierSummary; }](DiskSizeTierSummary.md)
 `diskTypes` | [{ [key: string]: DiskTypeSummary; }](DiskTypeSummary.md)
@@ -35,6 +36,7 @@ const example = {
   "total": null,
   "totalMigratable": null,
   "totalMigratableWithWarnings": null,
+  "totalWithSharedDisks": null,
   "cpuCores": null,
   "diskSizeTier": null,
   "diskTypes": null,

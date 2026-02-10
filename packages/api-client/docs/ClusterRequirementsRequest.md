@@ -8,7 +8,8 @@ Request payload for calculating cluster requirements
 Name | Type
 ------------ | -------------
 `clusterId` | string
-`overCommitRatio` | string
+`cpuOverCommitRatio` | string
+`memoryOverCommitRatio` | string
 `workerNodeCPU` | number
 `workerNodeMemory` | number
 `controlPlaneSchedulable` | boolean
@@ -21,7 +22,8 @@ import type { ClusterRequirementsRequest } from '@migration-planner-ui/api-clien
 // TODO: Update the object below with actual values
 const example = {
   "clusterId": null,
-  "overCommitRatio": null,
+  "cpuOverCommitRatio": null,
+  "memoryOverCommitRatio": null,
   "workerNodeCPU": null,
   "workerNodeMemory": null,
   "controlPlaneSchedulable": null,

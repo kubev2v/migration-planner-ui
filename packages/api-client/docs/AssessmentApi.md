@@ -1,6 +1,6 @@
 # AssessmentApi
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *https://github.com*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
@@ -305,7 +305,7 @@ No authorization required
 
 ## listAssessments
 
-> Array&lt;Assessment&gt; listAssessments()
+> Array&lt;Assessment&gt; listAssessments(sourceId)
 
 
 
@@ -324,8 +324,13 @@ async function example() {
   console.log("🚀 Testing @migration-planner-ui/api-client SDK...");
   const api = new AssessmentApi();
 
+  const body = {
+    // string | Filter assessments by source ID (optional)
+    sourceId: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+  } satisfies ListAssessmentsRequest;
+
   try {
-    const data = await api.listAssessments();
+    const data = await api.listAssessments(body);
     console.log(data);
   } catch (error) {
     console.error(error);
@@ -338,7 +343,10 @@ example().catch(console.error);
 
 ### Parameters
 
-This endpoint does not need any parameter.
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **sourceId** | `string` | Filter assessments by source ID | [Optional] [Defaults to `undefined`] |
 
 ### Return type
 
