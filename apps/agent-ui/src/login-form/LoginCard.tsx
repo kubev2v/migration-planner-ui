@@ -184,7 +184,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({
                 <DataSharingCheckbox
                   isChecked={isDataShared}
                   onChange={setIsDataShared}
-                  isDisabled={isCollecting}
+                  isDisabled={isCollecting || isDataShared}
                 />
               }
               informationComponent={
