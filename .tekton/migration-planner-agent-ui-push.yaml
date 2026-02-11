@@ -9,7 +9,6 @@ metadata:
     pipelinesascode.tekton.dev/on-cel-expression:
       event == "push" && target_branch
       == "main"
-  creationTimestamp: null
   labels:
     appstudio.openshift.io/application: assisted-migration
     appstudio.openshift.io/component: migration-planner-agent-ui
