@@ -2,26 +2,33 @@
 .git
 .gitignore
 .github
+
 # Documentation
 *.md
 docs/
+
 # Development files
 .vscode
 .idea
 *.log
+
 # Build artifacts (will be generated during build)
 **/dist
 **/node_modules
 **/out
+
 # Test files
 **/__tests__
 **/*.test.ts
 **/*.test.tsx
 **/*.spec.ts
 **/*.spec.tsx
+
 # CI/CD (not needed in image)
 .tekton
+
 # Temp files
 **/.tmp
 **/.temp
 .DS_Store
+

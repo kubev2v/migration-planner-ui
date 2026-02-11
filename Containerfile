@@ -11,3 +11,4 @@ RUN node .yarn/releases/yarn-4.12.0.cjs install --immutable && node .yarn/releas
 
 FROM scratch
 COPY --from=builder /opt/app-root/repo/apps/agent-ui/dist /apps/agent-ui/dist
+
