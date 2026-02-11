@@ -15,10 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
+    env:
+      SKIP_SEMANTIC_ACTORS: '["red-hat-konflux[bot]", "dependabot[bot]", "renovate[bot]"]'
     steps:
-      # Skip semantic PR title validation for dependabot PRs
-      # Dependabot auto-generates titles like "Bump lodash from 4.0.0 to 4.1.0"
-      - if: ${{ !contains(fromJSON(vars.SKIP_SEMANTIC_ACTORS), github.actor) }}
+      # Skip semantic PR title validation for bot-generated PRs
+      # Bots auto-generate titles like "Bump lodash from 4.0.0 to 4.1.0"
+      - if: ${{ !contains(fromJSON(env.SKIP_SEMANTIC_ACTORS), github.actor) }}
         uses: amannn/action-semantic-pull-request@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
