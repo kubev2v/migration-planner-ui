@@ -18,7 +18,7 @@ jobs:
     steps:
       # Skip semantic PR title validation for dependabot PRs
       # Dependabot auto-generates titles like "Bump lodash from 4.0.0 to 4.1.0"
-      - if: github.actor != 'dependabot[bot]'
+      - if: ${{ !contains(fromJSON(vars.SKIP_SEMANTIC_ACTORS), github.actor) }}
         uses: amannn/action-semantic-pull-request@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
