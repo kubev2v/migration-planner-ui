@@ -11,3 +11,20 @@ RUN node .yarn/releases/yarn-4.12.0.cjs install --immutable && node .yarn/releas
 FROM scratch
 COPY --from=builder /opt/app-root/repo/apps/agent-ui/dist /apps/agent-ui/dist
 
+# Required labels for Red Hat / Enterprise Contract
+ARG IMAGE_NAME=migration-planner-agent-ui
+ARG IMAGE_VERSION=0.0.0
+ARG IMAGE_RELEASE=1
+ARG IMAGE_DESCRIPTION="Migration Planner Agent UI"
+ARG IMAGE_VENDOR=Red Hat
+ARG IMAGE_URL=""
+ARG IMAGE_DISTRIBUTION_SCOPE=restricted
+LABEL com.redhat.component="${IMAGE_NAME}" \
+      description="${IMAGE_DESCRIPTION}" \
+      distribution-scope="${IMAGE_DISTRIBUTION_SCOPE}" \
+      io.k8s.description="${IMAGE_DESCRIPTION}" \
+      name="${IMAGE_NAME}" \
+      release="${IMAGE_RELEASE}" \
+      url="${IMAGE_URL}" \
+      vendor="${IMAGE_VENDOR}" \
+      version="${IMAGE_VERSION}"
