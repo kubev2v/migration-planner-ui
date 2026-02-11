@@ -6,7 +6,7 @@ COPY --chown=1001:0 . .
 ARG GIT_COMMIT
 ENV GIT_COMMIT=${GIT_COMMIT}"
 ARG GIT_TAG
-ENV GIT_TAG=${GIT_TAG}"
+ENV GIT_TAG=${GIT_TAG}
 RUN node .yarn/releases/yarn-4.12.0.cjs install --immutable && node .yarn/releases/yarn-4.12.0.cjs build:all
 
 FROM scratch
