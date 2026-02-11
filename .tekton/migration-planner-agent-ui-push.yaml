@@ -34,7 +34,7 @@ spec:
     - IMAGE_VERSION={{revision}}
     - IMAGE_RELEASE=1
     - IMAGE_DESCRIPTION=Migration Planner Agent UI
-    - IMAGE_VENDOR=Red Hat
+    - IMAGE_VENDOR=Red Hat, Inc.
     - IMAGE_URL=https://github.com/kubev2v/migration-planner-agent-ui
     - IMAGE_DISTRIBUTION_SCOPE=restricted
   pipelineSpec:
