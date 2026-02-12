@@ -99,9 +99,18 @@ export const VMDetailsPage: React.FC<VMDetailsPageProps> = ({
 
   if (error) {
     return (
-      <Alert variant="danger" title="Failed to load VM details">
-        {error}
-      </Alert>
+      <Stack hasGutter>
+        <StackItem>
+          <Button variant="link" onClick={onBack} icon={<ArrowLeftIcon />}>
+            Back to Virtual Machines
+          </Button>
+        </StackItem>
+        <StackItem>
+          <Alert variant="danger" title="Failed to load VM details">
+            {error}
+          </Alert>
+        </StackItem>
+      </Stack>
     );
   }
 
@@ -347,7 +356,7 @@ export const VMDetailsPage: React.FC<VMDetailsPageProps> = ({
                 <NetworkIcon /> Network
               </CardTitle>
               <CardBody>
-                {vm.nics.length === 0 ? (
+                {(vm.nics?.length ?? 0) === 0 ? (
                   <span
                     style={{
                       color: "var(--pf-t--global--text--color--subtle)",
@@ -383,7 +392,7 @@ export const VMDetailsPage: React.FC<VMDetailsPageProps> = ({
                       </Tr>
                     </Thead>
                     <Tbody>
-                      {vm.nics.map((nic) => (
+                      {(vm.nics ?? []).map((nic) => (
                         <Tr key={nic.mac || `nic-${nic.index}`}>
                           <Td style={{ paddingLeft: 0 }}>
                             {nic.network || "—"}
@@ -406,7 +415,7 @@ export const VMDetailsPage: React.FC<VMDetailsPageProps> = ({
             <StorageDomainIcon /> Storage
           </CardTitle>
           <CardBody>
-            {vm.disks.length === 0 ? (
+            {(vm.disks?.length ?? 0) === 0 ? (
               <div>No disks attached</div>
             ) : (
               <Table aria-label="Disks table" variant="compact">
@@ -421,7 +430,7 @@ export const VMDetailsPage: React.FC<VMDetailsPageProps> = ({
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {vm.disks.map((disk) => (
+                  {(vm.disks ?? []).map((disk) => (
                     <Tr key={disk.key || disk.file || `disk-${disk.bus}`}>
                       <Td>{disk.file || "—"}</Td>
                       <Td>
@@ -448,8 +457,8 @@ export const VMDetailsPage: React.FC<VMDetailsPageProps> = ({
           <CardBody>
             {vm.issues && vm.issues.length > 0 ? (
               <Stack hasGutter>
-                {vm.issues.map((issue) => (
-                  <StackItem key={issue}>
+                {vm.issues.map((issue, index) => (
+                  <StackItem key={`issue-${index}-${issue}`}>
                     <Alert variant="warning" isInline isPlain title={issue} />
                   </StackItem>
                 ))}
