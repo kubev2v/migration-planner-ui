@@ -1,14 +1,16 @@
+import { AgentModeRequestModeEnum } from "@migration-planner-ui/agent-client/models";
 import type React from "react";
+import { useAgentStatus } from "../common/AgentStatusContext";
 import { useLoginViewModel } from "../login-form/hooks/UseLoginViewModel";
 import { LoginCard } from "../login-form/LoginCard";
 
 const AgentLoginPage: React.FC = () => {
   const vm = useLoginViewModel();
-
+  const { agentStatus } = useAgentStatus();
   return (
     <LoginCard
       version={vm.version}
-      isDataShared={vm.isDataShared}
+      isDataShared={agentStatus?.mode === AgentModeRequestModeEnum.Connected}
       isCollecting={vm.isCollecting}
       status={vm.status}
       error={vm.error}
