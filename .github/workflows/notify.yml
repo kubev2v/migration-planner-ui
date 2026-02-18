@@ -1,0 +1,56 @@
+name: Notify planner repo
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Quay.io image # Notify only after the image was builded
+        run: |
+          IMAGE="quay.io/redhat-user-workloads/assisted-migration-tenant/migration-planner-agent-ui"
+          TAG="${GITHUB_SHA}"          
+          TIMEOUT=1800                 # 30 minutes
+          INTERVAL=10                  # check every 10 seconds
+          ELAPSED=0
+
+          echo "Waiting for $IMAGE:$TAG to be available..."
+
+          while [ $ELAPSED -lt $TIMEOUT ]; do
+            if podman pull "$IMAGE:$TAG" > /dev/null 2>&1; then
+              echo "Image $IMAGE:$TAG is available!"
+              exit 0
+            fi
+
+            echo "Waiting for image $IMAGE:$TAG... ($ELAPSED s / $TIMEOUT s)"
+            sleep $INTERVAL
+            ELAPSED=$((ELAPSED + INTERVAL))
+          done
+
+          echo "Timeout reached: image $IMAGE:$TAG is still not available."
+          exit 1
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.MIGRATION_PLANNER_SYNC_APP_ID }}
+          private-key: ${{ secrets.MIGRATION_PLANNER_SYNC_APP_PRIVATE_KEY }}
+          owner: kubev2v
+          repositories: migration-planner
+
+      - name: Send repository_dispatch
+        run: |
+          curl --fail-with-body -sS -X POST \
+            -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Content-Type: application/json" \
+            https://api.github.com/repos/kubev2v/migration-planner/dispatches \
+            -d '{
+              "event_type": "remote_repo_updated",
+              "client_payload": {
+                "sha": "${{ github.event.workflow_run.head_sha }}",
+                "repo": "${{ github.event.workflow_run.head_repository.full_name }}"
+              }
+            }'
