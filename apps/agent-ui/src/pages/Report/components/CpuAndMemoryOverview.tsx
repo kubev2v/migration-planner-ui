@@ -141,6 +141,11 @@ export const CpuAndMemoryOverview: React.FC<CpuAndMemoryOverviewProps> = ({
     }
   };
 
+  const handleTitleClick = () => {
+    // Navigate to all VMs without filters
+    navigate(createVMFilterURL({}));
+  };
+
   return (
     <Card
       className={
@@ -233,6 +238,7 @@ export const CpuAndMemoryOverview: React.FC<CpuAndMemoryOverviewProps> = ({
               ? handleMemoryTierClick
               : undefined
           }
+          onTitleClick={!isExportMode ? handleTitleClick : undefined}
         />
       </CardBody>
     </Card>

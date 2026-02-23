@@ -48,6 +48,12 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
     navigate(url);
   };
 
+  const handleTitleClick = () => {
+    // Navigate to all VMs without filters
+    const url = createVMFilterURL({});
+    navigate(url);
+  };
+
   return (
     <Card
       className={
@@ -73,6 +79,7 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
           labelFontSize={16}
           itemsPerRow={2}
           onItemClick={handleItemClick}
+          onTitleClick={!isExportMode ? handleTitleClick : undefined}
         />
       </CardBody>
     </Card>

@@ -44,6 +44,7 @@ interface MigrationDonutChartProps {
     total: number;
   }) => string;
   onItemClick?: (item: OSData) => void;
+  onTitleClick?: () => void;
 }
 
 const legendColors = ["#0066cc", "#5e40be", "#b6a6e9", "#b98412"];
@@ -72,6 +73,7 @@ const MigrationDonutChart: React.FC<MigrationDonutChartProps> = ({
   padAngle = 1,
   tooltipLabelFormatter,
   onItemClick,
+  onTitleClick,
 }) => {
   const dynamicLegend = useMemo(() => {
     return data.reduce(
@@ -187,74 +189,101 @@ const MigrationDonutChart: React.FC<MigrationDonutChartProps> = ({
       alignItems={{ default: "alignItemsCenter" }}
       style={{ cursor: onItemClick ? "pointer" : "default" }}
     >
-      <ChartDonut
-        ariaDesc="Migration data donut chart"
-        data={chartData}
-        events={chartEvents}
-        labels={({
-          datum,
-        }: {
-          datum: {
-            x: string;
-            y: number;
-            legendCategory: string;
-            countDisplay?: string | number;
-          };
-        }) => {
-          const percent = totalY > 0 ? (Number(datum.y) / totalY) * 100 : 0;
-          return tooltipLabelFormatter
-            ? tooltipLabelFormatter({
-                datum: {
-                  x: datum.x,
-                  y: Number(datum.y),
-                  countDisplay: datum.countDisplay,
-                  legendCategory: datum.legendCategory,
-                },
-                percent,
-                total: totalY,
-              })
-            : `${datum.x}: ${datum.countDisplay ?? datum.y}`;
-        }}
-        colorScale={colorScale}
-        constrainToVisibleArea
-        innerRadius={innerRadius}
-        padAngle={padAngle}
-        title={title}
-        subTitle={subTitle}
-        height={height}
-        width={width}
-        padding={{
-          bottom: 5,
-          left: 20,
-          right: 20,
-          top: 0,
-        }}
-        titleComponent={
-          title ? (
-            <ChartLabel
-              style={[
-                {
-                  fill: titleColor,
-                  fontSize: titleFontSize,
-                  fontWeight: "bold",
-                },
-              ]}
-            />
-          ) : undefined
-        }
-        subTitleComponent={
-          subTitle ? (
-            <ChartLabel
-              style={[
-                {
-                  fill: subTitleColor,
-                  fontSize: subTitleFontSize,
-                },
-              ]}
-            />
-          ) : undefined
-        }
-      />
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <ChartDonut
+          ariaDesc="Migration data donut chart"
+          data={chartData}
+          events={chartEvents}
+          labels={({
+            datum,
+          }: {
+            datum: {
+              x: string;
+              y: number;
+              legendCategory: string;
+              countDisplay?: string | number;
+            };
+          }) => {
+            const percent = totalY > 0 ? (Number(datum.y) / totalY) * 100 : 0;
+            return tooltipLabelFormatter
+              ? tooltipLabelFormatter({
+                  datum: {
+                    x: datum.x,
+                    y: Number(datum.y),
+                    countDisplay: datum.countDisplay,
+                    legendCategory: datum.legendCategory,
+                  },
+                  percent,
+                  total: totalY,
+                })
+              : `${datum.x}: ${datum.countDisplay ?? datum.y}`;
+          }}
+          colorScale={colorScale}
+          constrainToVisibleArea
+          innerRadius={innerRadius}
+          padAngle={padAngle}
+          title={title}
+          subTitle={subTitle}
+          height={height}
+          width={width}
+          padding={{
+            bottom: 5,
+            left: 20,
+            right: 20,
+            top: 0,
+          }}
+          titleComponent={
+            title ? (
+              <ChartLabel
+                style={[
+                  {
+                    fill: titleColor,
+                    fontSize: titleFontSize,
+                    fontWeight: "bold",
+                  },
+                ]}
+              />
+            ) : undefined
+          }
+          subTitleComponent={
+            subTitle ? (
+              <ChartLabel
+                style={[
+                  {
+                    fill: subTitleColor,
+                    fontSize: subTitleFontSize,
+                  },
+                ]}
+              />
+            ) : undefined
+          }
+        />
+        {onTitleClick && title && (
+          <div
+            onClick={onTitleClick}
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: `${innerRadius * 2}px`,
+              height: `${innerRadius * 2}px`,
+              cursor: "pointer",
+              borderRadius: "50%",
+              zIndex: 10,
+            }}
+            title="Click to view all VMs"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onTitleClick();
+              }
+            }}
+          />
+        )}
+      </div>
       <Flex
         className="pf-v6-u-w-100"
         style={{

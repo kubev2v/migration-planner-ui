@@ -115,6 +115,11 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
     }
   };
 
+  const handleTitleClick = () => {
+    // Navigate to all VMs without filters
+    navigate(createVMFilterURL({}));
+  };
+
   return (
     <Card
       className={
@@ -149,6 +154,7 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
             `${datum.countDisplay}\n${percent.toFixed(1)}%`
           }
           onItemClick={!isExportMode ? handleDiskTierClick : undefined}
+          onTitleClick={!isExportMode ? handleTitleClick : undefined}
         />
       </CardBody>
     </Card>
