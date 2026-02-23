@@ -36,13 +36,28 @@ export const useLoginViewModel = (
   const agentApi = useInjection<DefaultApiInterface>(Symbols.AgentApi);
   const navigate = useNavigate();
   const refetchAgentStatus = props?.refetchAgentStatus;
-  const [version] = useState<string | undefined>("v0.0.0");
+  const [version, setVersion] = useState<string | undefined>(undefined);
   const [isCollecting, setIsCollecting] = useState<boolean>(false);
   const [status, setStatus] = useState<CollectorStatus["status"] | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
 
   // Track consecutive polling failures to surface persistent errors
   const pollFailuresRef = useRef<number>(0);
+
+  // Fetch agent version on mount
+  useEffect(() => {
+    const fetchVersion = async () => {
+      try {
+        const versionInfo = await agentApi.getVersion();
+        setVersion(versionInfo.version);
+      } catch (err) {
+        console.warn("Failed to fetch agent version:", err);
+        // Don't set error state, just log - version is not critical
+      }
+    };
+
+    fetchVersion();
+  }, [agentApi]);
 
   // Check collector status on mount to redirect if already collected
   useEffect(() => {
