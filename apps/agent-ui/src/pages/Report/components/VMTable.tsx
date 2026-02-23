@@ -522,6 +522,10 @@ export const VMTable: React.FC<VMTableProps> = ({
 
       // Migration Readiness filter
       if (selectedMigrationReadiness.length > 0) {
+        // Exclude VMs with undefined migratable status from both filters
+        if (vm.migratable === undefined) {
+          return false;
+        }
         const isReady = vm.migratable === true;
         const readyStatus = isReady ? "ready" : "not-ready";
         if (!selectedMigrationReadiness.includes(readyStatus)) {
@@ -1234,7 +1238,11 @@ export const VMTable: React.FC<VMTableProps> = ({
                 </Td>
                 <Td dataLabel="Status">{renderStatus(vm)}</Td>
                 <Td dataLabel="Migration Readiness" modifier="fitContent">
-                  {vm.migratable === true ? "Ready" : "Not ready"}
+                  {vm.migratable === true
+                    ? "Ready"
+                    : vm.migratable === false
+                      ? "Not ready"
+                      : "Unknown"}
                 </Td>
                 <Td dataLabel="ID">{vm.id}</Td>
                 <Td dataLabel="Data center">{vm.datacenter || "—"}</Td>

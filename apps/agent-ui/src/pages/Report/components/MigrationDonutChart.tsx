@@ -49,9 +49,7 @@ interface MigrationDonutChartProps {
 const legendColors = ["#0066cc", "#5e40be", "#b6a6e9", "#b98412"];
 
 const legendStyles = {
-  icon: css`
-    margin-right: 8px;
-  `,
+  icon: css``,
 };
 
 const MigrationDonutChart: React.FC<MigrationDonutChartProps> = ({
