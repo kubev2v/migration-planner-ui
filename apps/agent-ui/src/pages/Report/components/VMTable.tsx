@@ -156,30 +156,6 @@ const styles = {
       justify-content: space-between;
       gap: 0.5rem;
     }
-
-    thead th:nth-child(1) {
-      width: 30%;
-    }
-
-    thead th:nth-child(2) {
-      width: 20%;
-    }
-
-    thead th:nth-child(3) {
-      width: 15%;
-    }
-
-    thead th:nth-child(4) {
-      width: 15%;
-    }
-
-    thead th:nth-child(5) {
-      width: 10%;
-    }
-
-    thead th:nth-child(6) {
-      width: 10%;
-    }
   `,
 };
 
@@ -1215,12 +1191,24 @@ export const VMTable: React.FC<VMTableProps> = ({
             {columns.map((column, index) => {
               const getWidth = (key: SortableColumn) => {
                 switch (key) {
+                  case "name":
+                    return 20;
+                  case "vCenterState":
+                    return 15;
                   case "migratable":
                     return 15;
-                  case "issues":
-                    return 10;
                   case "id":
                     return 15;
+                  case "datacenter":
+                    return 10;
+                  case "cluster":
+                    return 10;
+                  case "diskSize":
+                    return 10;
+                  case "memory":
+                    return 10;
+                  case "issues":
+                    return 10;
                   default:
                     return undefined;
                 }
