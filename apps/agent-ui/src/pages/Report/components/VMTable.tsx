@@ -56,7 +56,7 @@ const filterStyles = {
     font-size: 13px;
     font-weight: 700;
     margin-bottom: 16px;
-    color: #151515;
+    color: var(--pf-t--global--text--color--regular);
   `,
 
   checkboxList: css`
@@ -162,13 +162,20 @@ export const VMTable: React.FC<VMTableProps> = ({
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>(
     initialFilters?.statuses || [],
   );
-  const [selectedClusters, setSelectedClusters] = useState<string[]>([]);
-  const [selectedDatacenters, setSelectedDatacenters] = useState<string[]>([]);
+  const [selectedClusters, setSelectedClusters] = useState<string[]>(
+    initialFilters?.clusters || [],
+  );
+  const [selectedDatacenters, setSelectedDatacenters] = useState<string[]>(
+    initialFilters?.datacenters || [],
+  );
   const [selectedMigrationReadiness, setSelectedMigrationReadiness] = useState<
     string[]
   >(initialFilters?.migrationReadiness || []);
   const [hasIssuesFilter, setHasIssuesFilter] = useState(
     initialFilters?.hasIssues || false,
+  );
+  const [noIssuesFilter, setNoIssuesFilter] = useState(
+    initialFilters?.noIssues || false,
   );
   const [diskRangeFilter, setDiskRangeFilter] = useState<{
     min: number;
@@ -214,8 +221,11 @@ export const VMTable: React.FC<VMTableProps> = ({
     setDiskRangeFilter(initialFilters?.diskRange || null);
     setMemoryRangeFilter(initialFilters?.memoryRange || null);
     setSelectedStatuses(initialFilters?.statuses || []);
+    setSelectedClusters(initialFilters?.clusters || []);
+    setSelectedDatacenters(initialFilters?.datacenters || []);
     setSelectedMigrationReadiness(initialFilters?.migrationReadiness || []);
     setHasIssuesFilter(initialFilters?.hasIssues || false);
+    setNoIssuesFilter(initialFilters?.noIssues || false);
     setSearchValue(initialFilters?.search || "");
   }, [initialFilters, searchParams]);
   // Selection state
@@ -290,6 +300,7 @@ export const VMTable: React.FC<VMTableProps> = ({
         selectedDatacenters.length > 0 ||
         selectedMigrationReadiness.length > 0 ||
         hasIssuesFilter ||
+        noIssuesFilter ||
         searchValue ||
         diskRangeFilter ||
         memoryRangeFilter
@@ -301,7 +312,11 @@ export const VMTable: React.FC<VMTableProps> = ({
 
     const currentFilters: VMFilters = {
       statuses: selectedStatuses.length > 0 ? selectedStatuses : undefined,
+      clusters: selectedClusters.length > 0 ? selectedClusters : undefined,
+      datacenters:
+        selectedDatacenters.length > 0 ? selectedDatacenters : undefined,
       hasIssues: hasIssuesFilter || undefined,
+      noIssues: noIssuesFilter || undefined,
       search: searchValue || undefined,
       diskRange: diskRangeFilter || undefined,
       memoryRange: memoryRangeFilter || undefined,
@@ -322,6 +337,7 @@ export const VMTable: React.FC<VMTableProps> = ({
     selectedDatacenters,
     selectedMigrationReadiness,
     hasIssuesFilter,
+    noIssuesFilter,
     searchValue,
     diskRangeFilter,
     memoryRangeFilter,
@@ -448,6 +464,15 @@ export const VMTable: React.FC<VMTableProps> = ({
       });
     }
 
+    // No issues filter
+    if (noIssuesFilter) {
+      filters.push({
+        category: "Issues",
+        label: "No issues",
+        key: "noIssues",
+      });
+    }
+
     return filters;
   }, [
     selectedStatuses,
@@ -455,6 +480,7 @@ export const VMTable: React.FC<VMTableProps> = ({
     selectedDatacenters,
     selectedMigrationReadiness,
     hasIssuesFilter,
+    noIssuesFilter,
     diskRangeFilter,
     memoryRangeFilter,
   ]);
@@ -508,6 +534,11 @@ export const VMTable: React.FC<VMTableProps> = ({
         return false;
       }
 
+      // No issues filter
+      if (noIssuesFilter && (vm.issueCount || 0) > 0) {
+        return false;
+      }
+
       // Disk size filter
       if (diskRangeFilter) {
         const diskSize = vm.diskSize || 0;
@@ -546,6 +577,7 @@ export const VMTable: React.FC<VMTableProps> = ({
     selectedDatacenters,
     selectedMigrationReadiness,
     hasIssuesFilter,
+    noIssuesFilter,
     diskRangeFilter,
     memoryRangeFilter,
   ]);
@@ -637,6 +669,7 @@ export const VMTable: React.FC<VMTableProps> = ({
     setSelectedDatacenters(tempSelectedDatacenters);
     setSelectedMigrationReadiness(tempSelectedMigrationReadiness);
     setHasIssuesFilter(tempHasIssuesFilter);
+    setNoIssuesFilter(tempNoIssuesFilter);
     setDiskRangeFilter(tempDiskRangeFilter);
     setMemoryRangeFilter(tempMemoryRangeFilter);
     setPage(1);
@@ -674,6 +707,7 @@ export const VMTable: React.FC<VMTableProps> = ({
       setTempSelectedDatacenters(selectedDatacenters);
       setTempSelectedMigrationReadiness(selectedMigrationReadiness);
       setTempHasIssuesFilter(hasIssuesFilter);
+      setTempNoIssuesFilter(noIssuesFilter);
       setTempDiskRangeFilter(diskRangeFilter);
       setTempMemoryRangeFilter(memoryRangeFilter);
     }
@@ -684,32 +718,33 @@ export const VMTable: React.FC<VMTableProps> = ({
     selectedDatacenters,
     selectedMigrationReadiness,
     hasIssuesFilter,
+    noIssuesFilter,
     diskRangeFilter,
     memoryRangeFilter,
   ]);
 
   // Toggle temporary filter selections in modal
   const toggleTempStatus = (status: string) => {
-    setTempSelectedStatuses(
-      tempSelectedStatuses.includes(status)
-        ? tempSelectedStatuses.filter((s) => s !== status)
-        : [...tempSelectedStatuses, status],
+    setTempSelectedStatuses((prev) =>
+      prev.includes(status)
+        ? prev.filter((s) => s !== status)
+        : [...prev, status],
     );
   };
 
   const toggleTempCluster = (cluster: string) => {
-    setTempSelectedClusters(
-      tempSelectedClusters.includes(cluster)
-        ? tempSelectedClusters.filter((c) => c !== cluster)
-        : [...tempSelectedClusters, cluster],
+    setTempSelectedClusters((prev) =>
+      prev.includes(cluster)
+        ? prev.filter((c) => c !== cluster)
+        : [...prev, cluster],
     );
   };
 
   const toggleTempDatacenter = (datacenter: string) => {
-    setTempSelectedDatacenters(
-      tempSelectedDatacenters.includes(datacenter)
-        ? tempSelectedDatacenters.filter((d) => d !== datacenter)
-        : [...tempSelectedDatacenters, datacenter],
+    setTempSelectedDatacenters((prev) =>
+      prev.includes(datacenter)
+        ? prev.filter((d) => d !== datacenter)
+        : [...prev, datacenter],
     );
   };
 
@@ -766,6 +801,8 @@ export const VMTable: React.FC<VMTableProps> = ({
       );
     } else if (filterKey === "hasIssues") {
       setHasIssuesFilter(false);
+    } else if (filterKey === "noIssues") {
+      setNoIssuesFilter(false);
     }
     setPage(1);
   };
@@ -778,6 +815,7 @@ export const VMTable: React.FC<VMTableProps> = ({
     setSelectedDatacenters([]);
     setSelectedMigrationReadiness([]);
     setHasIssuesFilter(false);
+    setNoIssuesFilter(false);
     setSearchValue("");
     setDiskRangeFilter(null);
     setMemoryRangeFilter(null);

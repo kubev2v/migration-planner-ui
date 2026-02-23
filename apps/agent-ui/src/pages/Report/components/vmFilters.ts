@@ -1,7 +1,10 @@
 export interface VMFilters {
   // Client-side filters only
   hasIssues?: boolean;
+  noIssues?: boolean;
   statuses?: string[];
+  clusters?: string[];
+  datacenters?: string[];
   search?: string;
   diskRange?: { min: number; max?: number };
   memoryRange?: { min: number; max?: number };
@@ -18,8 +21,20 @@ export function filtersToSearchParams(filters: VMFilters): URLSearchParams {
     params.set("hasIssues", filters.hasIssues.toString());
   }
 
+  if (filters.noIssues !== undefined) {
+    params.set("noIssues", filters.noIssues.toString());
+  }
+
   if (filters.statuses && filters.statuses.length > 0) {
     params.set("statuses", filters.statuses.join(","));
+  }
+
+  if (filters.clusters && filters.clusters.length > 0) {
+    params.set("clusters", filters.clusters.join(","));
+  }
+
+  if (filters.datacenters && filters.datacenters.length > 0) {
+    params.set("datacenters", filters.datacenters.join(","));
   }
 
   if (filters.search) {
@@ -60,9 +75,24 @@ export function searchParamsToFilters(
     filters.hasIssues = hasIssues === "true";
   }
 
+  const noIssues = searchParams.get("noIssues");
+  if (noIssues !== null) {
+    filters.noIssues = noIssues === "true";
+  }
+
   const statuses = searchParams.get("statuses");
   if (statuses) {
     filters.statuses = statuses.split(",").filter(Boolean);
+  }
+
+  const clusters = searchParams.get("clusters");
+  if (clusters) {
+    filters.clusters = clusters.split(",").filter(Boolean);
+  }
+
+  const datacenters = searchParams.get("datacenters");
+  if (datacenters) {
+    filters.datacenters = datacenters.split(",").filter(Boolean);
   }
 
   const search = searchParams.get("search");
@@ -114,9 +144,12 @@ export function searchParamsToFilters(
 export function hasActiveFilters(filters: VMFilters): boolean {
   return !!(
     filters.hasIssues !== undefined ||
+    filters.noIssues !== undefined ||
     (filters.diskRange !== undefined && filters.diskRange !== null) ||
     (filters.memoryRange !== undefined && filters.memoryRange !== null) ||
     (filters.statuses && filters.statuses.length > 0) ||
+    (filters.clusters && filters.clusters.length > 0) ||
+    (filters.datacenters && filters.datacenters.length > 0) ||
     (filters.migrationReadiness && filters.migrationReadiness.length > 0) ||
     filters.search
   );
