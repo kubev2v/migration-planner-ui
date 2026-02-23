@@ -140,6 +140,49 @@ interface AppliedFilter {
   key: string;
 }
 
+// Emotion styles to fix sortable column header layout shifts
+const styles = {
+  vmTable: css`
+    table {
+      table-layout: fixed;
+      width: 100%;
+    }
+
+    th button {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      text-align: left;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    thead th:nth-child(1) {
+      width: 30%;
+    }
+
+    thead th:nth-child(2) {
+      width: 20%;
+    }
+
+    thead th:nth-child(3) {
+      width: 15%;
+    }
+
+    thead th:nth-child(4) {
+      width: 15%;
+    }
+
+    thead th:nth-child(5) {
+      width: 10%;
+    }
+
+    thead th:nth-child(6) {
+      width: 10%;
+    }
+  `,
+};
+
 export const VMTable: React.FC<VMTableProps> = ({
   vms,
   loading,
@@ -903,7 +946,7 @@ export const VMTable: React.FC<VMTableProps> = ({
   };
 
   return (
-    <div>
+    <div className={styles.vmTable}>
       {/* Toolbar */}
       <Toolbar>
         <ToolbarContent>
