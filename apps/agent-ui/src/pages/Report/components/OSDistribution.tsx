@@ -38,14 +38,14 @@ export const OSDistribution: React.FC<OSDistributionProps> = ({
     name: os,
     count: osInfo.count,
     legendCategory: osInfo.supported
-      ? "Supported by Red Hat"
-      : "Not supported by Red Hat",
+      ? "Supported by MTV"
+      : "Not supported by MTV",
     infoText: osInfo.upgradeRecommendation,
   }));
 
   const customLegend = {
-    "Supported by Red Hat": "#28a745",
-    "Not supported by Red Hat": "#d9534f",
+    "Supported by MTV": "#28a745",
+    "Not supported by MTV": "#f0ad4e",
   };
 
   return (
