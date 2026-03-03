@@ -267,7 +267,7 @@ No authorization required
 
 ## getInventory
 
-> Inventory getInventory()
+> GetInventory200Response getInventory(withAgentId)
 
 Get collected inventory
 
@@ -284,8 +284,13 @@ async function example() {
   console.log("🚀 Testing @migration-planner-ui/agent-client SDK...");
   const api = new DefaultApi();
 
+  const body = {
+    // boolean | If true, include the agentId in the response (Compatible with manual inventory upload). (optional)
+    withAgentId: true,
+  } satisfies GetInventoryRequest;
+
   try {
-    const data = await api.getInventory();
+    const data = await api.getInventory(body);
     console.log(data);
   } catch (error) {
     console.error(error);
@@ -298,11 +303,14 @@ example().catch(console.error);
 
 ### Parameters
 
-This endpoint does not need any parameter.
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **withAgentId** | `boolean` | If true, include the agentId in the response (Compatible with manual inventory upload). | [Optional] [Defaults to `false`] |
 
 ### Return type
 
-[**Inventory**](Inventory.md)
+[**GetInventory200Response**](GetInventory200Response.md)
 
 ### Authorization
 

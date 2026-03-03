@@ -44,12 +44,12 @@ export interface VmInspectionStatus {
  * @export
  */
 export const VmInspectionStatusStateEnum = {
-    Pending: 'pending',
-    Running: 'running',
-    Completed: 'completed',
-    Canceled: 'canceled',
-    Error: 'error',
-    NotFound: 'not_found'
+    VmInspectionStatusStatePending: 'pending',
+    VmInspectionStatusStateRunning: 'running',
+    VmInspectionStatusStateCompleted: 'completed',
+    VmInspectionStatusStateCanceled: 'canceled',
+    VmInspectionStatusStateError: 'error',
+    VmInspectionStatusStateNotFound: 'not_found'
 } as const;
 export type VmInspectionStatusStateEnum = typeof VmInspectionStatusStateEnum[keyof typeof VmInspectionStatusStateEnum];
 

@@ -19,9 +19,9 @@ import type {
   AgentStatus,
   CollectorStartRequest,
   CollectorStatus,
+  GetInventory200Response,
   InspectorStartRequest,
   InspectorStatus,
-  Inventory,
   VddkPost200Response,
   VddkPostRequest,
   VersionInfo,
@@ -38,12 +38,12 @@ import {
     CollectorStartRequestToJSON,
     CollectorStatusFromJSON,
     CollectorStatusToJSON,
+    GetInventory200ResponseFromJSON,
+    GetInventory200ResponseToJSON,
     InspectorStartRequestFromJSON,
     InspectorStartRequestToJSON,
     InspectorStatusFromJSON,
     InspectorStatusToJSON,
-    InventoryFromJSON,
-    InventoryToJSON,
     VddkPost200ResponseFromJSON,
     VddkPost200ResponseToJSON,
     VddkPostRequestFromJSON,
@@ -60,6 +60,10 @@ import {
 
 export interface AddVMsToInspectionRequest {
     requestBody: Array<string>;
+}
+
+export interface GetInventoryRequest {
+    withAgentId?: boolean;
 }
 
 export interface GetVMRequest {
@@ -170,16 +174,17 @@ export interface DefaultApiInterface {
     /**
      * 
      * @summary Get collected inventory
+     * @param {boolean} [withAgentId] If true, include the agentId in the response (Compatible with manual inventory upload).
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApiInterface
      */
-    getInventoryRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Inventory>>;
+    getInventoryRaw(requestParameters?: GetInventoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetInventory200Response>>;
 
     /**
      * Get collected inventory
      */
-    getInventory(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Inventory>;
+    getInventory(requestParameters?: GetInventoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetInventory200Response>;
 
     /**
      * 
@@ -488,8 +493,12 @@ export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
     /**
      * Get collected inventory
      */
-    async getInventoryRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Inventory>> {
+    async getInventoryRaw(requestParameters: GetInventoryRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetInventory200Response>> {
         const queryParameters: any = {};
+
+        if (requestParameters['withAgentId'] != null) {
+            queryParameters['withAgentId'] = requestParameters['withAgentId'];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -503,14 +512,14 @@ export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InventoryFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => GetInventory200ResponseFromJSON(jsonValue));
     }
 
     /**
      * Get collected inventory
      */
-    async getInventory(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Inventory> {
-        const response = await this.getInventoryRaw(initOverrides);
+    async getInventory(requestParameters: GetInventoryRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetInventory200Response> {
+        const response = await this.getInventoryRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

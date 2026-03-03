@@ -1,5 +1,8 @@
 import type { DefaultApiInterface } from "@migration-planner-ui/agent-client/apis";
-import type { VirtualMachineDetail } from "@migration-planner-ui/agent-client/models";
+import type {
+  VirtualMachineDetail,
+  VMIssue,
+} from "@migration-planner-ui/agent-client/models";
 import { useInjection } from "@migration-planner-ui/ioc";
 import {
   Alert,
@@ -13,8 +16,10 @@ import {
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
+  ExpandableSection,
   Flex,
   FlexItem,
+  Icon,
   Label,
   Spinner,
   Stack,
@@ -26,6 +31,7 @@ import {
   CheckCircleIcon,
   CogIcon,
   CpuIcon,
+  ExclamationCircleIcon,
   ExclamationTriangleIcon,
   InfoCircleIcon,
   NetworkIcon,
@@ -58,6 +64,16 @@ export const VMDetailsPage: React.FC<VMDetailsPageProps> = ({
   const [vm, setVm] = useState<VirtualMachineDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedCategories, setExpandedCategories] = useState<
+    Record<string, boolean>
+  >({
+    Critical: false,
+    Error: false,
+    Warning: false,
+    Advisory: false,
+    Information: false,
+    Other: false,
+  });
 
   useEffect(() => {
     const fetchVMDetails = async () => {
@@ -444,23 +460,146 @@ export const VMDetailsPage: React.FC<VMDetailsPageProps> = ({
             <ExclamationTriangleIcon /> Issues
           </CardTitle>
           <CardBody>
-            {vm.issues && vm.issues.length > 0 ? (
-              <Stack hasGutter>
-                {vm.issues.map((issue, index) => (
-                  <StackItem key={`issue-${index}-${issue}`}>
-                    <Alert variant="warning" isInline isPlain title={issue} />
-                  </StackItem>
-                ))}
-              </Stack>
-            ) : (
-              <span
-                style={{
-                  color: "var(--pf-t--global--text--color--subtle)",
-                }}
-              >
-                No issues found
-              </span>
-            )}
+            {(() => {
+              const getAlertVariant = (category: string) => {
+                switch (category) {
+                  case "Critical":
+                  case "Error":
+                    return "danger";
+                  case "Warning":
+                    return "warning";
+                  case "Information":
+                  case "Advisory":
+                    return "info";
+                  default:
+                    return "custom";
+                }
+              };
+
+              const getCategoryIcon = (category: string) => {
+                switch (category) {
+                  case "Critical":
+                  case "Error":
+                    return (
+                      <Icon status="danger">
+                        <ExclamationCircleIcon />
+                      </Icon>
+                    );
+                  case "Warning":
+                    return (
+                      <Icon status="warning">
+                        <ExclamationTriangleIcon />
+                      </Icon>
+                    );
+                  case "Information":
+                  case "Advisory":
+                    return (
+                      <Icon status="info">
+                        <InfoCircleIcon />
+                      </Icon>
+                    );
+                  default:
+                    return (
+                      <Icon status="info">
+                        <InfoCircleIcon />
+                      </Icon>
+                    );
+                }
+              };
+
+              // Define all categories with their order
+              const allCategories = [
+                "Critical",
+                "Error",
+                "Warning",
+                "Advisory",
+                "Information",
+                "Other",
+              ];
+
+              // Group issues by category, normalizing unknown categories to "Other"
+              const issuesByCategory = (vm.issues || []).reduce(
+                (acc, issue) => {
+                  const cat = allCategories.includes(issue.category)
+                    ? issue.category
+                    : "Other";
+                  if (!acc[cat]) {
+                    acc[cat] = [];
+                  }
+                  acc[cat].push(issue);
+                  return acc;
+                },
+                {} as Record<string, VMIssue[]>,
+              );
+
+              const toggleCategory = (category: string) => {
+                setExpandedCategories((prev) => ({
+                  ...prev,
+                  [category]: !prev[category],
+                }));
+              };
+
+              return (
+                <Stack hasGutter>
+                  {allCategories.map((category) => {
+                    const categoryIssues = issuesByCategory[category] || [];
+                    const count = categoryIssues.length;
+
+                    return (
+                      <StackItem key={category}>
+                        <ExpandableSection
+                          toggleContent={
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                              }}
+                            >
+                              {getCategoryIcon(category)}
+                              <span>
+                                {category} ({count})
+                              </span>
+                            </div>
+                          }
+                          isExpanded={expandedCategories[category] || false}
+                          onToggle={() => toggleCategory(category)}
+                          isIndented
+                        >
+                          {count > 0 ? (
+                            <Stack hasGutter>
+                              {categoryIssues.map((issue, index) => (
+                                <StackItem
+                                  key={`issue-${category}-${index}-${issue.label}`}
+                                >
+                                  <Alert
+                                    variant={getAlertVariant(category)}
+                                    isInline
+                                    isPlain
+                                    title={issue.label}
+                                  >
+                                    {issue.description}
+                                  </Alert>
+                                </StackItem>
+                              ))}
+                            </Stack>
+                          ) : (
+                            <span
+                              style={{
+                                color:
+                                  "var(--pf-t--global--text--color--subtle)",
+                              }}
+                            >
+                              No {category.toLowerCase()} issues found
+                            </span>
+                          )}
+                        </ExpandableSection>
+                      </StackItem>
+                    );
+                  })}
+                </Stack>
+              );
+            })()}
           </CardBody>
         </Card>
       </StackItem>

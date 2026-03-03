@@ -35,7 +35,7 @@ Name | Type
 `nics` | [Array&lt;VMNIC&gt;](VMNIC.md)
 `devices` | [Array&lt;VMDevice&gt;](VMDevice.md)
 `guestNetworks` | [Array&lt;GuestNetwork&gt;](GuestNetwork.md)
-`issues` | Array&lt;string&gt;
+`issues` | [Array&lt;VMIssue&gt;](VMIssue.md)
 `inspection` | [VmInspectionStatus](VmInspectionStatus.md)
 
 ## Example

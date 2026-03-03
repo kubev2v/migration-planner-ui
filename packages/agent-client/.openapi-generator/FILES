@@ -6,6 +6,7 @@ docs/Datastore.md
 docs/DefaultApi.md
 docs/DiskSizeTierSummary.md
 docs/DiskTypeSummary.md
+docs/GetInventory200Response.md
 docs/GuestNetwork.md
 docs/Histogram.md
 docs/Host.md
@@ -17,9 +18,11 @@ docs/InventoryData.md
 docs/MigrationIssue.md
 docs/Network.md
 docs/OsInfo.md
+docs/UpdateInventory.md
 docs/VCenter.md
 docs/VMDevice.md
 docs/VMDisk.md
+docs/VMIssue.md
 docs/VMNIC.md
 docs/VMResourceBreakdown.md
 docs/VMs.md
@@ -41,6 +44,7 @@ src/models/CollectorStatus.ts
 src/models/Datastore.ts
 src/models/DiskSizeTierSummary.ts
 src/models/DiskTypeSummary.ts
+src/models/GetInventory200Response.ts
 src/models/GuestNetwork.ts
 src/models/Histogram.ts
 src/models/Host.ts
@@ -52,9 +56,11 @@ src/models/InventoryData.ts
 src/models/MigrationIssue.ts
 src/models/Network.ts
 src/models/OsInfo.ts
+src/models/UpdateInventory.ts
 src/models/VCenter.ts
 src/models/VMDevice.ts
 src/models/VMDisk.ts
+src/models/VMIssue.ts
 src/models/VMNIC.ts
 src/models/VMResourceBreakdown.ts
 src/models/VMs.ts

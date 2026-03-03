@@ -34,6 +34,13 @@ import {
     GuestNetworkToJSON,
     GuestNetworkToJSONTyped,
 } from './GuestNetwork.js';
+import type { VMIssue } from './VMIssue.js';
+import {
+    VMIssueFromJSON,
+    VMIssueFromJSONTyped,
+    VMIssueToJSON,
+    VMIssueToJSONTyped,
+} from './VMIssue.js';
 import type { VMDevice } from './VMDevice.js';
 import {
     VMDeviceFromJSON,
@@ -230,11 +237,11 @@ export interface VirtualMachineDetail {
      */
     guestNetworks?: Array<GuestNetwork>;
     /**
-     * List of issue identifiers affecting this VirtualMachine
-     * @type {Array<string>}
+     * List of issues affecting this VirtualMachine
+     * @type {Array<VMIssue>}
      * @memberof VirtualMachineDetail
      */
-    issues?: Array<string>;
+    issues?: Array<VMIssue>;
     /**
      * 
      * @type {VmInspectionStatus}
@@ -298,7 +305,7 @@ export function VirtualMachineDetailFromJSONTyped(json: any, ignoreDiscriminator
         'nics': ((json['nics'] as Array<any>).map(VMNICFromJSON)),
         'devices': json['devices'] == null ? undefined : ((json['devices'] as Array<any>).map(VMDeviceFromJSON)),
         'guestNetworks': json['guestNetworks'] == null ? undefined : ((json['guestNetworks'] as Array<any>).map(GuestNetworkFromJSON)),
-        'issues': json['issues'] == null ? undefined : json['issues'],
+        'issues': json['issues'] == null ? undefined : ((json['issues'] as Array<any>).map(VMIssueFromJSON)),
         'inspection': json['inspection'] == null ? undefined : VmInspectionStatusFromJSON(json['inspection']),
     };
 }
@@ -343,7 +350,7 @@ export function VirtualMachineDetailToJSONTyped(value?: VirtualMachineDetail | n
         'nics': ((value['nics'] as Array<any>).map(VMNICToJSON)),
         'devices': value['devices'] == null ? undefined : ((value['devices'] as Array<any>).map(VMDeviceToJSON)),
         'guestNetworks': value['guestNetworks'] == null ? undefined : ((value['guestNetworks'] as Array<any>).map(GuestNetworkToJSON)),
-        'issues': value['issues'],
+        'issues': value['issues'] == null ? undefined : ((value['issues'] as Array<any>).map(VMIssueToJSON)),
         'inspection': VmInspectionStatusToJSON(value['inspection']),
     };
 }

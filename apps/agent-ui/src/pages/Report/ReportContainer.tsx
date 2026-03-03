@@ -1,10 +1,14 @@
 import type { DefaultApiInterface } from "@migration-planner-ui/agent-client/apis";
 import type {
   Inventory,
+  UpdateInventory,
   VirtualMachine,
 } from "@migration-planner-ui/agent-client/models";
+import { instanceOfInventory } from "@migration-planner-ui/agent-client/models";
+import { ResponseError } from "@migration-planner-ui/agent-client/runtime";
 import { useInjection } from "@migration-planner-ui/ioc";
 import {
+  Alert,
   Content,
   MenuToggle,
   type MenuToggleElement,
@@ -89,13 +93,48 @@ export const ReportContainer: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const inventoryData = await agentApi.getInventory();
-        setInventory(inventoryData);
+        const inventoryData = await agentApi.getInventory({});
+
+        // Handle the union type: GetInventory200Response can be Inventory | UpdateInventory
+        let actualInventory: Inventory | null = null;
+
+        if (!inventoryData) {
+          setInventory(null);
+          return;
+        }
+
+        // Check if response is an empty object - means inventory not collected yet
+        if (
+          typeof inventoryData === "object" &&
+          Object.keys(inventoryData).length === 0
+        ) {
+          setInventory(null);
+          return;
+        }
+
+        if (instanceOfInventory(inventoryData)) {
+          actualInventory = inventoryData;
+        } else {
+          // It's UpdateInventory, extract the inventory field
+          const updateInventory = inventoryData as UpdateInventory;
+          if (updateInventory.inventory) {
+            actualInventory = updateInventory.inventory;
+          }
+        }
+
+        setInventory(actualInventory);
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Failed to load data";
-        setError(errorMessage);
-        console.error("Error fetching data:", err);
+        console.error("Error fetching inventory:", err);
+
+        // Handle 404 specifically - inventory not collected yet
+        if (err instanceof ResponseError && err.response?.status === 404) {
+          setInventory(null);
+          setError(null);
+        } else {
+          const errorMessage =
+            err instanceof Error ? err.message : "Failed to load data";
+          setError(errorMessage);
+        }
       } finally {
         setLoading(false);
       }
@@ -151,31 +190,51 @@ export const ReportContainer: React.FC = () => {
 
   if (loading) {
     return (
-      <Stack hasGutter>
-        <StackItem>
-          <Content component="p">Loading inventory data...</Content>
-        </StackItem>
-      </Stack>
+      <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+        <Stack hasGutter>
+          <StackItem>
+            <Header totalVMs={0} totalClusters={0} isConnected={false} />
+          </StackItem>
+          <StackItem>
+            <Content component="p">Loading inventory data...</Content>
+          </StackItem>
+        </Stack>
+      </PageSection>
     );
   }
 
   if (error) {
     return (
-      <Stack hasGutter>
-        <StackItem>
-          <Content component="p">Error: {error}</Content>
-        </StackItem>
-      </Stack>
+      <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+        <Stack hasGutter>
+          <StackItem>
+            <Header totalVMs={0} totalClusters={0} isConnected={false} />
+          </StackItem>
+          <StackItem>
+            <Alert variant="danger" title="Error loading inventory">
+              {error}
+            </Alert>
+          </StackItem>
+        </Stack>
+      </PageSection>
     );
   }
 
   if (!inventory) {
     return (
-      <Stack hasGutter>
-        <StackItem>
-          <Content component="p">No inventory data available.</Content>
-        </StackItem>
-      </Stack>
+      <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+        <Stack hasGutter>
+          <StackItem>
+            <Header totalVMs={0} totalClusters={0} isConnected={false} />
+          </StackItem>
+          <StackItem>
+            <Alert variant="info" title="No inventory available">
+              The inventory has not been collected yet. Please start the
+              collector to gather information about your virtual machines.
+            </Alert>
+          </StackItem>
+        </Stack>
+      </PageSection>
     );
   }
 

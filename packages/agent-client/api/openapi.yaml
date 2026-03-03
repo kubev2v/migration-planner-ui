@@ -10,13 +10,13 @@ paths:
       summary: Get agent status
       operationId: getAgentStatus
       responses:
-        '200':
+        "200":
           description: Agent status
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AgentStatus'
-        '500':
+                $ref: "#/components/schemas/AgentStatus"
+        "500":
           description: Internal server error
     post:
       summary: Change agent mode
@@ -26,19 +26,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AgentModeRequest'
+              $ref: "#/components/schemas/AgentModeRequest"
       responses:
-        '200':
+        "200":
           description: Mode changed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AgentStatus'
-        '400':
+                $ref: "#/components/schemas/AgentStatus"
+        "400":
           description: Invalid request
-        '409':
+        "409":
           description: Conflict
-        '500':
+        "500":
           description: Internal server error
 
   /collector:
@@ -46,13 +46,13 @@ paths:
       summary: Get collector status
       operationId: getCollectorStatus
       responses:
-        '200':
+        "200":
           description: Collector status
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CollectorStatus'
-        '500':
+                $ref: "#/components/schemas/CollectorStatus"
+        "500":
           description: Internal server error
     post:
       summary: Start inventory collection
@@ -62,43 +62,54 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CollectorStartRequest'
+              $ref: "#/components/schemas/CollectorStartRequest"
       responses:
-        '202':
+        "202":
           description: Collection started
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CollectorStatus'
-        '400':
+                $ref: "#/components/schemas/CollectorStatus"
+        "400":
           description: Invalid request
-        '409':
+        "409":
           description: Collection already in progress
-        '500':
+        "500":
           description: Internal server error
     delete:
       summary: Stop collection
       operationId: stopCollector
       responses:
-        '204':
+        "204":
           description: Collection stopped
-        '500':
+        "500":
           description: Internal server error
 
   /inventory:
     get:
       summary: Get collected inventory
       operationId: getInventory
+      parameters:
+        - name: withAgentId
+          in: query
+          required: false
+          description: If true, include the agentId in the response (Compatible with manual inventory upload).
+          schema:
+            type: boolean
+            default: false
       responses:
-        '200':
+        "200":
           description: Collected inventory
           content:
             application/json:
               schema:
-                $ref: 'https://raw.githubusercontent.com/kubev2v/migration-planner/main/api/v1alpha1/openapi.yaml#/components/schemas/Inventory'
-        '404':
+                oneOf:
+                  - $ref: "https://raw.githubusercontent.com/kubev2v/migration-planner/main/api/v1alpha1/openapi.yaml#/components/schemas/Inventory"
+                  - $ref: "https://raw.githubusercontent.com/kubev2v/migration-planner/main/api/v1alpha1/openapi.yaml#/components/schemas/UpdateInventory"
+
+        "404":
           description: Inventory not available
-        '500':
+        "500":
           description: Internal server error
 
   /vms:
@@ -189,15 +200,15 @@ paths:
             type: integer
             minimum: 1
       responses:
-        '200':
+        "200":
           description: List of VMs
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VirtualMachineListResponse'
-        '400':
+                $ref: "#/components/schemas/VirtualMachineListResponse"
+        "400":
           description: Invalid request parameters
-        '500':
+        "500":
           description: Internal server error
 
   /vms/{id}:
@@ -212,15 +223,15 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: VirtualMachine details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VirtualMachineDetail'
-        '404':
+                $ref: "#/components/schemas/VirtualMachineDetail"
+        "404":
           description: VirtualMachine not found
-        '500':
+        "500":
           description: Internal server error
 
   /vms/{id}/inspector:
@@ -235,15 +246,15 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: VirtualMachine inspection status
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VmInspectionStatus'
-        '404':
+                $ref: "#/components/schemas/VmInspectionStatus"
+        "404":
           description: VirtualMachine not found
-        '500':
+        "500":
           description: Internal server error
     delete:
       summary: Remove VirtualMachine from inspection queue
@@ -255,17 +266,17 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: VMs removed from queue
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VmInspectionStatus'
-        '400':
+                $ref: "#/components/schemas/VmInspectionStatus"
+        "400":
           description: Invalid request
-        '404':
+        "404":
           description: Inspector not running
-        '500':
+        "500":
           description: Internal server error
 
   /vms/inspector:
@@ -273,13 +284,13 @@ paths:
       summary: Get inspector status
       operationId: getInspectorStatus
       responses:
-        '200':
+        "200":
           description: Inspector status
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InspectorStatus'
-        '500':
+                $ref: "#/components/schemas/InspectorStatus"
+        "500":
           description: Internal server error
     post:
       summary: Start inspection for VMs
@@ -289,19 +300,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InspectorStartRequest'
+              $ref: "#/components/schemas/InspectorStartRequest"
       responses:
-        '202':
+        "202":
           description: Inspection started
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InspectorStatus'
-        '400':
+                $ref: "#/components/schemas/InspectorStatus"
+        "400":
           description: Invalid request
-        '409':
+        "409":
           description: Inspector already running
-        '500':
+        "500":
           description: Internal server error
     patch:
       summary: Add more VMs to inspection queue
@@ -311,48 +322,48 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VMIdArray'
+              $ref: "#/components/schemas/VMIdArray"
             example: ["vm-1236", "vm-1237"]
       responses:
-        '202':
+        "202":
           description: VMs added to inspection queue
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InspectorStatus'
-        '400':
+                $ref: "#/components/schemas/InspectorStatus"
+        "400":
           description: Invalid request
-        '404':
+        "404":
           description: Inspector not running
-        '500':
+        "500":
           description: Internal server error
     delete:
       summary: Stop inspector entirely
       operationId: stopInspection
       responses:
-        '200':
+        "200":
           description: VMs removed from queue
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InspectorStatus'
-        '400':
+                $ref: "#/components/schemas/InspectorStatus"
+        "400":
           description: Already in canceling state
-        '404':
+        "404":
           description: Inspector not running
-        '500':
+        "500":
           description: Internal server error
   /version:
     get:
       summary: Get agent version information
       operationId: getVersion
       responses:
-        '200':
+        "200":
           description: Version information
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VersionInfo'
+                $ref: "#/components/schemas/VersionInfo"
 
   /vddk:
     post:
@@ -371,7 +382,7 @@ paths:
                   format: binary
                   description: VDDK tarball
       responses:
-        '200':
+        "200":
           description: Upload successfull
           content:
             application/json:
@@ -388,11 +399,11 @@ paths:
                     type: integer
                     format: int64
                     description: written bytes
-        '413':
+        "413":
           description: File exceeds 64MB limit
-        '400':
+        "400":
           description: Bad request
-        '500':
+        "500":
           description: Internal server error
 
 components:
@@ -411,21 +422,8 @@ components:
           description: Git commit SHA used to build the agent
 
     CollectorStartRequest:
-      type: object
-      required:
-        - url
-        - username
-        - password
-      properties:
-        url:
-          type: string
-          format: uri
-          description: vCenter URL
-        username:
-          type: string
-        password:
-          type: string
-          format: password
+      allOf:
+        - $ref: "#/components/schemas/VcenterCredentials"
 
     CollectorStatus:
       type: object
@@ -493,6 +491,13 @@ components:
             - canceled
             - error
             - not_found
+          x-enum-varnames:
+            - VmInspectionStatusStatePending
+            - VmInspectionStatusStateRunning
+            - VmInspectionStatusStateCompleted
+            - VmInspectionStatusStateCanceled
+            - VmInspectionStatusStateError
+            - VmInspectionStatusStateNotFound
           description: Current inspection state
         error:
           type: string
@@ -547,7 +552,7 @@ components:
           type: boolean
           description: True if the vm is a template. False otherwise
         inspection:
-          $ref: '#/components/schemas/VmInspectionStatus'
+          $ref: "#/components/schemas/VmInspectionStatus"
 
     VirtualMachineDetail:
       type: object
@@ -647,30 +652,30 @@ components:
         disks:
           type: array
           items:
-            $ref: '#/components/schemas/VMDisk'
+            $ref: "#/components/schemas/VMDisk"
           description: List of virtual disks attached to the VirtualMachine
         nics:
           type: array
           items:
-            $ref: '#/components/schemas/VMNIC'
+            $ref: "#/components/schemas/VMNIC"
           description: List of virtual network interface cards attached to the VirtualMachine
         devices:
           type: array
           items:
-            $ref: '#/components/schemas/VMDevice'
+            $ref: "#/components/schemas/VMDevice"
           description: List of other virtual devices attached to the VirtualMachine
         guestNetworks:
           type: array
           items:
-            $ref: '#/components/schemas/GuestNetwork'
+            $ref: "#/components/schemas/GuestNetwork"
           description: Network configuration inside the guest OS as reported by VMware Tools
         issues:
           type: array
           items:
-            type: string
-          description: List of issue identifiers affecting this VirtualMachine
+            $ref: "#/components/schemas/VMIssue"
+          description: List of issues affecting this VirtualMachine
         inspection:
-          $ref: '#/components/schemas/VmInspectionStatus'
+          $ref: "#/components/schemas/VmInspectionStatus"
           description: Current inspection status for this VirtualMachine
 
     VMDisk:
@@ -740,6 +745,30 @@ components:
           type: string
           description: Network name as reported by the guest OS
 
+    VMIssue:
+      type: object
+      required:
+        - label
+        - category
+        - description
+      properties:
+        label:
+          type: string
+          description: Short label describing the issue
+        description:
+          type: string
+          description: Detailed description of the issue with additional context and recommendations
+        category:
+          type: string
+          enum:
+            - Critical
+            - Warning
+            - Information
+            - Advisory
+            - Error
+            - Other
+          description: Severity category of the issue. Unknown categories are mapped to 'Other'.
+
     VirtualMachineListResponse:
       type: object
       required:
@@ -751,7 +780,7 @@ components:
         vms:
           type: array
           items:
-            $ref: '#/components/schemas/VirtualMachine'
+            $ref: "#/components/schemas/VirtualMachine"
         total:
           type: integer
           description: Total number of VMs matching the filter
@@ -789,9 +818,9 @@ components:
         - vmIds
       properties:
         VcenterCredentials:
-          $ref: '#/components/schemas/VcenterCredentials'
+          $ref: "#/components/schemas/VcenterCredentials"
         vmIds:
-          $ref: '#/components/schemas/VMIdArray'
+          $ref: "#/components/schemas/VMIdArray"
 
     VMIdArray:
       type: array
