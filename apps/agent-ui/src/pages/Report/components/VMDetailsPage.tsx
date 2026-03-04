@@ -545,6 +545,11 @@ export const VMDetailsPage: React.FC<VMDetailsPageProps> = ({
                     const categoryIssues = issuesByCategory[category] || [];
                     const count = categoryIssues.length;
 
+                    // Hide "Other" category if it has no issues
+                    if (category === "Other" && count === 0) {
+                      return null;
+                    }
+
                     return (
                       <StackItem key={category}>
                         <ExpandableSection
