@@ -132,6 +132,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 diskSizeTier={vms.diskSizeTier ?? {}}
                 diskTypes={vms.diskTypes ?? {}}
                 isExportMode={isExportMode}
+                exportAllViews={isExportMode}
               />
             </GalleryItem>
           </Gallery>

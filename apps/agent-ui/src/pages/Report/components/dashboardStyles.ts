@@ -66,4 +66,54 @@ export const dashboardStyles = {
     max-height: unset;
     page-break-inside: avoid;
   `,
+
+  storageCardOverflowHidden: css`
+    overflow: hidden;
+  `,
+
+  storageCardOverflowVisible: css`
+    overflow: visible;
+  `,
+
+  storageChartWrapper: css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px 0;
+  `,
+
+  storageExportSectionMargin: css`
+    margin-bottom: 24px;
+  `,
+
+  storageExportSectionTitle: css`
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  `,
+
+  storageFlexFullWidth: css`
+    width: 100%;
+  `,
+
+  storageMenuToggleMinWidth: css`
+    min-width: 200px;
+  `,
+
+  storageNoDataContainer: css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 250px;
+    font-size: 16px;
+    color: #6a6e73;
+  `,
+
+  storageTotalsNote: css`
+    margin-top: 12px;
+    color: #6a6e73;
+    font-style: italic;
+    text-align: center;
+  `,
 };
