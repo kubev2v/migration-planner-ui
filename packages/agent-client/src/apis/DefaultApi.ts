@@ -19,9 +19,14 @@ import type {
   AgentStatus,
   CollectorStartRequest,
   CollectorStatus,
+  CreateGroupRequest,
   GetInventory200Response,
+  Group,
+  GroupListResponse,
+  GroupResponse,
   InspectorStartRequest,
   InspectorStatus,
+  UpdateGroupRequest,
   VddkPost200Response,
   VddkPostRequest,
   VersionInfo,
@@ -38,12 +43,22 @@ import {
     CollectorStartRequestToJSON,
     CollectorStatusFromJSON,
     CollectorStatusToJSON,
+    CreateGroupRequestFromJSON,
+    CreateGroupRequestToJSON,
     GetInventory200ResponseFromJSON,
     GetInventory200ResponseToJSON,
+    GroupFromJSON,
+    GroupToJSON,
+    GroupListResponseFromJSON,
+    GroupListResponseToJSON,
+    GroupResponseFromJSON,
+    GroupResponseToJSON,
     InspectorStartRequestFromJSON,
     InspectorStartRequestToJSON,
     InspectorStatusFromJSON,
     InspectorStatusToJSON,
+    UpdateGroupRequestFromJSON,
+    UpdateGroupRequestToJSON,
     VddkPost200ResponseFromJSON,
     VddkPost200ResponseToJSON,
     VddkPostRequestFromJSON,
@@ -62,8 +77,24 @@ export interface AddVMsToInspectionRequest {
     requestBody: Array<string>;
 }
 
+export interface CreateGroupOperationRequest {
+    createGroupRequest: CreateGroupRequest;
+}
+
+export interface DeleteGroupRequest {
+    id: string;
+}
+
+export interface GetGroupRequest {
+    id: string;
+    sort?: Array<string>;
+    page?: number;
+    pageSize?: number;
+}
+
 export interface GetInventoryRequest {
     withAgentId?: boolean;
+    groupId?: string;
 }
 
 export interface GetVMRequest {
@@ -75,14 +106,14 @@ export interface GetVMInspectionStatusRequest {
 }
 
 export interface GetVMsRequest {
-    minIssues?: number;
-    clusters?: Array<string>;
-    diskSizeMin?: number;
-    diskSizeMax?: number;
-    memorySizeMin?: number;
-    memorySizeMax?: number;
-    status?: Array<string>;
+    byExpression?: string;
     sort?: Array<string>;
+    page?: number;
+    pageSize?: number;
+}
+
+export interface ListGroupsRequest {
+    byName?: string;
     page?: number;
     pageSize?: number;
 }
@@ -101,6 +132,11 @@ export interface StartCollectorRequest {
 
 export interface StartInspectionRequest {
     inspectorStartRequest: InspectorStartRequest;
+}
+
+export interface UpdateGroupOperationRequest {
+    id: string;
+    updateGroupRequest: UpdateGroupRequest;
 }
 
 export interface VddkPostOperationRequest {
@@ -128,6 +164,36 @@ export interface DefaultApiInterface {
      * Add more VMs to inspection queue
      */
     addVMsToInspection(requestParameters: AddVMsToInspectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InspectorStatus>;
+
+    /**
+     * 
+     * @summary Create a new group
+     * @param {CreateGroupRequest} createGroupRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApiInterface
+     */
+    createGroupRaw(requestParameters: CreateGroupOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Group>>;
+
+    /**
+     * Create a new group
+     */
+    createGroup(requestParameters: CreateGroupOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Group>;
+
+    /**
+     * 
+     * @summary Delete group
+     * @param {string} id Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApiInterface
+     */
+    deleteGroupRaw(requestParameters: DeleteGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Delete group
+     */
+    deleteGroup(requestParameters: DeleteGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
     /**
      * 
@@ -159,6 +225,24 @@ export interface DefaultApiInterface {
 
     /**
      * 
+     * @summary Get group by ID with its VMs
+     * @param {string} id Group ID
+     * @param {Array<string>} [sort] Sort fields with direction (e.g., \&quot;name:asc\&quot; or \&quot;cluster:desc,name:asc\&quot;). Valid fields are name, vCenterState, cluster, diskSize, memory, issues.
+     * @param {number} [page] Page number for pagination
+     * @param {number} [pageSize] Number of items per page
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApiInterface
+     */
+    getGroupRaw(requestParameters: GetGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupResponse>>;
+
+    /**
+     * Get group by ID with its VMs
+     */
+    getGroup(requestParameters: GetGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupResponse>;
+
+    /**
+     * 
      * @summary Get inspector status
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -175,16 +259,17 @@ export interface DefaultApiInterface {
      * 
      * @summary Get collected inventory
      * @param {boolean} [withAgentId] If true, include the agentId in the response (Compatible with manual inventory upload).
+     * @param {string} [groupId] Filter inventory to VMs matching this group\&#39;s filter expression
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApiInterface
      */
-    getInventoryRaw(requestParameters?: GetInventoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetInventory200Response>>;
+    getInventoryRaw(requestParameters: GetInventoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetInventory200Response>>;
 
     /**
      * Get collected inventory
      */
-    getInventory(requestParameters?: GetInventoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetInventory200Response>;
+    getInventory(requestParameters: GetInventoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetInventory200Response>;
 
     /**
      * 
@@ -219,13 +304,7 @@ export interface DefaultApiInterface {
     /**
      * 
      * @summary Get list of VMs with filtering and pagination
-     * @param {number} [minIssues] Filter VMs with at least this many issues
-     * @param {Array<string>} [clusters] Filter by clusters (OR logic - matches VMs in any of the specified clusters)
-     * @param {number} [diskSizeMin] Minimum disk size in MB
-     * @param {number} [diskSizeMax] Maximum disk size in MB
-     * @param {number} [memorySizeMin] Minimum memory size in MB
-     * @param {number} [memorySizeMax] Maximum memory size in MB
-     * @param {Array<string>} [status] Filter by status (OR logic - matches VMs with any of the specified statuses)
+     * @param {string} [byExpression] Filter by expression (matches VMs with the provided expression)
      * @param {Array<string>} [sort] Sort fields with direction (e.g., \&quot;name:asc\&quot; or \&quot;cluster:desc,name:asc\&quot;). Valid fields are name, vCenterState, cluster, diskSize, memory, issues.
      * @param {number} [page] Page number for pagination
      * @param {number} [pageSize] Number of items per page
@@ -253,6 +332,23 @@ export interface DefaultApiInterface {
      * Get agent version information
      */
     getVersion(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VersionInfo>;
+
+    /**
+     * 
+     * @summary List all groups
+     * @param {string} [byName] Filter groups by name (case-insensitive substring match)
+     * @param {number} [page] Page number (1-indexed)
+     * @param {number} [pageSize] Number of groups per page
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApiInterface
+     */
+    listGroupsRaw(requestParameters: ListGroupsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupListResponse>>;
+
+    /**
+     * List all groups
+     */
+    listGroups(requestParameters: ListGroupsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupListResponse>;
 
     /**
      * 
@@ -344,6 +440,22 @@ export interface DefaultApiInterface {
 
     /**
      * 
+     * @summary Update group
+     * @param {string} id Group ID
+     * @param {UpdateGroupRequest} updateGroupRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApiInterface
+     */
+    updateGroupRaw(requestParameters: UpdateGroupOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Group>>;
+
+    /**
+     * Update group
+     */
+    updateGroup(requestParameters: UpdateGroupOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Group>;
+
+    /**
+     * 
      * @summary Upload VDDK tarball
      * @param {VddkPostRequest} vddkPostRequest 
      * @param {*} [options] Override http request option.
@@ -401,6 +513,81 @@ export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
     async addVMsToInspection(requestParameters: AddVMsToInspectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InspectorStatus> {
         const response = await this.addVMsToInspectionRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Create a new group
+     */
+    async createGroupRaw(requestParameters: CreateGroupOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Group>> {
+        if (requestParameters['createGroupRequest'] == null) {
+            throw new runtime.RequiredError(
+                'createGroupRequest',
+                'Required parameter "createGroupRequest" was null or undefined when calling createGroup().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/vms/groups`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CreateGroupRequestToJSON(requestParameters['createGroupRequest']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GroupFromJSON(jsonValue));
+    }
+
+    /**
+     * Create a new group
+     */
+    async createGroup(requestParameters: CreateGroupOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Group> {
+        const response = await this.createGroupRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Delete group
+     */
+    async deleteGroupRaw(requestParameters: DeleteGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling deleteGroup().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/vms/groups/{id}`;
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Delete group
+     */
+    async deleteGroup(requestParameters: DeleteGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.deleteGroupRaw(requestParameters, initOverrides);
     }
 
     /**
@@ -462,6 +649,55 @@ export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
     }
 
     /**
+     * Get group by ID with its VMs
+     */
+    async getGroupRaw(requestParameters: GetGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupResponse>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling getGroup().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['sort'] != null) {
+            queryParameters['sort'] = requestParameters['sort'];
+        }
+
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
+        }
+
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['pageSize'] = requestParameters['pageSize'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/vms/groups/{id}`;
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GroupResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Get group by ID with its VMs
+     */
+    async getGroup(requestParameters: GetGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupResponse> {
+        const response = await this.getGroupRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Get inspector status
      */
     async getInspectorStatusRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InspectorStatus>> {
@@ -493,11 +729,15 @@ export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
     /**
      * Get collected inventory
      */
-    async getInventoryRaw(requestParameters: GetInventoryRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetInventory200Response>> {
+    async getInventoryRaw(requestParameters: GetInventoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetInventory200Response>> {
         const queryParameters: any = {};
 
         if (requestParameters['withAgentId'] != null) {
             queryParameters['withAgentId'] = requestParameters['withAgentId'];
+        }
+
+        if (requestParameters['groupId'] != null) {
+            queryParameters['group_id'] = requestParameters['groupId'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -603,32 +843,8 @@ export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
     async getVMsRaw(requestParameters: GetVMsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VirtualMachineListResponse>> {
         const queryParameters: any = {};
 
-        if (requestParameters['minIssues'] != null) {
-            queryParameters['minIssues'] = requestParameters['minIssues'];
-        }
-
-        if (requestParameters['clusters'] != null) {
-            queryParameters['clusters'] = requestParameters['clusters'];
-        }
-
-        if (requestParameters['diskSizeMin'] != null) {
-            queryParameters['diskSizeMin'] = requestParameters['diskSizeMin'];
-        }
-
-        if (requestParameters['diskSizeMax'] != null) {
-            queryParameters['diskSizeMax'] = requestParameters['diskSizeMax'];
-        }
-
-        if (requestParameters['memorySizeMin'] != null) {
-            queryParameters['memorySizeMin'] = requestParameters['memorySizeMin'];
-        }
-
-        if (requestParameters['memorySizeMax'] != null) {
-            queryParameters['memorySizeMax'] = requestParameters['memorySizeMax'];
-        }
-
-        if (requestParameters['status'] != null) {
-            queryParameters['status'] = requestParameters['status'];
+        if (requestParameters['byExpression'] != null) {
+            queryParameters['byExpression'] = requestParameters['byExpression'];
         }
 
         if (requestParameters['sort'] != null) {
@@ -692,6 +908,47 @@ export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
      */
     async getVersion(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VersionInfo> {
         const response = await this.getVersionRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * List all groups
+     */
+    async listGroupsRaw(requestParameters: ListGroupsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupListResponse>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['byName'] != null) {
+            queryParameters['byName'] = requestParameters['byName'];
+        }
+
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
+        }
+
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['pageSize'] = requestParameters['pageSize'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/vms/groups`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GroupListResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * List all groups
+     */
+    async listGroups(requestParameters: ListGroupsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupListResponse> {
+        const response = await this.listGroupsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -903,6 +1160,53 @@ export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
      */
     async stopInspection(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InspectorStatus> {
         const response = await this.stopInspectionRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Update group
+     */
+    async updateGroupRaw(requestParameters: UpdateGroupOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Group>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling updateGroup().'
+            );
+        }
+
+        if (requestParameters['updateGroupRequest'] == null) {
+            throw new runtime.RequiredError(
+                'updateGroupRequest',
+                'Required parameter "updateGroupRequest" was null or undefined when calling updateGroup().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/vms/groups/{id}`;
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateGroupRequestToJSON(requestParameters['updateGroupRequest']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GroupFromJSON(jsonValue));
+    }
+
+    /**
+     * Update group
+     */
+    async updateGroup(requestParameters: UpdateGroupOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Group> {
+        const response = await this.updateGroupRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -8,12 +8,20 @@ import { ReportTable } from "./ReportTable";
 interface WarningsTableProps {
   warnings: MigrationIssue[];
   isExportMode?: boolean;
+  onConcernClick?: (concernLabel: string) => void;
 }
 
 export const WarningsTable: React.FC<WarningsTableProps> = ({
   warnings,
   isExportMode = false,
+  onConcernClick,
 }) => {
+  const handleRowClick = (issue: MigrationIssue) => {
+    if (issue.label && onConcernClick) {
+      onConcernClick(issue.label);
+    }
+  };
+
   return (
     <Card
       className={
@@ -34,6 +42,12 @@ export const WarningsTable: React.FC<WarningsTableProps> = ({
             columns={["Description", "Total VMs"]}
             fields={["assessment", "count"]}
             withoutBorder
+            onRowClick={
+              onConcernClick && !isExportMode ? handleRowClick : undefined
+            }
+            clickableFields={
+              onConcernClick && !isExportMode ? ["assessment"] : []
+            }
           />
         </div>
       </CardBody>

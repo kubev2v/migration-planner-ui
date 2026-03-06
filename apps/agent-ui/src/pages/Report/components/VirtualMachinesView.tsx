@@ -9,12 +9,31 @@ interface VirtualMachinesViewProps {
   vms: VirtualMachine[];
   loading?: boolean;
   initialFilters?: VMFilters;
+  totalVMs?: number;
+  currentPage?: number;
+  pageSize?: number;
+  onFiltersChange?: (filters: VMFilters) => void;
+  onPageChange?: (page: number, pageSize: number) => void;
+  onSortChange?: (sortFields: string[]) => void;
+  availableFilterOptions?: {
+    clusters: string[];
+    datacenters: string[];
+    concernLabels: string[];
+    concernCategories: string[];
+  };
 }
 
 export const VirtualMachinesView: React.FC<VirtualMachinesViewProps> = ({
   vms,
   loading = false,
   initialFilters,
+  totalVMs,
+  currentPage = 1,
+  pageSize = 20,
+  onFiltersChange,
+  onPageChange,
+  onSortChange,
+  availableFilterOptions,
 }) => {
   const [selectedVMId, setSelectedVMId] = useState<string | null>(null);
 
@@ -36,6 +55,13 @@ export const VirtualMachinesView: React.FC<VirtualMachinesViewProps> = ({
       loading={loading}
       onVMClick={handleVMClick}
       initialFilters={initialFilters}
+      totalVMs={totalVMs}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      onFiltersChange={onFiltersChange}
+      onPageChange={onPageChange}
+      onSortChange={onSortChange}
+      availableFilterOptions={availableFilterOptions}
     />
   );
 };
