@@ -45,17 +45,11 @@ export function GetInventory200ResponseFromJSONTyped(json: any, ignoreDiscrimina
     if (typeof json !== 'object') {
         return json;
     }
-    // Check for UpdateInventory format (has both agentId and inventory fields)
-    if ('agentId' in json && 'inventory' in json) {
+    if (instanceOfInventory(json)) {
+        return InventoryFromJSONTyped(json, true);
+    }
+    if (instanceOfUpdateInventory(json)) {
         return UpdateInventoryFromJSONTyped(json, true);
-    }
-    // Check for Inventory format (has vcenter_id in snake_case from server)
-    if ('vcenter_id' in json && 'clusters' in json) {
-        return InventoryFromJSONTyped(json, true);
-    }
-    // Fallback: try to parse as Inventory
-    if ('vcenterId' in json && 'clusters' in json) {
-        return InventoryFromJSONTyped(json, true);
     }
     return {} as any;
 }

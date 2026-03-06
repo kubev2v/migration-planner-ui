@@ -51,7 +51,10 @@ export interface Inventory {
  * Check if a given object implements the Inventory interface.
  */
 export function instanceOfInventory(value: object): value is Inventory {
-    if (!('vcenterId' in value) || value['vcenterId'] === undefined) return false;
+    // Check both snake_case (from JSON) and camelCase (after conversion)
+    const hasVcenterId = ('vcenterId' in value && value['vcenterId'] !== undefined) || 
+                         ('vcenter_id' in value && value['vcenter_id'] !== undefined);
+    if (!hasVcenterId) return false;
     if (!('clusters' in value) || value['clusters'] === undefined) return false;
     return true;
 }

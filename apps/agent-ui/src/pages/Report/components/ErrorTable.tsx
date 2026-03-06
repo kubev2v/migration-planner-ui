@@ -8,12 +8,20 @@ import { ReportTable } from "./ReportTable";
 interface ErrorTableProps {
   errors: MigrationIssue[];
   isExportMode?: boolean;
+  onConcernClick?: (concernLabel: string) => void;
 }
 
 export const ErrorTable: React.FC<ErrorTableProps> = ({
   errors,
   isExportMode = false,
+  onConcernClick,
 }) => {
+  const handleRowClick = (issue: MigrationIssue) => {
+    if (issue.label && onConcernClick) {
+      onConcernClick(issue.label);
+    }
+  };
+
   return (
     <Card
       className={
@@ -37,6 +45,12 @@ export const ErrorTable: React.FC<ErrorTableProps> = ({
               columns={["Description", "Total VMs"]}
               fields={["assessment", "count"]}
               withoutBorder
+              onRowClick={
+                onConcernClick && !isExportMode ? handleRowClick : undefined
+              }
+              clickableFields={
+                onConcernClick && !isExportMode ? ["assessment"] : []
+              }
             />
           </div>
         )}

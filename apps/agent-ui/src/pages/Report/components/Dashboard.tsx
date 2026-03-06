@@ -32,6 +32,7 @@ interface DashboardProps {
   clusters?: { [key: string]: InventoryData };
   isAggregateView?: boolean;
   clusterFound?: boolean;
+  onConcernClick?: (concernLabel: string) => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -43,6 +44,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   clusters,
   isAggregateView = true,
   clusterFound = true,
+  onConcernClick,
 }) => {
   // Transform osInfo to include both count and supported fields
   const osData = vms.osInfo
@@ -206,12 +208,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <WarningsTable
                 warnings={vms.migrationWarnings || []}
                 isExportMode={isExportMode}
+                onConcernClick={onConcernClick}
               />
             </GalleryItem>
             <GalleryItem>
               <ErrorTable
                 errors={vms.notMigratableReasons || []}
                 isExportMode={isExportMode}
+                onConcernClick={onConcernClick}
               />
             </GalleryItem>
           </Gallery>

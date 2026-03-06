@@ -1,5 +1,4 @@
 export interface VMFilters {
-  // Client-side filters only
   hasIssues?: boolean;
   noIssues?: boolean;
   statuses?: string[];
@@ -9,6 +8,136 @@ export interface VMFilters {
   diskRange?: { min: number; max?: number };
   memoryRange?: { min: number; max?: number };
   migrationReadiness?: string[];
+  concernLabels?: string[];
+  concernCategories?: string[];
+}
+
+/**
+ * Converts VM filters to backend byExpression format
+ * The backend expects an expression language documented in:
+ * https://github.com/kubev2v/assisted-migration-agent/blob/main/docs/filter-by-expression.md
+ */
+export function filtersToByExpression(filters: VMFilters): string | undefined {
+  const conditions: string[] = [];
+
+  // Search filter - searches across name, concern label, and concern assessment
+  if (filters.search) {
+    // Escape special regex characters except for user intent
+    const searchTerm = filters.search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    // Search in multiple fields: name, concern.label, and concern.assessment (description)
+    conditions.push(
+      `(name ~ /${searchTerm}/ or concern.label ~ /${searchTerm}/ or concern.assessment ~ /${searchTerm}/)`,
+    );
+  }
+
+  // Status filter (powerstate field in backend)
+  if (filters.statuses && filters.statuses.length > 0) {
+    if (filters.statuses.length === 1) {
+      conditions.push(`status = '${filters.statuses[0]}'`);
+    } else {
+      const statusList = filters.statuses.map((s) => `'${s}'`).join(",");
+      conditions.push(`status in [${statusList}]`);
+    }
+  }
+
+  // Cluster filter
+  if (filters.clusters && filters.clusters.length > 0) {
+    if (filters.clusters.length === 1) {
+      conditions.push(`cluster = '${filters.clusters[0]}'`);
+    } else {
+      const clusterList = filters.clusters.map((c) => `'${c}'`).join(",");
+      conditions.push(`cluster in [${clusterList}]`);
+    }
+  }
+
+  // Datacenter filter
+  if (filters.datacenters && filters.datacenters.length > 0) {
+    if (filters.datacenters.length === 1) {
+      conditions.push(`datacenter = '${filters.datacenters[0]}'`);
+    } else {
+      const datacenterList = filters.datacenters.map((d) => `'${d}'`).join(",");
+      conditions.push(`datacenter in [${datacenterList}]`);
+    }
+  }
+
+  // Concern category filter (Critical, Warning, etc.)
+  if (filters.concernCategories && filters.concernCategories.length > 0) {
+    if (filters.concernCategories.length === 1) {
+      conditions.push(`concern.category = '${filters.concernCategories[0]}'`);
+    } else {
+      const categoryList = filters.concernCategories
+        .map((c) => `'${c}'`)
+        .join(",");
+      conditions.push(`concern.category in [${categoryList}]`);
+    }
+  }
+
+  // Specific concern labels filter (can be combined with categories)
+  if (filters.concernLabels && filters.concernLabels.length > 0) {
+    if (filters.concernLabels.length === 1) {
+      conditions.push(`concern.label = '${filters.concernLabels[0]}'`);
+    } else {
+      const concernList = filters.concernLabels.map((c) => `'${c}'`).join(",");
+      conditions.push(`concern.label in [${concernList}]`);
+    }
+  }
+
+  // Generic issues filter - only apply if no specific concerns/categories selected
+  const hasConcernFilters =
+    (filters.concernCategories && filters.concernCategories.length > 0) ||
+    (filters.concernLabels && filters.concernLabels.length > 0);
+
+  if (!hasConcernFilters) {
+    if (filters.hasIssues) {
+      conditions.push("issues_count >= 1");
+    } else if (filters.noIssues) {
+      conditions.push("issues_count = 0");
+    }
+  }
+
+  // Disk range filter (total_disk_capacity field, values in MB)
+  if (filters.diskRange) {
+    const { min, max } = filters.diskRange;
+    if (max !== undefined) {
+      conditions.push(
+        `total_disk_capacity >= ${min} and total_disk_capacity <= ${max}`,
+      );
+    } else {
+      conditions.push(`total_disk_capacity >= ${min}`);
+    }
+  }
+
+  // Memory range filter (memory field, values in MB)
+  if (filters.memoryRange) {
+    const { min, max } = filters.memoryRange;
+    if (max !== undefined) {
+      conditions.push(`memory >= ${min} and memory <= ${max}`);
+    } else {
+      conditions.push(`memory >= ${min}`);
+    }
+  }
+
+  // Migration readiness filter
+  // Note: The 'migratable' field might not be supported in backend filters
+  // If the backend doesn't support this field, this filter won't work
+  if (filters.migrationReadiness && filters.migrationReadiness.length > 0) {
+    const hasReady = filters.migrationReadiness.includes("ready");
+    const hasNotReady = filters.migrationReadiness.includes("not-ready");
+
+    if (hasReady && !hasNotReady) {
+      conditions.push("migratable = true");
+    } else if (hasNotReady && !hasReady) {
+      conditions.push("migratable = false");
+    }
+    // If both are selected, don't add a filter (show all)
+  }
+
+  // Join all conditions with AND
+  if (conditions.length === 0) {
+    return undefined;
+  }
+
+  return conditions.join(" and ");
 }
 
 /**
@@ -57,6 +186,14 @@ export function filtersToSearchParams(filters: VMFilters): URLSearchParams {
 
   if (filters.migrationReadiness && filters.migrationReadiness.length > 0) {
     params.set("migrationReadiness", filters.migrationReadiness.join(","));
+  }
+
+  if (filters.concernLabels && filters.concernLabels.length > 0) {
+    params.set("concernLabels", filters.concernLabels.join(","));
+  }
+
+  if (filters.concernCategories && filters.concernCategories.length > 0) {
+    params.set("concernCategories", filters.concernCategories.join(","));
   }
 
   return params;
@@ -135,6 +272,16 @@ export function searchParamsToFilters(
     filters.migrationReadiness = migrationReadiness.split(",").filter(Boolean);
   }
 
+  const concernLabels = searchParams.get("concernLabels");
+  if (concernLabels) {
+    filters.concernLabels = concernLabels.split(",").filter(Boolean);
+  }
+
+  const concernCategories = searchParams.get("concernCategories");
+  if (concernCategories) {
+    filters.concernCategories = concernCategories.split(",").filter(Boolean);
+  }
+
   return filters;
 }
 
@@ -151,6 +298,8 @@ export function hasActiveFilters(filters: VMFilters): boolean {
     (filters.clusters && filters.clusters.length > 0) ||
     (filters.datacenters && filters.datacenters.length > 0) ||
     (filters.migrationReadiness && filters.migrationReadiness.length > 0) ||
+    (filters.concernLabels && filters.concernLabels.length > 0) ||
+    (filters.concernCategories && filters.concernCategories.length > 0) ||
     filters.search
   );
 }

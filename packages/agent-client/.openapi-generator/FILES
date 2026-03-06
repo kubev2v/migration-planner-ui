@@ -2,11 +2,15 @@ docs/AgentModeRequest.md
 docs/AgentStatus.md
 docs/CollectorStartRequest.md
 docs/CollectorStatus.md
+docs/CreateGroupRequest.md
 docs/Datastore.md
 docs/DefaultApi.md
 docs/DiskSizeTierSummary.md
 docs/DiskTypeSummary.md
 docs/GetInventory200Response.md
+docs/Group.md
+docs/GroupListResponse.md
+docs/GroupResponse.md
 docs/GuestNetwork.md
 docs/Histogram.md
 docs/Host.md
@@ -18,6 +22,7 @@ docs/InventoryData.md
 docs/MigrationIssue.md
 docs/Network.md
 docs/OsInfo.md
+docs/UpdateGroupRequest.md
 docs/UpdateInventory.md
 docs/VCenter.md
 docs/VMDevice.md
@@ -41,10 +46,14 @@ src/models/AgentModeRequest.ts
 src/models/AgentStatus.ts
 src/models/CollectorStartRequest.ts
 src/models/CollectorStatus.ts
+src/models/CreateGroupRequest.ts
 src/models/Datastore.ts
 src/models/DiskSizeTierSummary.ts
 src/models/DiskTypeSummary.ts
 src/models/GetInventory200Response.ts
+src/models/Group.ts
+src/models/GroupListResponse.ts
+src/models/GroupResponse.ts
 src/models/GuestNetwork.ts
 src/models/Histogram.ts
 src/models/Host.ts
@@ -56,6 +65,7 @@ src/models/InventoryData.ts
 src/models/MigrationIssue.ts
 src/models/Network.ts
 src/models/OsInfo.ts
+src/models/UpdateGroupRequest.ts
 src/models/UpdateInventory.ts
 src/models/VCenter.ts
 src/models/VMDevice.ts
