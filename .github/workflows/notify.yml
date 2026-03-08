@@ -50,7 +50,7 @@ jobs:
             -d '{
               "event_type": "remote_repo_updated",
               "client_payload": {
-                "sha": "${{ github.event.workflow_run.head_sha }}",
-                "repo": "${{ github.event.workflow_run.head_repository.full_name }}"
+                "sha": "${{ github.sha }}",
+                "repo": "${{ github.repository }}"
               }
             }'
