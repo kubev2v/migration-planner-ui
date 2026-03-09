@@ -73,6 +73,7 @@ export const ReportContainer: React.FC = () => {
     concernLabels: [],
     concernCategories: [],
   });
+  const [filterOptionsFetched, setFilterOptionsFetched] = useState(false);
 
   // Parse filters from URL (recalculates when URL changes)
   const initialVMFilters = useMemo(
@@ -196,22 +197,35 @@ export const ReportContainer: React.FC = () => {
   // Fetch available filter options once when VMs tab is first accessed
   useEffect(() => {
     if (activeTab !== 1) return;
-    if (availableFilterOptions.clusters.length > 0) return; // Already fetched
+    if (filterOptionsFetched) return;
 
     const fetchFilterOptions = async () => {
       try {
-        // Fetch a sample of VMs to get unique clusters and datacenters
-        // Use a large page size to get a good sample
-        const response = await agentApi.getVMs({
-          page: 1,
-          pageSize: 1000,
-        });
+        // Fetch all VMs with pagination to get complete lists of clusters and datacenters
+        let allVMs: VirtualMachine[] = [];
+        let page = 1;
+        const pageSize = 1000;
+        let hasMore = true;
 
-        const vmsForOptions = response.vms || [];
+        while (hasMore) {
+          const response = await agentApi.getVMs({
+            page,
+            pageSize,
+          });
+
+          const vms = response.vms || [];
+          allVMs = allVMs.concat(vms);
+
+          // Check if there are more pages
+          const total = response.total || 0;
+          hasMore = allVMs.length < total;
+          page++;
+        }
+
         const clusters = new Set<string>();
         const datacenters = new Set<string>();
 
-        vmsForOptions.forEach((vm) => {
+        allVMs.forEach((vm) => {
           if (vm.cluster) clusters.add(vm.cluster);
           if (vm.datacenter) datacenters.add(vm.datacenter);
         });
@@ -222,18 +236,15 @@ export const ReportContainer: React.FC = () => {
           concernLabels: availableConcerns.labels,
           concernCategories: availableConcerns.categories,
         });
+        setFilterOptionsFetched(true);
       } catch (err) {
         console.error("Error fetching filter options:", err);
+        setFilterOptionsFetched(true);
       }
     };
 
     fetchFilterOptions();
-  }, [
-    activeTab,
-    agentApi,
-    availableFilterOptions.clusters.length,
-    availableConcerns,
-  ]);
+  }, [activeTab, agentApi, filterOptionsFetched, availableConcerns]);
 
   // Fetch VMs when Virtual Machines tab is active or filters change
   useEffect(() => {

@@ -13,6 +13,13 @@ export interface VMFilters {
 }
 
 /**
+ * Escapes single quotes in filter values to prevent expression syntax errors
+ */
+function escapeFilterValue(value: string): string {
+  return value.replace(/'/g, "\\'");
+}
+
+/**
  * Converts VM filters to backend byExpression format
  * The backend expects an expression language documented in:
  * https://github.com/kubev2v/assisted-migration-agent/blob/main/docs/filter-by-expression.md
@@ -20,22 +27,21 @@ export interface VMFilters {
 export function filtersToByExpression(filters: VMFilters): string | undefined {
   const conditions: string[] = [];
 
-  // Search filter - searches across name, concern label, and concern assessment
+  // Search filter - searches in VM name only
   if (filters.search) {
     // Escape special regex characters except for user intent
     const searchTerm = filters.search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    // Search in multiple fields: name, concern.label, and concern.assessment (description)
-    conditions.push(
-      `(name ~ /${searchTerm}/ or concern.label ~ /${searchTerm}/ or concern.assessment ~ /${searchTerm}/)`,
-    );
+    conditions.push(`name ~ /${searchTerm}/`);
   }
 
   // Status filter (powerstate field in backend)
   if (filters.statuses && filters.statuses.length > 0) {
     if (filters.statuses.length === 1) {
-      conditions.push(`status = '${filters.statuses[0]}'`);
+      conditions.push(`status = '${escapeFilterValue(filters.statuses[0])}'`);
     } else {
-      const statusList = filters.statuses.map((s) => `'${s}'`).join(",");
+      const statusList = filters.statuses
+        .map((s) => `'${escapeFilterValue(s)}'`)
+        .join(",");
       conditions.push(`status in [${statusList}]`);
     }
   }
@@ -43,9 +49,11 @@ export function filtersToByExpression(filters: VMFilters): string | undefined {
   // Cluster filter
   if (filters.clusters && filters.clusters.length > 0) {
     if (filters.clusters.length === 1) {
-      conditions.push(`cluster = '${filters.clusters[0]}'`);
+      conditions.push(`cluster = '${escapeFilterValue(filters.clusters[0])}'`);
     } else {
-      const clusterList = filters.clusters.map((c) => `'${c}'`).join(",");
+      const clusterList = filters.clusters
+        .map((c) => `'${escapeFilterValue(c)}'`)
+        .join(",");
       conditions.push(`cluster in [${clusterList}]`);
     }
   }
@@ -53,9 +61,13 @@ export function filtersToByExpression(filters: VMFilters): string | undefined {
   // Datacenter filter
   if (filters.datacenters && filters.datacenters.length > 0) {
     if (filters.datacenters.length === 1) {
-      conditions.push(`datacenter = '${filters.datacenters[0]}'`);
+      conditions.push(
+        `datacenter = '${escapeFilterValue(filters.datacenters[0])}'`,
+      );
     } else {
-      const datacenterList = filters.datacenters.map((d) => `'${d}'`).join(",");
+      const datacenterList = filters.datacenters
+        .map((d) => `'${escapeFilterValue(d)}'`)
+        .join(",");
       conditions.push(`datacenter in [${datacenterList}]`);
     }
   }
@@ -63,10 +75,12 @@ export function filtersToByExpression(filters: VMFilters): string | undefined {
   // Concern category filter (Critical, Warning, etc.)
   if (filters.concernCategories && filters.concernCategories.length > 0) {
     if (filters.concernCategories.length === 1) {
-      conditions.push(`concern.category = '${filters.concernCategories[0]}'`);
+      conditions.push(
+        `concern.category = '${escapeFilterValue(filters.concernCategories[0])}'`,
+      );
     } else {
       const categoryList = filters.concernCategories
-        .map((c) => `'${c}'`)
+        .map((c) => `'${escapeFilterValue(c)}'`)
         .join(",");
       conditions.push(`concern.category in [${categoryList}]`);
     }
@@ -75,9 +89,13 @@ export function filtersToByExpression(filters: VMFilters): string | undefined {
   // Specific concern labels filter (can be combined with categories)
   if (filters.concernLabels && filters.concernLabels.length > 0) {
     if (filters.concernLabels.length === 1) {
-      conditions.push(`concern.label = '${filters.concernLabels[0]}'`);
+      conditions.push(
+        `concern.label = '${escapeFilterValue(filters.concernLabels[0])}'`,
+      );
     } else {
-      const concernList = filters.concernLabels.map((c) => `'${c}'`).join(",");
+      const concernList = filters.concernLabels
+        .map((c) => `'${escapeFilterValue(c)}'`)
+        .join(",");
       conditions.push(`concern.label in [${concernList}]`);
     }
   }

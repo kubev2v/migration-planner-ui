@@ -906,7 +906,7 @@ export const VMTable: React.FC<VMTableProps> = ({
                 onChange={(_event, isSelected) => onSelectAll(isSelected)}
               /> */}
               <SearchInput
-                placeholder="Find by VM name or issue"
+                placeholder="Find by VM name"
                 value={searchValue}
                 onChange={handleSearchChange}
                 onClear={handleSearchClear}

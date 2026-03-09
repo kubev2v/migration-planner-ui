@@ -23,7 +23,7 @@ const example = {
   "id": null,
   "name": null,
   "description": null,
-  "filter": memory >= 8GB and cluster = 'prod',
+  "filter": "memory >= 8GB and cluster = 'prod'",
   "createdAt": null,
   "updatedAt": null,
 } satisfies Group
