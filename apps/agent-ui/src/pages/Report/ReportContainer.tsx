@@ -23,7 +23,7 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 import type React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAgentStatus } from "../../common/AgentStatusContext";
 import {
@@ -54,6 +54,9 @@ export const ReportContainer: React.FC = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isShareLoading, setIsShareLoading] = useState(false);
   const [shareError, setShareError] = useState<string | null>(null);
+
+  // Request ID for race condition prevention in VM fetching
+  const vmsRequestIdRef = useRef(0);
 
   // VM pagination state
   const [vmsTotalCount, setVmsTotalCount] = useState(0);
@@ -186,6 +189,7 @@ export const ReportContainer: React.FC = () => {
       "Information",
       "Advisory",
       "Error",
+      "Other",
     ];
 
     return {
@@ -198,6 +202,7 @@ export const ReportContainer: React.FC = () => {
   useEffect(() => {
     if (activeTab !== 1) return;
     if (filterOptionsFetched) return;
+    if (!inventory) return;
 
     const fetchFilterOptions = async () => {
       try {
@@ -239,18 +244,24 @@ export const ReportContainer: React.FC = () => {
         setFilterOptionsFetched(true);
       } catch (err) {
         console.error("Error fetching filter options:", err);
-        setFilterOptionsFetched(true);
+        if (inventory) {
+          setFilterOptionsFetched(true);
+        }
       }
     };
 
     fetchFilterOptions();
-  }, [activeTab, agentApi, filterOptionsFetched, availableConcerns]);
+  }, [activeTab, agentApi, filterOptionsFetched, availableConcerns, inventory]);
 
   // Fetch VMs when Virtual Machines tab is active or filters change
   useEffect(() => {
     if (activeTab !== 1) return;
 
     const fetchVMs = async () => {
+      // Increment request ID and capture current value to detect stale responses
+      vmsRequestIdRef.current += 1;
+      const currentRequestId = vmsRequestIdRef.current;
+
       try {
         setVmsLoading(true);
 
@@ -265,14 +276,23 @@ export const ReportContainer: React.FC = () => {
           pageSize: vmsPageSize,
         });
 
-        setVmsList(response.vms || []);
-        setVmsTotalCount(response.total || 0);
+        // Only update state if this is still the latest request
+        if (currentRequestId === vmsRequestIdRef.current) {
+          setVmsList(response.vms || []);
+          setVmsTotalCount(response.total || 0);
+        }
       } catch (err) {
         console.error("Error fetching VMs:", err);
-        setVmsList([]);
-        setVmsTotalCount(0);
+        // Only update state if this is still the latest request
+        if (currentRequestId === vmsRequestIdRef.current) {
+          setVmsList([]);
+          setVmsTotalCount(0);
+        }
       } finally {
-        setVmsLoading(false);
+        // Only update loading state if this is still the latest request
+        if (currentRequestId === vmsRequestIdRef.current) {
+          setVmsLoading(false);
+        }
       }
     };
 
@@ -401,11 +421,15 @@ export const ReportContainer: React.FC = () => {
       // Clear all VM filter keys (same as handleTabSelect does)
       newParams.delete("statuses");
       newParams.delete("hasIssues");
+      newParams.delete("noIssues");
+      newParams.delete("clusters");
+      newParams.delete("datacenters");
       newParams.delete("search");
       newParams.delete("diskRangeMin");
       newParams.delete("diskRangeMax");
       newParams.delete("memoryRangeMin");
       newParams.delete("memoryRangeMax");
+      newParams.delete("migrationReadiness");
       newParams.delete("concernLabels");
       newParams.delete("concernCategories");
       setSearchParams(newParams, { replace: true });
@@ -429,11 +453,15 @@ export const ReportContainer: React.FC = () => {
       // Clear all VM filters when switching away from VMs tab
       newParams.delete("statuses");
       newParams.delete("hasIssues");
+      newParams.delete("noIssues");
+      newParams.delete("clusters");
+      newParams.delete("datacenters");
       newParams.delete("search");
       newParams.delete("diskRangeMin");
       newParams.delete("diskRangeMax");
       newParams.delete("memoryRangeMin");
       newParams.delete("memoryRangeMax");
+      newParams.delete("migrationReadiness");
       newParams.delete("concernLabels");
       newParams.delete("concernCategories");
     }

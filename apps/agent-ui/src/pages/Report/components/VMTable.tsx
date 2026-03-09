@@ -596,17 +596,15 @@ export const VMTable: React.FC<VMTableProps> = ({
       setActiveSortDirection(direction);
 
       // Map frontend column to backend sort field
+      // Only include API-supported fields: name, vCenterState, cluster, diskSize, memory, issues
       const columnKey = columns[index].key;
-      const backendFieldMap: Record<SortableColumn, string> = {
+      const backendFieldMap: Partial<Record<SortableColumn, string>> = {
         name: "name",
         vCenterState: "vCenterState",
-        id: "id",
-        datacenter: "datacenter",
         cluster: "cluster",
         diskSize: "diskSize",
         memory: "memory",
         issues: "issues",
-        migratable: "migratable",
       };
 
       const sortField = backendFieldMap[columnKey];

@@ -29,8 +29,10 @@ export function filtersToByExpression(filters: VMFilters): string | undefined {
 
   // Search filter - searches in VM name only
   if (filters.search) {
-    // Escape special regex characters except for user intent
-    const searchTerm = filters.search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    // Escape special regex characters including forward slashes
+    const searchTerm = filters.search
+      .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+      .replace(/\//g, "\\/");
     conditions.push(`name ~ /${searchTerm}/`);
   }
 
@@ -207,11 +209,15 @@ export function filtersToSearchParams(filters: VMFilters): URLSearchParams {
   }
 
   if (filters.concernLabels && filters.concernLabels.length > 0) {
-    params.set("concernLabels", filters.concernLabels.join(","));
+    filters.concernLabels.forEach((label) => {
+      params.append("concernLabels", label);
+    });
   }
 
   if (filters.concernCategories && filters.concernCategories.length > 0) {
-    params.set("concernCategories", filters.concernCategories.join(","));
+    filters.concernCategories.forEach((category) => {
+      params.append("concernCategories", category);
+    });
   }
 
   return params;
@@ -290,14 +296,14 @@ export function searchParamsToFilters(
     filters.migrationReadiness = migrationReadiness.split(",").filter(Boolean);
   }
 
-  const concernLabels = searchParams.get("concernLabels");
-  if (concernLabels) {
-    filters.concernLabels = concernLabels.split(",").filter(Boolean);
+  const concernLabels = searchParams.getAll("concernLabels");
+  if (concernLabels.length > 0) {
+    filters.concernLabels = concernLabels.filter(Boolean);
   }
 
-  const concernCategories = searchParams.get("concernCategories");
-  if (concernCategories) {
-    filters.concernCategories = concernCategories.split(",").filter(Boolean);
+  const concernCategories = searchParams.getAll("concernCategories");
+  if (concernCategories.length > 0) {
+    filters.concernCategories = concernCategories.filter(Boolean);
   }
 
   return filters;
