@@ -1,13 +1,18 @@
-import { Alert, Button, Content } from "@patternfly/react-core";
-import { ExternalLinkAltIcon } from "@patternfly/react-icons";
+import { Alert, Button, Content, Icon, Tooltip } from "@patternfly/react-core";
+import {
+  ExternalLinkAltIcon,
+  QuestionCircleIcon,
+} from "@patternfly/react-icons";
 import type React from "react";
 
 interface DataSharingAlertProps {
   onShare?: () => void;
+  onDownloadInventory?: () => void;
 }
 
 export const DataSharingAlert: React.FC<DataSharingAlertProps> = ({
   onShare,
+  onDownloadInventory,
 }) => {
   return (
     <Alert
@@ -33,6 +38,38 @@ export const DataSharingAlert: React.FC<DataSharingAlertProps> = ({
         >
           Learn more <ExternalLinkAltIcon />
         </a>
+        {onDownloadInventory && (
+          <>
+            <Button
+              variant="link"
+              isInline
+              onClick={() => onDownloadInventory()}
+              style={{ marginLeft: "1.5rem" }}
+            >
+              Download inventory
+            </Button>
+            <Tooltip
+              content={
+                <div>
+                  To share your aggregated data manually, you can download here
+                  the inventory JSON file and upload it to the environment at{" "}
+                  <a
+                    href="https://console.redhat.com/openshift/migration-assessment/environments/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "white", textDecoration: "underline" }}
+                  >
+                    https://console.redhat.com/openshift/migration-assessment/environments/
+                  </a>
+                </div>
+              }
+            >
+              <Icon status="info" style={{ marginLeft: "0.2rem" }}>
+                <QuestionCircleIcon />
+              </Icon>
+            </Tooltip>
+          </>
+        )}
       </Content>
     </Alert>
   );
