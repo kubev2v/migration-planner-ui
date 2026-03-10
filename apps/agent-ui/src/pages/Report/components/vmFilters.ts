@@ -29,11 +29,7 @@ export function filtersToByExpression(filters: VMFilters): string | undefined {
 
   // Search filter - searches in VM name only
   if (filters.search) {
-    // Escape special regex characters including forward slashes
-    const searchTerm = filters.search
-      .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-      .replace(/\//g, "\\/");
-    conditions.push(`name ~ /${searchTerm}/`);
+    conditions.push(`name like '${escapeFilterValue(filters.search)}'`);
   }
 
   // Status filter (powerstate field in backend)
