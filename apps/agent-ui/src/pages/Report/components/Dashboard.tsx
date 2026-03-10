@@ -133,6 +133,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <StorageOverview
                 diskSizeTier={vms.diskSizeTier ?? {}}
                 diskTypes={vms.diskTypes ?? {}}
+                totalVMs={vms.total ?? 0}
+                totalWithSharedDisks={vms.totalWithSharedDisks ?? 0}
                 isExportMode={isExportMode}
                 exportAllViews={isExportMode}
               />
