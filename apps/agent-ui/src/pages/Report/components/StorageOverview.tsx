@@ -438,8 +438,6 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
                   : `${totals.totalSize.toFixed(2)} TB`
               }
               itemsPerRow={Math.ceil(chartData.length / 2)}
-              labelFontSize={14}
-              marginLeft={viewMode === "totalSize" ? "42%" : "52%"}
               tooltipLabelFormatter={({ datum, percent }) =>
                 `${datum.x}: ${datum.countDisplay}\n${percent.toFixed(1)}%`
               }
@@ -472,7 +470,6 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
                 title={`${totals.totalVMs} VMs`}
                 subTitle={`${totals.totalSize.toFixed(2)} TB`}
                 itemsPerRow={Math.ceil(chartDataForVmCount.length / 2)}
-                labelFontSize={16}
                 tooltipLabelFormatter={({ datum, percent }) =>
                   `${datum.x}: ${datum.countDisplay}\n${percent.toFixed(1)}%`
                 }
@@ -491,8 +488,7 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
                 title={`${totals.totalSize.toFixed(2)} TB`}
                 subTitle={`${totals.totalVMs} VMs`}
                 itemsPerRow={Math.ceil(chartDataForTotalSize.length / 2)}
-                labelFontSize={14}
-                marginLeft="42%"
+                onItemClick={() => {}}
                 tooltipLabelFormatter={({ datum, percent }) =>
                   `${datum.x}: ${datum.countDisplay}\n${percent.toFixed(1)}%`
                 }
