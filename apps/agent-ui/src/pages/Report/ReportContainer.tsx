@@ -407,6 +407,40 @@ export const ReportContainer: React.FC = () => {
     setIsShareModalOpen(false);
   };
 
+  const handleDownloadInventory = async () => {
+    try {
+      const inventoryData = await agentApi.getInventory({ withAgentId: true });
+
+      // Convert inventory data to JSON string
+      const jsonString = JSON.stringify(inventoryData, null, 2);
+
+      // Create a Blob from the JSON string
+      const blob = new Blob([jsonString], { type: "application/json" });
+
+      // Create a download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `inventory-${new Date().toISOString().split("T")[0]}.json`;
+
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error downloading inventory:", err);
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to download inventory. Please try again.";
+      // You could show this error to the user via a toast or alert if needed
+      alert(errorMessage);
+    }
+  };
+
   const handleClusterSelect = (
     _event: React.MouseEvent<Element, MouseEvent> | undefined,
     value: string | number | undefined,
@@ -512,7 +546,10 @@ export const ReportContainer: React.FC = () => {
         {/* Data Sharing Alert - shown when not shared */}
         {!isDataShared && (
           <StackItem>
-            <DataSharingAlert onShare={handleShareClick} />
+            <DataSharingAlert
+              onShare={handleShareClick}
+              onDownloadInventory={handleDownloadInventory}
+            />
           </StackItem>
         )}
 
