@@ -228,7 +228,7 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
   diskSizeTier = {},
   diskTypes = {},
   totalVMs = 0,
-  totalWithSharedDisks = 0,
+  totalWithSharedDisks,
   isExportMode = false,
   exportAllViews = false,
 }) => {
@@ -277,7 +277,8 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
   }, [diskTypes]);
 
   const sharedDisksChartData = useMemo(() => {
-    const withSharedDisks = totalWithSharedDisks || 0;
+    if (totalWithSharedDisks === undefined) return null;
+    const withSharedDisks = Math.min(totalWithSharedDisks, totalVMs);
     const withoutSharedDisks = Math.max(0, totalVMs - withSharedDisks);
     return [
       {
@@ -433,9 +434,11 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
                   <DropdownItem key="totalSize" value="totalSize">
                     Total disk size by tier
                   </DropdownItem>
-                  <DropdownItem key="sharedDisks" value="sharedDisks">
-                    Shared disks VS. No shared disks
-                  </DropdownItem>
+                  {totalWithSharedDisks !== undefined && (
+                    <DropdownItem key="sharedDisks" value="sharedDisks">
+                      Shared disks VS. No shared disks
+                    </DropdownItem>
+                  )}
                 </DropdownList>
               </Dropdown>
             </FlexItem>
@@ -451,22 +454,28 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
               isExportMode={isExportMode}
             />
           ) : viewMode === "sharedDisks" ? (
-            <MigrationDonutChart
-              {...commonDonutProps}
-              data={sharedDisksChartData.map((item) => ({
-                ...item,
-                countDisplay: `${item.countDisplay} VMs`,
-              }))}
-              customColors={sharedDisksColors}
-              title={`${totalVMs} VMs`}
-              subTitle="Total VMs"
-              itemsPerRow={2}
-              marginLeft="25%"
-              labelFontSize={18}
-              tooltipLabelFormatter={({ datum, percent }) =>
-                `${datum.x}: ${datum.countDisplay}\n${percent.toFixed(1)}%`
-              }
-            />
+            sharedDisksChartData ? (
+              <MigrationDonutChart
+                {...commonDonutProps}
+                data={sharedDisksChartData.map((item) => ({
+                  ...item,
+                  countDisplay: `${item.countDisplay} VMs`,
+                }))}
+                customColors={sharedDisksColors}
+                title={`${totalVMs} VMs`}
+                subTitle="Total VMs"
+                itemsPerRow={2}
+                marginLeft="25%"
+                labelFontSize={18}
+                tooltipLabelFormatter={({ datum, percent }) =>
+                  `${datum.x}: ${datum.countDisplay}\n${percent.toFixed(1)}%`
+                }
+              />
+            ) : (
+              <div className={dashboardStyles.storageNoDataContainer}>
+                No Data Available
+              </div>
+            )
           ) : (
             <MigrationDonutChart
               {...commonDonutProps}
@@ -527,7 +536,7 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
                 }
               />
             </div>
-            <div>
+            <div className={dashboardStyles.storageExportSectionMargin}>
               <div className={dashboardStyles.storageExportSectionTitle}>
                 {VIEW_MODE_LABELS.totalSize}
               </div>
@@ -545,6 +554,29 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
                 }
               />
             </div>
+            {sharedDisksChartData && (
+              <div>
+                <div className={dashboardStyles.storageExportSectionTitle}>
+                  {VIEW_MODE_LABELS.sharedDisks}
+                </div>
+                <MigrationDonutChart
+                  {...commonDonutProps}
+                  data={sharedDisksChartData.map((item) => ({
+                    ...item,
+                    countDisplay: `${item.countDisplay} VMs`,
+                  }))}
+                  customColors={sharedDisksColors}
+                  title={`${totalVMs} VMs`}
+                  subTitle="Total VMs"
+                  itemsPerRow={2}
+                  marginLeft="25%"
+                  labelFontSize={16}
+                  tooltipLabelFormatter={({ datum, percent }) =>
+                    `${datum.x}: ${datum.countDisplay}\n${percent.toFixed(1)}%`
+                  }
+                />
+              </div>
+            )}
           </>
         )}
       </CardBody>
