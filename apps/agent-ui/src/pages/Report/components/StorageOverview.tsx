@@ -227,7 +227,7 @@ const DiskTypeBarChart: React.FC<DiskTypeBarChartProps> = ({
 export const StorageOverview: React.FC<StorageOverviewProps> = ({
   diskSizeTier = {},
   diskTypes = {},
-  totalVMs = 0,
+  totalVMs,
   totalWithSharedDisks,
   isExportMode = false,
   exportAllViews = false,
@@ -277,7 +277,7 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
   }, [diskTypes]);
 
   const sharedDisksChartData = useMemo(() => {
-    if (totalWithSharedDisks === undefined) return null;
+    if (totalWithSharedDisks === undefined || totalVMs === undefined) return null;
     const withSharedDisks = Math.min(totalWithSharedDisks, totalVMs);
     const withoutSharedDisks = Math.max(0, totalVMs - withSharedDisks);
     return [
@@ -454,7 +454,7 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
               isExportMode={isExportMode}
             />
           ) : viewMode === "sharedDisks" ? (
-            sharedDisksChartData ? (
+            sharedDisksChartData && totalVMs !== undefined ? (
               <MigrationDonutChart
                 {...commonDonutProps}
                 data={sharedDisksChartData.map((item) => ({
@@ -463,7 +463,7 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
                 }))}
                 customColors={sharedDisksColors}
                 title={`${totalVMs} VMs`}
-                subTitle="Total VMs"
+                subTitle={`${totalWithSharedDisks ?? 0} with shared disks`}
                 itemsPerRow={2}
                 marginLeft="25%"
                 labelFontSize={18}
@@ -554,7 +554,7 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
                 }
               />
             </div>
-            {sharedDisksChartData && (
+            {sharedDisksChartData && totalVMs !== undefined && (
               <div>
                 <div className={dashboardStyles.storageExportSectionTitle}>
                   {VIEW_MODE_LABELS.sharedDisks}
@@ -567,7 +567,7 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
                   }))}
                   customColors={sharedDisksColors}
                   title={`${totalVMs} VMs`}
-                  subTitle="Total VMs"
+                  subTitle={`${totalWithSharedDisks ?? 0} with shared disks`}
                   itemsPerRow={2}
                   marginLeft="25%"
                   labelFontSize={16}
