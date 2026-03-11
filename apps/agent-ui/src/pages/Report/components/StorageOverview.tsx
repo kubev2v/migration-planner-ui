@@ -277,7 +277,8 @@ export const StorageOverview: React.FC<StorageOverviewProps> = ({
   }, [diskTypes]);
 
   const sharedDisksChartData = useMemo(() => {
-    if (totalWithSharedDisks === undefined || totalVMs === undefined) return null;
+    if (totalWithSharedDisks === undefined || totalVMs === undefined)
+      return null;
     const withSharedDisks = Math.min(totalWithSharedDisks, totalVMs);
     const withoutSharedDisks = Math.max(0, totalVMs - withSharedDisks);
     return [
