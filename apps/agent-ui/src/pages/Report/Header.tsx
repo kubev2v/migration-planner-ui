@@ -56,7 +56,7 @@ export const Header: React.FC<HeaderProps> = ({
                 >
                   <FlexItem>
                     <Title headingLevel="h1" size="2xl">
-                      Migration Assessment Report
+                      Migration Advisor Report
                     </Title>
                   </FlexItem>
                   <FlexItem hidden>
