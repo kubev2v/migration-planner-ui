@@ -4,7 +4,10 @@ import type {
   UpdateInventory,
   VirtualMachine,
 } from "@migration-planner-ui/agent-client/models";
-import { instanceOfInventory } from "@migration-planner-ui/agent-client/models";
+import {
+  GetInventory200ResponseToJSON,
+  instanceOfInventory,
+} from "@migration-planner-ui/agent-client/models";
 import { ResponseError } from "@migration-planner-ui/agent-client/runtime";
 import { useInjection } from "@migration-planner-ui/ioc";
 import {
@@ -411,8 +414,9 @@ export const ReportContainer: React.FC = () => {
     try {
       const inventoryData = await agentApi.getInventory({ withAgentId: true });
 
-      // Convert inventory data to JSON string
-      const jsonString = JSON.stringify(inventoryData, null, 2);
+      // Convert inventory data to proper JSON format (with snake_case field names)
+      const jsonObject = GetInventory200ResponseToJSON(inventoryData);
+      const jsonString = JSON.stringify(jsonObject, null, 2);
 
       // Create a Blob from the JSON string
       const blob = new Blob([jsonString], { type: "application/json" });
