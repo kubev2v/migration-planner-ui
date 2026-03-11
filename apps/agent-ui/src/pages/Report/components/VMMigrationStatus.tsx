@@ -79,6 +79,7 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
   } | null>(null);
   const [isLoadingBreakdown, setIsLoadingBreakdown] = useState(false);
   const [isIncompleteData, setIsIncompleteData] = useState(false);
+  const [issuesBreakdownError, setIssuesBreakdownError] = useState(false);
 
   const viewModeLabels: Record<ViewMode, string> = {
     issuesVsNoIssues: "No issues vs with issues",
@@ -91,10 +92,11 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
         try {
           setIsLoadingBreakdown(true);
           setIsIncompleteData(false);
+          setIssuesBreakdownError(false);
 
           const pageSize = 500;
           const firstResponse = await agentApi.getVMs({
-            byExpression: "issues_count >= 1",
+            byExpression: "issues_count >= 1 && migratable = false",
             page: 1,
             pageSize,
           });
@@ -107,7 +109,7 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
             for (let page = 2; page <= totalPages; page++) {
               remainingPages.push(
                 agentApi.getVMs({
-                  byExpression: "issues_count >= 1",
+                  byExpression: "issues_count >= 1 && migratable = false",
                   page,
                   pageSize,
                 }),
@@ -136,10 +138,19 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
             Advisory: new Set(),
           };
 
-          const vmDetailsPromises = allVmsWithIssues.map((vm) =>
-            agentApi.getVM({ id: vm.id }),
-          );
-          const vmDetailsResults = await Promise.allSettled(vmDetailsPromises);
+          const batchSize = 50;
+          const vmDetailsResults: PromiseSettledResult<
+            Awaited<ReturnType<typeof agentApi.getVM>>
+          >[] = [];
+
+          for (let i = 0; i < allVmsWithIssues.length; i += batchSize) {
+            const batch = allVmsWithIssues.slice(i, i + batchSize);
+            const batchPromises = batch.map((vm) =>
+              agentApi.getVM({ id: vm.id }),
+            );
+            const batchResults = await Promise.allSettled(batchPromises);
+            vmDetailsResults.push(...batchResults);
+          }
 
           let failedVmCount = 0;
           for (const result of vmDetailsResults) {
@@ -176,6 +187,7 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
         } catch (err) {
           console.error("Error fetching issues breakdown:", err);
           setIssuesBreakdown(null);
+          setIssuesBreakdownError(true);
         } finally {
           setIsLoadingBreakdown(false);
         }
@@ -324,6 +336,21 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
             }}
           >
             <Spinner size="lg" />
+          </div>
+        ) : issuesBreakdownError ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "300px",
+              color: "var(--pf-t--global--color--danger)",
+              textAlign: "center",
+            }}
+          >
+            <Content>
+              Unable to load issues breakdown data. Please try again later.
+            </Content>
           </div>
         ) : (
           <div>
