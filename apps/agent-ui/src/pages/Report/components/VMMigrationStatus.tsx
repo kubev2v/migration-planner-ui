@@ -33,6 +33,35 @@ interface VmMigrationStatusProps {
   isExportMode?: boolean;
 }
 
+const categoryOrder = [
+  "Critical",
+  "Error",
+  "Warning",
+  "Information",
+  "Advisory",
+];
+
+const colorPalette = [
+  "#0066cc",
+  "#5e40be",
+  "#b6a6e9",
+  "#73c5c5",
+  "#b98412",
+  "#28a745",
+  "#f0ad4e",
+  "#d9534f",
+  "#009596",
+  "#6a6e73",
+];
+
+const categoryColors: Record<string, string> = {
+  Critical: colorPalette[0],
+  Error: colorPalette[1],
+  Warning: colorPalette[2],
+  Information: colorPalette[3],
+  Advisory: colorPalette[4],
+};
+
 export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
   data,
   isExportMode = false,
@@ -110,17 +139,31 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
           const vmDetailsPromises = allVmsWithIssues.map((vm) =>
             agentApi.getVM({ id: vm.id }),
           );
-          const vmDetails = await Promise.all(vmDetailsPromises);
+          const vmDetailsResults = await Promise.allSettled(vmDetailsPromises);
 
-          for (const vmDetail of vmDetails) {
-            const issues = vmDetail.issues || [];
+          let failedVmCount = 0;
+          for (const result of vmDetailsResults) {
+            if (result.status === "fulfilled") {
+              const vmDetail = result.value;
+              const issues = vmDetail.issues || [];
 
-            for (const issue of issues) {
-              const category = issue.category;
-              if (categoryCount[category]) {
-                categoryCount[category].add(vmDetail.id);
+              for (const issue of issues) {
+                const category = issue.category;
+                if (categoryCount[category]) {
+                  categoryCount[category].add(vmDetail.id);
+                }
               }
+            } else {
+              failedVmCount++;
+              console.error("Error fetching VM details:", result.reason);
             }
+          }
+
+          if (failedVmCount > 0) {
+            console.warn(
+              `Failed to fetch details for ${failedVmCount} VMs. Chart shows partial data.`,
+            );
+            setIsIncompleteData(true);
           }
 
           setIssuesBreakdown({
@@ -160,35 +203,6 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
   const legend = {
     Migratable: "#28a745",
     "Non-Migratable": "#dc3545",
-  };
-
-  const categoryOrder = [
-    "Critical",
-    "Error",
-    "Warning",
-    "Information",
-    "Advisory",
-  ];
-
-  const colorPalette = [
-    "#0066cc",
-    "#5e40be",
-    "#b6a6e9",
-    "#73c5c5",
-    "#b98412",
-    "#28a745",
-    "#f0ad4e",
-    "#d9534f",
-    "#009596",
-    "#6a6e73",
-  ];
-
-  const categoryColors: Record<string, string> = {
-    Critical: colorPalette[0],
-    Error: colorPalette[1],
-    Warning: colorPalette[2],
-    Information: colorPalette[3],
-    Advisory: colorPalette[4],
   };
 
   const breakdownData = useMemo(() => {
@@ -393,8 +407,8 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
                   display: "block",
                 }}
               >
-                Totals may exceed the unique VM count because individual VMs can
-                have multiple critical issues across different categories
+                Totals may exceed the unique VM count because a VM can appear in
+                multiple categories
               </Content>
               {isIncompleteData && (
                 <Content
