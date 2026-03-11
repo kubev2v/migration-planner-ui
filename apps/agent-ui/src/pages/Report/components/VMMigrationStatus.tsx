@@ -96,7 +96,7 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
 
           const pageSize = 500;
           const firstResponse = await agentApi.getVMs({
-            byExpression: "issues_count >= 1 && migratable = false",
+            byExpression: "issues_count >= 1 and migratable = false",
             page: 1,
             pageSize,
           });
@@ -109,7 +109,7 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
             for (let page = 2; page <= totalPages; page++) {
               remainingPages.push(
                 agentApi.getVMs({
-                  byExpression: "issues_count >= 1 && migratable = false",
+                  byExpression: "issues_count >= 1 and migratable = false",
                   page,
                   pageSize,
                 }),
