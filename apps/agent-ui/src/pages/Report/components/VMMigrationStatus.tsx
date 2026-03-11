@@ -49,6 +49,7 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
     advisory: number;
   } | null>(null);
   const [isLoadingBreakdown, setIsLoadingBreakdown] = useState(false);
+  const [isIncompleteData, setIsIncompleteData] = useState(false);
 
   const viewModeLabels: Record<ViewMode, string> = {
     issuesVsNoIssues: "No issues vs with issues",
@@ -60,12 +61,44 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
       const fetchIssuesBreakdown = async () => {
         try {
           setIsLoadingBreakdown(true);
-          const response = await agentApi.getVMs({
+          setIsIncompleteData(false);
+
+          const pageSize = 500;
+          const firstResponse = await agentApi.getVMs({
             minIssues: 1,
-            pageSize: 500,
+            page: 1,
+            pageSize,
           });
 
-          const vmsWithIssues = response.vms || [];
+          let allVmsWithIssues = [...(firstResponse.vms || [])];
+
+          if (firstResponse.total > allVmsWithIssues.length) {
+            const totalPages = firstResponse.pageCount;
+            const remainingPages = [];
+            for (let page = 2; page <= totalPages; page++) {
+              remainingPages.push(
+                agentApi.getVMs({
+                  minIssues: 1,
+                  page,
+                  pageSize,
+                }),
+              );
+            }
+
+            const remainingResponses = await Promise.all(remainingPages);
+            const additionalVms = remainingResponses.flatMap(
+              (response) => response.vms || [],
+            );
+            allVmsWithIssues = [...allVmsWithIssues, ...additionalVms];
+          }
+
+          if (firstResponse.total > allVmsWithIssues.length) {
+            console.warn(
+              `Incomplete data: Expected ${firstResponse.total} VMs, but only received ${allVmsWithIssues.length}`,
+            );
+            setIsIncompleteData(true);
+          }
+
           const categoryCount: Record<string, Set<string>> = {
             Critical: new Set(),
             Error: new Set(),
@@ -74,7 +107,7 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
             Advisory: new Set(),
           };
 
-          const vmDetailsPromises = vmsWithIssues.map((vm) =>
+          const vmDetailsPromises = allVmsWithIssues.map((vm) =>
             agentApi.getVM({ id: vm.id }),
           );
           const vmDetails = await Promise.all(vmDetailsPromises);
@@ -349,19 +382,36 @@ export const VMMigrationStatus: React.FC<VmMigrationStatusProps> = ({
                 })}
               </Flex>
             </div>
-            <Content
-              component="small"
-              style={{
-                fontSize: "12px",
-                color: "var(--pf-t--global--text--color--subtle)",
-                marginTop: "16px",
-                textAlign: "center",
-                display: "block",
-              }}
-            >
-              Totals may exceed the unique VM count because individual VMs can
-              have multiple critical issues
-            </Content>
+            <div>
+              <Content
+                component="small"
+                style={{
+                  fontSize: "12px",
+                  color: "var(--pf-t--global--text--color--subtle)",
+                  marginTop: "16px",
+                  textAlign: "center",
+                  display: "block",
+                }}
+              >
+                Totals may exceed the unique VM count because individual VMs can
+                have multiple critical issues across different categories
+              </Content>
+              {isIncompleteData && (
+                <Content
+                  component="small"
+                  style={{
+                    fontSize: "12px",
+                    color: "var(--pf-t--global--color--warning)",
+                    marginTop: "8px",
+                    textAlign: "center",
+                    display: "block",
+                    fontWeight: 600,
+                  }}
+                >
+                  Warning: Incomplete data - Some VMs could not be loaded
+                </Content>
+              )}
+            </div>
           </div>
         )}
       </CardBody>
