@@ -5,20 +5,25 @@ All URIs are relative to */api/v1*
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
 | [**addVMsToInspection**](DefaultApi.md#addvmstoinspection) | **PATCH** /vms/inspector | Add more VMs to inspection queue |
+| [**createGroup**](DefaultApi.md#creategroupoperation) | **POST** /vms/groups | Create a new group |
+| [**deleteGroup**](DefaultApi.md#deletegroup) | **DELETE** /vms/groups/{id} | Delete group |
 | [**getAgentStatus**](DefaultApi.md#getagentstatus) | **GET** /agent | Get agent status |
 | [**getCollectorStatus**](DefaultApi.md#getcollectorstatus) | **GET** /collector | Get collector status |
+| [**getGroup**](DefaultApi.md#getgroup) | **GET** /vms/groups/{id} | Get group by ID with its VMs |
 | [**getInspectorStatus**](DefaultApi.md#getinspectorstatus) | **GET** /vms/inspector | Get inspector status |
 | [**getInventory**](DefaultApi.md#getinventory) | **GET** /inventory | Get collected inventory |
 | [**getVM**](DefaultApi.md#getvm) | **GET** /vms/{id} | Get details about a vm |
 | [**getVMInspectionStatus**](DefaultApi.md#getvminspectionstatus) | **GET** /vms/{id}/inspector | Get inspection status for a specific VirtualMachine |
 | [**getVMs**](DefaultApi.md#getvms) | **GET** /vms | Get list of VMs with filtering and pagination |
 | [**getVersion**](DefaultApi.md#getversion) | **GET** /version | Get agent version information |
+| [**listGroups**](DefaultApi.md#listgroups) | **GET** /vms/groups | List all groups |
 | [**removeVMFromInspection**](DefaultApi.md#removevmfrominspection) | **DELETE** /vms/{id}/inspector | Remove VirtualMachine from inspection queue |
 | [**setAgentMode**](DefaultApi.md#setagentmode) | **POST** /agent | Change agent mode |
 | [**startCollector**](DefaultApi.md#startcollector) | **POST** /collector | Start inventory collection |
 | [**startInspection**](DefaultApi.md#startinspection) | **POST** /vms/inspector | Start inspection for VMs |
 | [**stopCollector**](DefaultApi.md#stopcollector) | **DELETE** /collector | Stop collection |
 | [**stopInspection**](DefaultApi.md#stopinspection) | **DELETE** /vms/inspector | Stop inspector entirely |
+| [**updateGroup**](DefaultApi.md#updategroupoperation) | **PATCH** /vms/groups/{id} | Update group |
 | [**vddkPost**](DefaultApi.md#vddkpostoperation) | **POST** /vddk | Upload VDDK tarball |
 
 
@@ -86,6 +91,139 @@ No authorization required
 | **202** | VMs added to inspection queue |  -  |
 | **400** | Invalid request |  -  |
 | **404** | Inspector not running |  -  |
+| **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## createGroup
+
+> Group createGroup(createGroupRequest)
+
+Create a new group
+
+### Example
+
+```ts
+import {
+  Configuration,
+  DefaultApi,
+} from '@migration-planner-ui/agent-client';
+import type { CreateGroupOperationRequest } from '@migration-planner-ui/agent-client';
+
+async function example() {
+  console.log("🚀 Testing @migration-planner-ui/agent-client SDK...");
+  const api = new DefaultApi();
+
+  const body = {
+    // CreateGroupRequest
+    createGroupRequest: ...,
+  } satisfies CreateGroupOperationRequest;
+
+  try {
+    const data = await api.createGroup(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **createGroupRequest** | [CreateGroupRequest](CreateGroupRequest.md) |  | |
+
+### Return type
+
+[**Group**](Group.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **201** | Group created |  -  |
+| **400** | Invalid request (e.g., invalid filter syntax) |  -  |
+| **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## deleteGroup
+
+> deleteGroup(id)
+
+Delete group
+
+### Example
+
+```ts
+import {
+  Configuration,
+  DefaultApi,
+} from '@migration-planner-ui/agent-client';
+import type { DeleteGroupRequest } from '@migration-planner-ui/agent-client';
+
+async function example() {
+  console.log("🚀 Testing @migration-planner-ui/agent-client SDK...");
+  const api = new DefaultApi();
+
+  const body = {
+    // string | Group ID
+    id: id_example,
+  } satisfies DeleteGroupRequest;
+
+  try {
+    const data = await api.deleteGroup(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | `string` | Group ID | [Defaults to `undefined`] |
+
+### Return type
+
+`void` (Empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: Not defined
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **204** | Group deleted |  -  |
 | **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
@@ -207,6 +345,82 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 
 
+## getGroup
+
+> GroupResponse getGroup(id, sort, page, pageSize)
+
+Get group by ID with its VMs
+
+### Example
+
+```ts
+import {
+  Configuration,
+  DefaultApi,
+} from '@migration-planner-ui/agent-client';
+import type { GetGroupRequest } from '@migration-planner-ui/agent-client';
+
+async function example() {
+  console.log("🚀 Testing @migration-planner-ui/agent-client SDK...");
+  const api = new DefaultApi();
+
+  const body = {
+    // string | Group ID
+    id: id_example,
+    // Array<string> | Sort fields with direction (e.g., \"name:asc\" or \"cluster:desc,name:asc\"). Valid fields are name, vCenterState, cluster, diskSize, memory, issues. (optional)
+    sort: ["cluster:asc","name:desc"],
+    // number | Page number for pagination (optional)
+    page: 56,
+    // number | Number of items per page (optional)
+    pageSize: 56,
+  } satisfies GetGroupRequest;
+
+  try {
+    const data = await api.getGroup(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | `string` | Group ID | [Defaults to `undefined`] |
+| **sort** | `Array<string>` | Sort fields with direction (e.g., \&quot;name:asc\&quot; or \&quot;cluster:desc,name:asc\&quot;). Valid fields are name, vCenterState, cluster, diskSize, memory, issues. | [Optional] |
+| **page** | `number` | Page number for pagination | [Optional] [Defaults to `1`] |
+| **pageSize** | `number` | Number of items per page | [Optional] [Defaults to `undefined`] |
+
+### Return type
+
+[**GroupResponse**](GroupResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Group details with VMs |  -  |
+| **404** | Group not found |  -  |
+| **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
 ## getInspectorStatus
 
 > InspectorStatus getInspectorStatus()
@@ -267,7 +481,7 @@ No authorization required
 
 ## getInventory
 
-> GetInventory200Response getInventory(withAgentId)
+> GetInventory200Response getInventory(withAgentId, groupId)
 
 Get collected inventory
 
@@ -287,6 +501,8 @@ async function example() {
   const body = {
     // boolean | If true, include the agentId in the response (Compatible with manual inventory upload). (optional)
     withAgentId: true,
+    // string | Filter inventory to VMs matching this group\'s filter expression (optional)
+    groupId: groupId_example,
   } satisfies GetInventoryRequest;
 
   try {
@@ -307,6 +523,7 @@ example().catch(console.error);
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **withAgentId** | `boolean` | If true, include the agentId in the response (Compatible with manual inventory upload). | [Optional] [Defaults to `false`] |
+| **groupId** | `string` | Filter inventory to VMs matching this group\&#39;s filter expression | [Optional] [Defaults to `undefined`] |
 
 ### Return type
 
@@ -468,7 +685,7 @@ No authorization required
 
 ## getVMs
 
-> VirtualMachineListResponse getVMs(minIssues, clusters, diskSizeMin, diskSizeMax, memorySizeMin, memorySizeMax, status, sort, page, pageSize)
+> VirtualMachineListResponse getVMs(byExpression, sort, page, pageSize)
 
 Get list of VMs with filtering and pagination
 
@@ -486,20 +703,8 @@ async function example() {
   const api = new DefaultApi();
 
   const body = {
-    // number | Filter VMs with at least this many issues (optional)
-    minIssues: 1,
-    // Array<string> | Filter by clusters (OR logic - matches VMs in any of the specified clusters) (optional)
-    clusters: ["cluster1","cluster2"],
-    // number | Minimum disk size in MB (optional)
-    diskSizeMin: 102400,
-    // number | Maximum disk size in MB (optional)
-    diskSizeMax: 512000,
-    // number | Minimum memory size in MB (optional)
-    memorySizeMin: 8192,
-    // number | Maximum memory size in MB (optional)
-    memorySizeMax: 32768,
-    // Array<string> | Filter by status (OR logic - matches VMs with any of the specified statuses) (optional)
-    status: ["status1","status2"],
+    // string | Filter by expression (matches VMs with the provided expression) (optional)
+    byExpression: exp1,
     // Array<string> | Sort fields with direction (e.g., \"name:asc\" or \"cluster:desc,name:asc\"). Valid fields are name, vCenterState, cluster, diskSize, memory, issues. (optional)
     sort: ["cluster:asc","name:desc"],
     // number | Page number for pagination (optional)
@@ -525,13 +730,7 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **minIssues** | `number` | Filter VMs with at least this many issues | [Optional] [Defaults to `undefined`] |
-| **clusters** | `Array<string>` | Filter by clusters (OR logic - matches VMs in any of the specified clusters) | [Optional] |
-| **diskSizeMin** | `number` | Minimum disk size in MB | [Optional] [Defaults to `undefined`] |
-| **diskSizeMax** | `number` | Maximum disk size in MB | [Optional] [Defaults to `undefined`] |
-| **memorySizeMin** | `number` | Minimum memory size in MB | [Optional] [Defaults to `undefined`] |
-| **memorySizeMax** | `number` | Maximum memory size in MB | [Optional] [Defaults to `undefined`] |
-| **status** | `Array<string>` | Filter by status (OR logic - matches VMs with any of the specified statuses) | [Optional] |
+| **byExpression** | `string` | Filter by expression (matches VMs with the provided expression) | [Optional] [Defaults to `undefined`] |
 | **sort** | `Array<string>` | Sort fields with direction (e.g., \&quot;name:asc\&quot; or \&quot;cluster:desc,name:asc\&quot;). Valid fields are name, vCenterState, cluster, diskSize, memory, issues. | [Optional] |
 | **page** | `number` | Page number for pagination | [Optional] [Defaults to `1`] |
 | **pageSize** | `number` | Number of items per page | [Optional] [Defaults to `undefined`] |
@@ -613,6 +812,79 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Version information |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## listGroups
+
+> GroupListResponse listGroups(byName, page, pageSize)
+
+List all groups
+
+### Example
+
+```ts
+import {
+  Configuration,
+  DefaultApi,
+} from '@migration-planner-ui/agent-client';
+import type { ListGroupsRequest } from '@migration-planner-ui/agent-client';
+
+async function example() {
+  console.log("🚀 Testing @migration-planner-ui/agent-client SDK...");
+  const api = new DefaultApi();
+
+  const body = {
+    // string | Filter groups by name (case-insensitive substring match) (optional)
+    byName: byName_example,
+    // number | Page number (1-indexed) (optional)
+    page: 56,
+    // number | Number of groups per page (optional)
+    pageSize: 56,
+  } satisfies ListGroupsRequest;
+
+  try {
+    const data = await api.listGroups(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **byName** | `string` | Filter groups by name (case-insensitive substring match) | [Optional] [Defaults to `undefined`] |
+| **page** | `number` | Page number (1-indexed) | [Optional] [Defaults to `1`] |
+| **pageSize** | `number` | Number of groups per page | [Optional] [Defaults to `20`] |
+
+### Return type
+
+[**GroupListResponse**](GroupListResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | List of groups |  -  |
+| **400** | Invalid filter expression |  -  |
+| **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 
@@ -1002,6 +1274,77 @@ No authorization required
 | **200** | VMs removed from queue |  -  |
 | **400** | Already in canceling state |  -  |
 | **404** | Inspector not running |  -  |
+| **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## updateGroup
+
+> Group updateGroup(id, updateGroupRequest)
+
+Update group
+
+### Example
+
+```ts
+import {
+  Configuration,
+  DefaultApi,
+} from '@migration-planner-ui/agent-client';
+import type { UpdateGroupOperationRequest } from '@migration-planner-ui/agent-client';
+
+async function example() {
+  console.log("🚀 Testing @migration-planner-ui/agent-client SDK...");
+  const api = new DefaultApi();
+
+  const body = {
+    // string | Group ID
+    id: id_example,
+    // UpdateGroupRequest
+    updateGroupRequest: ...,
+  } satisfies UpdateGroupOperationRequest;
+
+  try {
+    const data = await api.updateGroup(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | `string` | Group ID | [Defaults to `undefined`] |
+| **updateGroupRequest** | [UpdateGroupRequest](UpdateGroupRequest.md) |  | |
+
+### Return type
+
+[**Group**](Group.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Group updated |  -  |
+| **400** | Invalid request (e.g., invalid filter syntax) |  -  |
+| **404** | Group not found |  -  |
 | **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)

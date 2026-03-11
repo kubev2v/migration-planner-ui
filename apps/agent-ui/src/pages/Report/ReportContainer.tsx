@@ -23,7 +23,7 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 import type React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAgentStatus } from "../../common/AgentStatusContext";
 import {
@@ -34,6 +34,7 @@ import { Symbols } from "../../main/Symbols";
 import { buildClusterViewModel, type ClusterOption } from "./clusterView";
 import { Dashboard, VirtualMachinesView } from "./components/index";
 import {
+  filtersToByExpression,
   hasActiveFilters,
   searchParamsToFilters,
 } from "./components/vmFilters";
@@ -53,6 +54,29 @@ export const ReportContainer: React.FC = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isShareLoading, setIsShareLoading] = useState(false);
   const [shareError, setShareError] = useState<string | null>(null);
+
+  // Request ID for race condition prevention in VM fetching
+  const vmsRequestIdRef = useRef(0);
+
+  // VM pagination state
+  const [vmsTotalCount, setVmsTotalCount] = useState(0);
+  const [vmsPage, setVmsPage] = useState(1);
+  const [vmsPageSize, setVmsPageSize] = useState(20);
+  const [vmsSortFields, setVmsSortFields] = useState<string[]>([]);
+
+  // Store all available filter options (fetched once for filter UI)
+  const [availableFilterOptions, setAvailableFilterOptions] = useState<{
+    clusters: string[];
+    datacenters: string[];
+    concernLabels: string[];
+    concernCategories: string[];
+  }>({
+    clusters: [],
+    datacenters: [],
+    concernLabels: [],
+    concernCategories: [],
+  });
+  const [filterOptionsFetched, setFilterOptionsFetched] = useState(false);
 
   // Parse filters from URL (recalculates when URL changes)
   const initialVMFilters = useMemo(
@@ -143,50 +167,144 @@ export const ReportContainer: React.FC = () => {
     fetchData();
   }, [agentApi]);
 
-  // Fetch VMs when Virtual Machines tab is active
+  // Compute available concerns and categories from inventory
+  const availableConcerns = useMemo(() => {
+    if (!inventory?.vcenter?.vms) return { labels: [], categories: [] };
+
+    const concerns = new Set<string>();
+    const warnings = inventory.vcenter.vms.migrationWarnings || [];
+    const errors = inventory.vcenter.vms.notMigratableReasons || [];
+
+    // Collect all unique concern labels
+    [...warnings, ...errors].forEach((issue) => {
+      if (issue.label) {
+        concerns.add(issue.label);
+      }
+    });
+
+    // All possible categories according to backend
+    const categories = [
+      "Critical",
+      "Warning",
+      "Information",
+      "Advisory",
+      "Error",
+      "Other",
+    ];
+
+    return {
+      labels: Array.from(concerns).sort(),
+      categories: categories,
+    };
+  }, [inventory]);
+
+  // Fetch available filter options once when VMs tab is first accessed
+  useEffect(() => {
+    if (activeTab !== 1) return;
+    if (filterOptionsFetched) return;
+    if (!inventory) return;
+
+    const fetchFilterOptions = async () => {
+      try {
+        // Fetch all VMs with pagination to get complete lists of clusters and datacenters
+        let allVMs: VirtualMachine[] = [];
+        let page = 1;
+        const pageSize = 1000;
+        let hasMore = true;
+
+        while (hasMore) {
+          const response = await agentApi.getVMs({
+            page,
+            pageSize,
+          });
+
+          const vms = response.vms || [];
+          allVMs = allVMs.concat(vms);
+
+          // Check if there are more pages
+          const total = response.total || 0;
+          hasMore = allVMs.length < total;
+          page++;
+        }
+
+        const clusters = new Set<string>();
+        const datacenters = new Set<string>();
+
+        allVMs.forEach((vm) => {
+          if (vm.cluster) clusters.add(vm.cluster);
+          if (vm.datacenter) datacenters.add(vm.datacenter);
+        });
+
+        setAvailableFilterOptions({
+          clusters: Array.from(clusters).sort(),
+          datacenters: Array.from(datacenters).sort(),
+          concernLabels: availableConcerns.labels,
+          concernCategories: availableConcerns.categories,
+        });
+        setFilterOptionsFetched(true);
+      } catch (err) {
+        console.error("Error fetching filter options:", err);
+        if (inventory) {
+          setFilterOptionsFetched(true);
+        }
+      }
+    };
+
+    fetchFilterOptions();
+  }, [activeTab, agentApi, filterOptionsFetched, availableConcerns, inventory]);
+
+  // Fetch VMs when Virtual Machines tab is active or filters change
   useEffect(() => {
     if (activeTab !== 1) return;
 
     const fetchVMs = async () => {
+      // Increment request ID and capture current value to detect stale responses
+      vmsRequestIdRef.current += 1;
+      const currentRequestId = vmsRequestIdRef.current;
+
       try {
         setVmsLoading(true);
-        const pageSize = 100;
-        let allVMs: VirtualMachine[] = [];
-        let currentPage = 1;
-        let totalVMs = 0;
 
-        // Fetch first page to get total count
-        const firstResponse = await agentApi.getVMs({
-          page: currentPage,
-          pageSize,
+        // Convert filters to backend expression format
+        const byExpression = filtersToByExpression(initialVMFilters);
+
+        // Fetch page with backend filtering
+        const response = await agentApi.getVMs({
+          byExpression,
+          sort: vmsSortFields.length > 0 ? vmsSortFields : undefined,
+          page: vmsPage,
+          pageSize: vmsPageSize,
         });
-        allVMs = firstResponse.vms || [];
-        totalVMs = firstResponse.total || 0;
 
-        // Calculate total pages needed
-        const totalPages = Math.ceil(totalVMs / pageSize);
-
-        // Fetch remaining pages if there are more
-        while (currentPage < totalPages) {
-          currentPage++;
-          const response = await agentApi.getVMs({
-            page: currentPage,
-            pageSize,
-          });
-          allVMs = [...allVMs, ...(response.vms || [])];
+        // Only update state if this is still the latest request
+        if (currentRequestId === vmsRequestIdRef.current) {
+          setVmsList(response.vms || []);
+          setVmsTotalCount(response.total || 0);
         }
-
-        setVmsList(allVMs);
       } catch (err) {
         console.error("Error fetching VMs:", err);
-        setVmsList([]);
+        // Only update state if this is still the latest request
+        if (currentRequestId === vmsRequestIdRef.current) {
+          setVmsList([]);
+          setVmsTotalCount(0);
+        }
       } finally {
-        setVmsLoading(false);
+        // Only update loading state if this is still the latest request
+        if (currentRequestId === vmsRequestIdRef.current) {
+          setVmsLoading(false);
+        }
       }
     };
 
     fetchVMs();
-  }, [activeTab, agentApi]);
+  }, [
+    activeTab,
+    agentApi,
+    initialVMFilters,
+    vmsPage,
+    vmsPageSize,
+    vmsSortFields,
+  ]);
 
   if (loading) {
     return (
@@ -289,6 +407,40 @@ export const ReportContainer: React.FC = () => {
     setIsShareModalOpen(false);
   };
 
+  const handleDownloadInventory = async () => {
+    try {
+      const inventoryData = await agentApi.getInventory({ withAgentId: true });
+
+      // Convert inventory data to JSON string
+      const jsonString = JSON.stringify(inventoryData, null, 2);
+
+      // Create a Blob from the JSON string
+      const blob = new Blob([jsonString], { type: "application/json" });
+
+      // Create a download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `inventory-${new Date().toISOString().split("T")[0]}.json`;
+
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error downloading inventory:", err);
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to download inventory. Please try again.";
+      // You could show this error to the user via a toast or alert if needed
+      alert(errorMessage);
+    }
+  };
+
   const handleClusterSelect = (
     _event: React.MouseEvent<Element, MouseEvent> | undefined,
     value: string | number | undefined,
@@ -303,11 +455,17 @@ export const ReportContainer: React.FC = () => {
       // Clear all VM filter keys (same as handleTabSelect does)
       newParams.delete("statuses");
       newParams.delete("hasIssues");
+      newParams.delete("noIssues");
+      newParams.delete("clusters");
+      newParams.delete("datacenters");
       newParams.delete("search");
       newParams.delete("diskRangeMin");
       newParams.delete("diskRangeMax");
       newParams.delete("memoryRangeMin");
       newParams.delete("memoryRangeMax");
+      newParams.delete("migrationReadiness");
+      newParams.delete("concernLabels");
+      newParams.delete("concernCategories");
       setSearchParams(newParams, { replace: true });
     }
     setIsClusterSelectOpen(false);
@@ -322,18 +480,55 @@ export const ReportContainer: React.FC = () => {
     const newParams = new URLSearchParams(searchParams);
     if (tabIndex === 1) {
       newParams.set("tab", "vms");
+      // Reset pagination when switching to VMs tab
+      setVmsPage(1);
     } else {
       newParams.set("tab", "overview");
       // Clear all VM filters when switching away from VMs tab
       newParams.delete("statuses");
       newParams.delete("hasIssues");
+      newParams.delete("noIssues");
+      newParams.delete("clusters");
+      newParams.delete("datacenters");
       newParams.delete("search");
       newParams.delete("diskRangeMin");
       newParams.delete("diskRangeMax");
       newParams.delete("memoryRangeMin");
       newParams.delete("memoryRangeMax");
+      newParams.delete("migrationReadiness");
+      newParams.delete("concernLabels");
+      newParams.delete("concernCategories");
     }
     setSearchParams(newParams, { replace: true });
+  };
+
+  const handleFiltersChange = () => {
+    // Filters are already in URL params via initialVMFilters
+    // Reset to page 1 when filters change
+    setVmsPage(1);
+  };
+
+  const handlePageChange = (page: number, pageSize: number) => {
+    setVmsPage(page);
+    setVmsPageSize(pageSize);
+  };
+
+  const handleSortChange = (sortFields: string[]) => {
+    setVmsSortFields(sortFields);
+  };
+
+  const handleConcernClick = (concernLabel: string) => {
+    // Switch to VMs tab and apply concern filter
+    setActiveTab(1);
+
+    // Update URL with concern filter
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("tab", "vms");
+    newParams.set("concernLabels", concernLabel);
+    setSearchParams(newParams, { replace: true });
+
+    // Reset pagination
+    setVmsPage(1);
   };
 
   return (
@@ -351,7 +546,10 @@ export const ReportContainer: React.FC = () => {
         {/* Data Sharing Alert - shown when not shared */}
         {!isDataShared && (
           <StackItem>
-            <DataSharingAlert onShare={handleShareClick} />
+            <DataSharingAlert
+              onShare={handleShareClick}
+              onDownloadInventory={handleDownloadInventory}
+            />
           </StackItem>
         )}
 
@@ -405,6 +603,7 @@ export const ReportContainer: React.FC = () => {
                     clusters={clusterView.viewClusters}
                     isAggregateView={clusterView.isAggregateView}
                     clusterFound={clusterView.clusterFound}
+                    onConcernClick={handleConcernClick}
                   />
                 ) : (
                   <Content component="p">
@@ -424,6 +623,13 @@ export const ReportContainer: React.FC = () => {
                   vms={vmsList}
                   loading={vmsLoading}
                   initialFilters={initialVMFilters}
+                  totalVMs={vmsTotalCount}
+                  currentPage={vmsPage}
+                  pageSize={vmsPageSize}
+                  onFiltersChange={handleFiltersChange}
+                  onPageChange={handlePageChange}
+                  onSortChange={handleSortChange}
+                  availableFilterOptions={availableFilterOptions}
                 />
               </div>
             </Tab>

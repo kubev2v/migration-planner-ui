@@ -1,3 +1,4 @@
+import { Button } from "@patternfly/react-core";
 import { Table, Tbody, Td, Th, Thead, Tr } from "@patternfly/react-table";
 import type React from "react";
 
@@ -8,6 +9,8 @@ export interface ReportTableProps<DataItem> {
   style?: React.CSSProperties;
   withoutBorder?: boolean;
   caption?: string;
+  onRowClick?: (item: DataItem) => void;
+  clickableFields?: Array<keyof DataItem>;
 }
 
 export function ReportTable<DataItem>(
@@ -20,7 +23,40 @@ export function ReportTable<DataItem>(
     style,
     withoutBorder = false,
     caption,
+    onRowClick,
+    clickableFields = [],
   } = props;
+
+  const renderCell = (
+    item: DataItem,
+    field: keyof DataItem,
+  ): React.ReactNode => {
+    const value = item[field];
+
+    if (value === "" || value == null) {
+      return "-";
+    }
+
+    if (typeof value === "boolean") {
+      return value ? "True" : "False";
+    }
+
+    // Make field clickable if specified
+    if (clickableFields.includes(field) && onRowClick) {
+      return (
+        <Button
+          variant="link"
+          isInline
+          onClick={() => onRowClick(item)}
+          style={{ padding: 0, fontSize: "inherit" }}
+        >
+          {value as React.ReactNode}
+        </Button>
+      );
+    }
+
+    return value as React.ReactNode;
+  };
 
   return (
     <Table variant="compact" borders={!withoutBorder} style={style}>
@@ -39,13 +75,7 @@ export function ReportTable<DataItem>(
           <Tr key={`row-${idx}-${String(item[fields[0]])}`}>
             {fields.map((f) => (
               <Td key={String(f)} hasRightBorder={!withoutBorder}>
-                {item[f] === "" || item[f] == null
-                  ? "-"
-                  : typeof item[f] === "boolean"
-                    ? item[f]
-                      ? "True"
-                      : "False"
-                    : (item[f] as React.ReactNode)}
+                {renderCell(item, f)}
               </Td>
             ))}
           </Tr>

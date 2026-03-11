@@ -97,6 +97,12 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: group_id
+          in: query
+          required: false
+          description: Filter inventory to VMs matching this group's filter expression
+          schema:
+            type: string
       responses:
         "200":
           description: Collected inventory
@@ -117,65 +123,12 @@ paths:
       summary: Get list of VMs with filtering and pagination
       operationId: getVMs
       parameters:
-        - name: minIssues
+        - name: byExpression
           in: query
-          description: Filter VMs with at least this many issues
+          description: Filter by expression (matches VMs with the provided expression)
           schema:
-            type: integer
-            minimum: 0
-          example: 1
-        - name: clusters
-          in: query
-          description: Filter by clusters (OR logic - matches VMs in any of the specified clusters)
-          schema:
-            type: array
-            items:
-              type: string
-          style: form
-          explode: true
-          example: ["cluster1", "cluster2"]
-        - name: diskSizeMin
-          in: query
-          description: Minimum disk size in MB
-          schema:
-            type: integer
-            format: int64
-            minimum: 0
-          example: 102400
-        - name: diskSizeMax
-          in: query
-          description: Maximum disk size in MB
-          schema:
-            type: integer
-            format: int64
-            minimum: 0
-          example: 512000
-        - name: memorySizeMin
-          in: query
-          description: Minimum memory size in MB
-          schema:
-            type: integer
-            format: int64
-            minimum: 0
-          example: 8192
-        - name: memorySizeMax
-          in: query
-          description: Maximum memory size in MB
-          schema:
-            type: integer
-            format: int64
-            minimum: 0
-          example: 32768
-        - name: status
-          in: query
-          description: Filter by status (OR logic - matches VMs with any of the specified statuses)
-          schema:
-            type: array
-            items:
-              type: string
-          style: form
-          explode: true
-          example: ["status1", "status2"]
+            type: string
+          example: "status = 'poweredOn' and memory >= 8192"
         - name: sort
           in: query
           description: Sort fields with direction (e.g., "name:asc" or "cluster:desc,name:asc"). Valid fields are name, vCenterState, cluster, diskSize, memory, issues.
@@ -364,6 +317,158 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/VersionInfo"
+
+  /vms/groups:
+    get:
+      summary: List all groups
+      operationId: listGroups
+      parameters:
+        - name: byName
+          in: query
+          required: false
+          description: Filter groups by name (case-insensitive substring match)
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: Page number (1-indexed)
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: pageSize
+          in: query
+          required: false
+          description: Number of groups per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        "200":
+          description: List of groups
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupListResponse"
+        "400":
+          description: Invalid filter expression
+        "500":
+          description: Internal server error
+    post:
+      summary: Create a new group
+      operationId: createGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateGroupRequest"
+      responses:
+        "201":
+          description: Group created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+        "400":
+          description: Invalid request (e.g., invalid filter syntax)
+        "500":
+          description: Internal server error
+
+  /vms/groups/{id}:
+    get:
+      summary: Get group by ID with its VMs
+      operationId: getGroup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Group ID
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Sort fields with direction (e.g., "name:asc" or "cluster:desc,name:asc"). Valid fields are name, vCenterState, cluster, diskSize, memory, issues.
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          example: ["cluster:asc", "name:desc"]
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+        - name: pageSize
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Group details with VMs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupResponse"
+        "404":
+          description: Group not found
+        "500":
+          description: Internal server error
+    patch:
+      summary: Update group
+      operationId: updateGroup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Group ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateGroupRequest"
+      responses:
+        "200":
+          description: Group updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+        "400":
+          description: Invalid request (e.g., invalid filter syntax)
+        "404":
+          description: Group not found
+        "500":
+          description: Internal server error
+    delete:
+      summary: Delete group
+      operationId: deleteGroup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Group ID
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Group deleted
+        "404":
+          description: Group not found
+        "500":
+          description: Internal server error
 
   /vddk:
     post:
@@ -843,3 +948,108 @@ components:
         password:
           type: string
           format: password
+
+    Group:
+      type: object
+      required:
+        - id
+        - name
+        - filter
+      properties:
+        id:
+          type: string
+          description: Unique group identifier (UUID)
+        name:
+          type: string
+          description: Group display name
+        description:
+          type: string
+          description: Optional group description
+        filter:
+          type: string
+          description: Filter expression (pkg/filter DSL)
+          example: "memory >= 8GB and cluster = 'prod'"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the group was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the group was last updated
+
+    GroupListResponse:
+      type: object
+      required:
+        - groups
+        - total
+        - page
+        - pageCount
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/Group"
+        total:
+          type: integer
+          description: Total number of groups
+        page:
+          type: integer
+          description: Current page number
+        pageCount:
+          type: integer
+          description: Total number of pages
+
+    GroupResponse:
+      type: object
+      required:
+        - group
+        - vms
+        - total
+        - page
+        - pageCount
+      properties:
+        group:
+          $ref: "#/components/schemas/Group"
+        vms:
+          type: array
+          items:
+            $ref: "#/components/schemas/VirtualMachine"
+        total:
+          type: integer
+          description: Total number of VMs matching the group's filter
+        page:
+          type: integer
+          description: Current page number
+        pageCount:
+          type: integer
+          description: Total number of pages
+
+    CreateGroupRequest:
+      type: object
+      required:
+        - name
+        - filter
+      properties:
+        name:
+          type: string
+          description: Group display name
+        description:
+          type: string
+          description: Optional group description
+        filter:
+          type: string
+          description: Filter expression (will be validated)
+
+    UpdateGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Group display name
+        description:
+          type: string
+          description: Optional group description
+        filter:
+          type: string
+          description: Filter expression (will be validated)
