@@ -140,7 +140,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({
               >
                 <FlexItem>
                   <Title headingLevel="h1" size="2xl">
-                    Migration assessment
+                    Migration advisor
                   </Title>
                 </FlexItem>
                 {version && (
