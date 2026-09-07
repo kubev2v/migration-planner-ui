@@ -41,7 +41,7 @@ export const useLoginViewModel = (
   const dispatch = useAppDispatch();
   const refetchAgentStatus = props?.refetchAgentStatus;
   const goToReport = useCallback((): void => {
-    dispatch(agentApiSlice.util.invalidateTags(["Collections"]));
+    dispatch(agentApiSlice.util.invalidateTags(["Collections", "AgentStatus"]));
     navigate("/report");
   }, [dispatch, navigate]);
   const [version, setVersion] = useState<string | undefined>(undefined);
