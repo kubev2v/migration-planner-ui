@@ -266,15 +266,15 @@ __metadata:
   linkType: hard
 
 "@csstools/css-color-parser@npm:^4.1.10":
-  version: 4.2.1
-  resolution: "@csstools/css-color-parser@npm:4.2.1"
+  version: 4.2.2
+  resolution: "@csstools/css-color-parser@npm:4.2.2"
   dependencies:
     "@csstools/color-helpers": "npm:^6.1.1"
     "@csstools/css-calc": "npm:^3.3.0"
   peerDependencies:
     "@csstools/css-parser-algorithms": ^4.0.0
     "@csstools/css-tokenizer": ^4.0.0
-  checksum: 10c0/c3819982ef8bcdd8b1dc8793ed7ad5b05c46f5ccc4c52864c9d8db6c90376bee299c80e6eca81b66691fc6cddb1d819941e7c86499afa384ce24cfe2c6d0bda6
+  checksum: 10c0/976707dceff091b5a955f1dbce3fa0e69119ee9fce14691f4ad0491940a1eeb9d474c0ba7d6a1a8b079a027dc70ced058336307fa2262241dc1aa084b5f65628
   languageName: node
   linkType: hard
 
@@ -288,14 +288,14 @@ __metadata:
   linkType: hard
 
 "@csstools/css-syntax-patches-for-csstree@npm:^1.1.7":
-  version: 1.1.9
-  resolution: "@csstools/css-syntax-patches-for-csstree@npm:1.1.9"
+  version: 1.1.10
+  resolution: "@csstools/css-syntax-patches-for-csstree@npm:1.1.10"
   peerDependencies:
     css-tree: ^3.2.1
   peerDependenciesMeta:
     css-tree:
       optional: true
-  checksum: 10c0/b57a7f588d72c207c7c92687947d625c787b94e0e3d4c73318c721bf11d422aad2e89e0e2345622ce100dcf59a434b82b6b7a5c98ab5d2b27d02a35e00a8fb20
+  checksum: 10c0/6bdb255713a8820971579412078f7adac812905fdfda79fa8ca6883952c61da2abcebb545fb7f87320854d13210994bc89188e195fcd3f62e89f2aa576b114da
   languageName: node
   linkType: hard
 
@@ -557,9 +557,9 @@ __metadata:
   linkType: hard
 
 "@jridgewell/sourcemap-codec@npm:^1.4.14, @jridgewell/sourcemap-codec@npm:^1.5.0, @jridgewell/sourcemap-codec@npm:^1.5.5":
-  version: 1.5.5
-  resolution: "@jridgewell/sourcemap-codec@npm:1.5.5"
-  checksum: 10c0/f9e538f302b63c0ebc06eecb1dd9918dd4289ed36147a0ddce35d6ea4d7ebbda243cda7b2213b6a5e1d8087a298d5cf630fb2bd39329cdecb82017023f6081a0
+  version: 1.6.0
+  resolution: "@jridgewell/sourcemap-codec@npm:1.6.0"
+  checksum: 10c0/b5be700e45a775f218589c3466c4ffea630582b4988657652da464e5ab8a7d18bf928ee4fd2363fb346ede4bea9c6ff0bae05a538358c4565ece6199531b5f72
   languageName: node
   linkType: hard
 
@@ -3920,8 +3920,8 @@ __metadata:
   linkType: hard
 
 "zod@npm:^4.4.3":
-  version: 4.4.3
-  resolution: "zod@npm:4.4.3"
-  checksum: 10c0/7ea31b558e88f9faf44f31dd185e2e1cbf51fed3081787fb96cc2534749b50c0acfc6da7f0922a7353ed092dd358c7d50c28ea96c94d04af64191bd33152eca3
+  version: 4.5.4
+  resolution: "zod@npm:4.5.4"
+  checksum: 10c0/511a2a4d1a6f875dfdd70a1586989a8b14ef126776cd6218a2c760b9f65f14ef389ec20d92ee1aa4fcb4566d4ff3fa012956044f9dc503510d82e4c756a8ba92
   languageName: node
   linkType: hard
