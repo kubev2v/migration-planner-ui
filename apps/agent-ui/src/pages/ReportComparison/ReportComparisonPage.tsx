@@ -120,14 +120,14 @@ export const ReportComparisonPage: React.FC = () => {
 
   if (loading) {
     return (
-      <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+      <PageSection hasBodyWrapper={false} isFilled>
         <Content component="p">Loading report comparison...</Content>
       </PageSection>
     );
   }
 
   return (
-    <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+    <PageSection hasBodyWrapper={false} isFilled>
       <Stack hasGutter>
         <StackItem>
           <ReportComparisonHeader

@@ -8,13 +8,7 @@ import {
   OSDistribution,
   type OSDistributionEntry,
 } from "@openshift-migration-advisor/shared-components";
-import {
-  Gallery,
-  GalleryItem,
-  Grid,
-  GridItem,
-  PageSection,
-} from "@patternfly/react-core";
+import { Gallery, GalleryItem, Grid, GridItem } from "@patternfly/react-core";
 import { InboxIcon } from "@patternfly/react-icons";
 import type React from "react";
 import { AppEmptyState } from "../../../../common/components";
@@ -83,150 +77,131 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   if (!clusterFound && !isAggregateView) {
     return (
-      <PageSection hasBodyWrapper={false}>
-        <AppEmptyState
-          titleText="No data is available for the selected cluster"
-          body="Select a different cluster or check that inventory data has been collected."
-          icon={InboxIcon}
-          bullseyeStyle={{ minHeight: "240px" }}
-        />
-      </PageSection>
+      <AppEmptyState
+        titleText="No data is available for the selected cluster"
+        body="Select a different cluster or check that inventory data has been collected."
+        icon={InboxIcon}
+        bullseyeStyle={{ minHeight: "240px" }}
+      />
     );
   }
 
   return (
-    <PageSection hasBodyWrapper={false}>
-      <Grid hasGutter>
-        <GridItem span={12} data-export-block={isExportMode ? "2" : undefined}>
-          <Gallery hasGutter minWidths={{ default: "40%" }}>
-            <GalleryItem>
-              <VMMigrationStatus
-                data={{
-                  migratable: vms.totalMigratable || 0,
-                  nonMigratable: Math.max(
-                    0,
-                    (vms.total || 0) - (vms.totalMigratable || 0),
-                  ),
-                }}
-                issuesBreakdown={vms.issuesBreakdown}
-                isExportMode={isExportMode}
-                onNavigateToVMFilters={onNavigateToVMFilters}
-              />
-            </GalleryItem>
-            <GalleryItem>
-              <OSDistribution osData={osData} isExportMode={isExportMode} />
-            </GalleryItem>
-          </Gallery>
-        </GridItem>
+    <Grid hasGutter>
+      <GridItem span={12} data-export-block={isExportMode ? "2" : undefined}>
+        <Gallery hasGutter minWidths={{ default: "40%" }}>
+          <GalleryItem>
+            <VMMigrationStatus
+              data={{
+                migratable: vms.totalMigratable || 0,
+                nonMigratable: Math.max(
+                  0,
+                  (vms.total || 0) - (vms.totalMigratable || 0),
+                ),
+              }}
+              issuesBreakdown={vms.issuesBreakdown}
+              isExportMode={isExportMode}
+              onNavigateToVMFilters={onNavigateToVMFilters}
+            />
+          </GalleryItem>
+          <GalleryItem>
+            <OSDistribution osData={osData} isExportMode={isExportMode} />
+          </GalleryItem>
+        </Gallery>
+      </GridItem>
 
-        <GridItem span={12} data-export-block={isExportMode ? "3" : undefined}>
-          <Gallery hasGutter minWidths={{ default: "40%" }}>
-            <GalleryItem>
-              <CpuAndMemoryOverview
-                isExportMode={isExportMode}
-                cpuTierDistribution={vms.distributionByCpuTier}
-                memoryTierDistribution={vms.distributionByMemoryTier}
-                memoryTotalGB={ramGB?.total}
-                cpuTotalCores={cpuCores?.total}
-                onNavigateToVMFilters={onNavigateToVMFilters}
-              />
-            </GalleryItem>
-            <GalleryItem>
-              <StorageOverview
-                diskSizeTier={vms.diskSizeTier ?? {}}
-                diskTypes={vms.diskTypes ?? {}}
-                totalVMs={vms.total ?? 0}
-                totalWithSharedDisks={vms.totalWithSharedDisks ?? 0}
-                isExportMode={isExportMode}
-                exportAllViews={isExportMode}
-                onNavigateToVMFilters={onNavigateToVMFilters}
-              />
-            </GalleryItem>
-          </Gallery>
-        </GridItem>
+      <GridItem span={12} data-export-block={isExportMode ? "3" : undefined}>
+        <Gallery hasGutter minWidths={{ default: "40%" }}>
+          <GalleryItem>
+            <CpuAndMemoryOverview
+              isExportMode={isExportMode}
+              cpuTierDistribution={vms.distributionByCpuTier}
+              memoryTierDistribution={vms.distributionByMemoryTier}
+              memoryTotalGB={ramGB?.total}
+              cpuTotalCores={cpuCores?.total}
+              onNavigateToVMFilters={onNavigateToVMFilters}
+            />
+          </GalleryItem>
+          <GalleryItem>
+            <StorageOverview
+              diskSizeTier={vms.diskSizeTier ?? {}}
+              diskTypes={vms.diskTypes ?? {}}
+              totalVMs={vms.total ?? 0}
+              totalWithSharedDisks={vms.totalWithSharedDisks ?? 0}
+              isExportMode={isExportMode}
+              exportAllViews={isExportMode}
+              onNavigateToVMFilters={onNavigateToVMFilters}
+            />
+          </GalleryItem>
+        </Gallery>
+      </GridItem>
 
-        {isAggregateView ? (
-          <GridItem
-            span={12}
-            data-export-block={isExportMode ? "4" : undefined}
-          >
-            <Gallery hasGutter minWidths={{ default: "300px", md: "45%" }}>
-              <GalleryItem>
-                <ClustersOverview
-                  clustersPerDatacenter={infra.clustersPerDatacenter ?? []}
-                  isExportMode={isExportMode}
-                  clusters={clusters}
-                />
-              </GalleryItem>
-              <GalleryItem>
-                <HostsOverview
-                  hosts={infra.hosts}
-                  isExportMode={isExportMode}
-                />
-              </GalleryItem>
-            </Gallery>
-          </GridItem>
-        ) : (
-          <GridItem
-            span={12}
-            data-export-block={isExportMode ? "4" : undefined}
-          >
-            <Gallery hasGutter minWidths={{ default: "300px", md: "45%" }}>
-              <GalleryItem>
-                <HostsOverview
-                  hosts={infra.hosts}
-                  isExportMode={isExportMode}
-                />
-              </GalleryItem>
-              <GalleryItem>
-                <NetworkOverview
-                  infra={infra}
-                  nicCount={vms.nicCount}
-                  distributionByNicCount={vms.distributionByNicCount}
-                  isExportMode={isExportMode}
-                />
-              </GalleryItem>
-            </Gallery>
-          </GridItem>
-        )}
-        {isAggregateView && (
-          <GridItem
-            span={12}
-            data-export-block={isExportMode ? "4a" : undefined}
-          >
-            <Gallery hasGutter minWidths={{ default: "300px", md: "45%" }}>
-              <GalleryItem>
-                <NetworkOverview
-                  infra={infra}
-                  nicCount={vms.nicCount}
-                  distributionByNicCount={vms.distributionByNicCount}
-                  isExportMode={isExportMode}
-                />
-              </GalleryItem>
-            </Gallery>
-          </GridItem>
-        )}
-
-        <GridItem span={12} data-export-block={isExportMode ? "5" : undefined}>
+      {isAggregateView ? (
+        <GridItem span={12} data-export-block={isExportMode ? "4" : undefined}>
           <Gallery hasGutter minWidths={{ default: "300px", md: "45%" }}>
             <GalleryItem>
-              <WarningsTable
-                warnings={vms.migrationWarnings || []}
+              <ClustersOverview
+                clustersPerDatacenter={infra.clustersPerDatacenter ?? []}
                 isExportMode={isExportMode}
-                onConcernClick={onConcernClick}
+                clusters={clusters}
               />
             </GalleryItem>
             <GalleryItem>
-              <ErrorTable
-                errors={vms.notMigratableReasons || []}
+              <HostsOverview hosts={infra.hosts} isExportMode={isExportMode} />
+            </GalleryItem>
+          </Gallery>
+        </GridItem>
+      ) : (
+        <GridItem span={12} data-export-block={isExportMode ? "4" : undefined}>
+          <Gallery hasGutter minWidths={{ default: "300px", md: "45%" }}>
+            <GalleryItem>
+              <HostsOverview hosts={infra.hosts} isExportMode={isExportMode} />
+            </GalleryItem>
+            <GalleryItem>
+              <NetworkOverview
+                infra={infra}
+                nicCount={vms.nicCount}
+                distributionByNicCount={vms.distributionByNicCount}
                 isExportMode={isExportMode}
-                onConcernClick={onConcernClick}
               />
             </GalleryItem>
           </Gallery>
         </GridItem>
-      </Grid>
-    </PageSection>
+      )}
+      {isAggregateView && (
+        <GridItem span={12} data-export-block={isExportMode ? "4a" : undefined}>
+          <Gallery hasGutter minWidths={{ default: "300px", md: "45%" }}>
+            <GalleryItem>
+              <NetworkOverview
+                infra={infra}
+                nicCount={vms.nicCount}
+                distributionByNicCount={vms.distributionByNicCount}
+                isExportMode={isExportMode}
+              />
+            </GalleryItem>
+          </Gallery>
+        </GridItem>
+      )}
+
+      <GridItem span={12} data-export-block={isExportMode ? "5" : undefined}>
+        <Gallery hasGutter minWidths={{ default: "300px", md: "45%" }}>
+          <GalleryItem>
+            <WarningsTable
+              warnings={vms.migrationWarnings || []}
+              isExportMode={isExportMode}
+              onConcernClick={onConcernClick}
+            />
+          </GalleryItem>
+          <GalleryItem>
+            <ErrorTable
+              errors={vms.notMigratableReasons || []}
+              isExportMode={isExportMode}
+              onConcernClick={onConcernClick}
+            />
+          </GalleryItem>
+        </Gallery>
+      </GridItem>
+    </Grid>
   );
 };
 
