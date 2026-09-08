@@ -288,14 +288,14 @@ __metadata:
   linkType: hard
 
 "@csstools/css-syntax-patches-for-csstree@npm:^1.1.7":
-  version: 1.1.10
-  resolution: "@csstools/css-syntax-patches-for-csstree@npm:1.1.10"
+  version: 1.1.12
+  resolution: "@csstools/css-syntax-patches-for-csstree@npm:1.1.12"
   peerDependencies:
     css-tree: ^3.2.1
   peerDependenciesMeta:
     css-tree:
       optional: true
-  checksum: 10c0/6bdb255713a8820971579412078f7adac812905fdfda79fa8ca6883952c61da2abcebb545fb7f87320854d13210994bc89188e195fcd3f62e89f2aa576b114da
+  checksum: 10c0/1ba981c04e3ea104a0009a51324c156760495f52d2e25418550a9c58cfb6b7efd91ca27ff7c3db0925f53bcd290641effa0647f0ab75cac5bf2ed37448c35a80
   languageName: node
   linkType: hard
 
@@ -2167,8 +2167,8 @@ __metadata:
   linkType: hard
 
 "knip@npm:^6.33.0":
-  version: 6.33.0
-  resolution: "knip@npm:6.33.0"
+  version: 6.34.0
+  resolution: "knip@npm:6.34.0"
   dependencies:
     fdir: "npm:^6.5.0"
     formatly: "npm:^0.7.0"
@@ -2186,7 +2186,7 @@ __metadata:
   bin:
     knip: bin/knip.js
     knip-bun: bin/knip-bun.js
-  checksum: 10c0/088128141936510933278c630e0059659fc040b8045435aa508af9b861392166912dbce03b493eb10d41dbb24bcf498288c8e19f234da7efc9a00016bb7251cb
+  checksum: 10c0/9513231e803726630ce48cff7330ef87f69835b51d0c4502ba191ced11ea930f4c14477b54e297fdfa26088e6b807c2f8c08b12bda9ed4c88d4422db4d77a086
   languageName: node
   linkType: hard
 
@@ -3241,9 +3241,9 @@ __metadata:
   linkType: hard
 
 "undici@npm:^8.4.1, undici@npm:^8.9.0":
-  version: 8.10.0
-  resolution: "undici@npm:8.10.0"
-  checksum: 10c0/37ae2b1db8f65c3a003504e2040e96887b99f9db16ba07dcf49c37ed8b7f8c72f4452f2d46f52f7c9e49518fe8325e3b5e7e02ac3a2424886bd67d4b62a0ecab
+  version: 8.10.1
+  resolution: "undici@npm:8.10.1"
+  checksum: 10c0/90ac5636aa9d22fb710a261ef05e136df6b4bd7a0122201796bd2eb59ccab6661cdf4f635e543ca04420379eafe3f4d214031bbc7623214287988881c24dad55
   languageName: node
   linkType: hard
 
