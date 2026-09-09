@@ -369,22 +369,6 @@ export const filterStyles = {
   `,
 };
 
-export const vmTableStyles = {
-  vmTable: css`
-    th button {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      text-align: left;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-  `,
-  gridScrollContainer: css`
-    overflow-x: auto;
-  `,
-};
-
 export type VMTableVariant = "overview" | "groups" | "compact";
 
 export type VMTableVariantUI = {

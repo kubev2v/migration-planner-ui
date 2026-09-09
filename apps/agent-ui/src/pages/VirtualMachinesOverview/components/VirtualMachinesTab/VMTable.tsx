@@ -1,12 +1,27 @@
+import { css } from "@emotion/css";
 import type React from "react";
 import { useVMTableLogic } from "./useVMTableLogic";
 import { VMTableGrid } from "./VMTableGrid";
 import { VMTableModals } from "./VMTableModals";
 import { VMTableToolbar } from "./VMTableToolbar";
-import { resolveVariantUI, vmTableStyles } from "./vmTableShared";
+import { resolveVariantUI } from "./vmTableShared";
 import type { VMTableProps } from "./vmTableTypes";
 
 export type { VMTableProps } from "./vmTableTypes";
+
+const vmTableContainerStyle = css`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+`;
+
+const gridScrollContainerStyle = css`
+  flex-grow: 1;
+  overflow: auto;
+  min-height: 0;
+  flex-basis: 0;
+`;
 
 export const VMTable: React.FC<VMTableProps> = ({
   vms,
@@ -62,7 +77,7 @@ export const VMTable: React.FC<VMTableProps> = ({
   });
 
   return (
-    <div className={vmTableStyles.vmTable}>
+    <div className={vmTableContainerStyle}>
       <VMTableToolbar
         logic={logic}
         variantUI={variantUI}
@@ -87,8 +102,7 @@ export const VMTable: React.FC<VMTableProps> = ({
         inspectionContextVms={inspectionContextVms}
         selectionContextLoadFailed={selectionContextLoadFailed}
       />
-
-      <div className={vmTableStyles.gridScrollContainer}>
+      <div className={gridScrollContainerStyle}>
         <VMTableGrid
           logic={logic}
           variantUI={variantUI}
@@ -111,7 +125,6 @@ export const VMTable: React.FC<VMTableProps> = ({
           selectionContextLoadFailed={selectionContextLoadFailed}
         />
       </div>
-
       <VMTableModals
         logic={logic}
         cancelingInspectionVmIds={cancelingInspectionVmIds}
