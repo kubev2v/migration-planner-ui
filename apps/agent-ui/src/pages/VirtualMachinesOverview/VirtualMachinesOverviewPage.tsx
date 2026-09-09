@@ -10,6 +10,7 @@ import {
   Stack,
   StackItem,
   Tab,
+  TabContentBody,
   Tabs,
   TabTitleText,
 } from "@patternfly/react-core";
@@ -204,7 +205,7 @@ export const ReportContainer: React.FC = () => {
 
   if (inventoryLoading) {
     return (
-      <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+      <PageSection hasBodyWrapper={false} isFilled>
         <Stack hasGutter>
           <StackItem>
             <ReportPageHeader />
@@ -223,7 +224,7 @@ export const ReportContainer: React.FC = () => {
 
   if (inventoryError) {
     return (
-      <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+      <PageSection hasBodyWrapper={false} isFilled>
         <Stack hasGutter>
           <StackItem>
             <ReportPageHeader />
@@ -244,7 +245,7 @@ export const ReportContainer: React.FC = () => {
 
   if (!inventory) {
     return (
-      <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+      <PageSection hasBodyWrapper={false} isFilled>
         <Stack hasGutter>
           <StackItem>
             <ReportPageHeader />
@@ -338,7 +339,7 @@ export const ReportContainer: React.FC = () => {
   };
 
   return (
-    <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+    <PageSection hasBodyWrapper={false} isFilled>
       <Stack hasGutter>
         <StackItem>
           <ReportPageHeader
@@ -408,7 +409,7 @@ export const ReportContainer: React.FC = () => {
               eventKey={REPORT_TAB.overview}
               title={<TabTitleText>Assessment report</TabTitleText>}
             >
-              <div style={{ marginTop: "8px" }}>
+              <TabContentBody hasPadding>
                 {clusterView.viewInfra && clusterView.viewVms ? (
                   <Dashboard
                     key={`assessment-${clusterView.viewVms.total ?? 0}-${clusterView.selectionId}`}
@@ -438,13 +439,13 @@ export const ReportContainer: React.FC = () => {
                     bullseyeStyle={{ minHeight: "240px" }}
                   />
                 )}
-              </div>
+              </TabContentBody>
             </Tab>
             <Tab
               eventKey={REPORT_TAB.vms}
               title={<TabTitleText>Virtual Machines</TabTitleText>}
             >
-              <div style={{ marginTop: "24px" }}>
+              <TabContentBody hasPadding>
                 <VirtualMachinesView
                   vms={vmsList}
                   loading={vmsFetching}
@@ -459,14 +460,14 @@ export const ReportContainer: React.FC = () => {
                   availableFilterOptions={availableFilterOptions}
                   agentApi={agentApi}
                 />
-              </div>
+              </TabContentBody>
             </Tab>
             {!isRvtoolsMode && (
               <Tab
                 eventKey={REPORT_TAB.applications}
                 title={<TabTitleText>Applications</TabTitleText>}
               >
-                <div style={{ marginTop: "24px" }}>
+                <TabContentBody hasPadding>
                   <ApplicationsView
                     applications={applicationsList}
                     loading={applicationsFetching}
@@ -477,7 +478,7 @@ export const ReportContainer: React.FC = () => {
                     onNavigateToVm={handleNavigateToVm}
                     onViewInVmList={handleViewApplicationInVmList}
                   />
-                </div>
+                </TabContentBody>
               </Tab>
             )}
           </Tabs>

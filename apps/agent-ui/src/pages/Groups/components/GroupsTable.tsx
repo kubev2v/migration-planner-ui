@@ -1,4 +1,3 @@
-import { css } from "@emotion/css";
 import type { Group } from "@openshift-migration-advisor/agent-sdk";
 import {
   Button,
@@ -13,6 +12,8 @@ import {
   type MenuToggleElement,
   Pagination,
   Spinner,
+  Stack,
+  StackItem,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -33,15 +34,6 @@ import {
   type AttributeValueFilterAttribute,
   attributeValueFilterToolbarStyle,
 } from "../../../common/components/attribute-value-filter";
-
-const styles = {
-  toolbar: css`
-    margin-bottom: 16px;
-  `,
-  nameLink: css`
-    font-weight: 400;
-  `,
-};
 
 function formatCreatedDate(date?: Date): string {
   if (!date) {
@@ -107,154 +99,153 @@ export const GroupsTable: React.FC<GroupsTableProps> = ({
     !loading && total === 0 && groups.length === 0 && !hasActiveFilters;
 
   return (
-    <>
-      <Content component={ContentVariants.h1}>Groups</Content>
-
-      <Toolbar
-        className={`${styles.toolbar} ${attributeValueFilterToolbarStyle}`}
-        clearAllFilters={clearAllFilters}
-      >
-        <ToolbarContent>
-          <ToolbarGroup variant="filter-group">
+    <Stack hasGutter>
+      <StackItem>
+        <Content component={ContentVariants.h1}>Groups</Content>
+      </StackItem>
+      <StackItem>
+        <Toolbar
+          className={attributeValueFilterToolbarStyle}
+          clearAllFilters={clearAllFilters}
+        >
+          <ToolbarContent>
+            <ToolbarGroup variant="filter-group">
+              <ToolbarItem>
+                <AttributeValueFilter attributes={filterAttributes} />
+              </ToolbarItem>
+            </ToolbarGroup>
             <ToolbarItem>
-              <AttributeValueFilter attributes={filterAttributes} />
+              <Button variant="primary" onClick={onCreateGroup}>
+                Create VM group
+              </Button>
             </ToolbarItem>
-          </ToolbarGroup>
-          <ToolbarItem>
-            <Button variant="primary" onClick={onCreateGroup}>
-              Create VM group
-            </Button>
-          </ToolbarItem>
-          <ToolbarItem align={{ default: "alignEnd" }}>
-            <Pagination
-              itemCount={total}
-              perPage={pageSize}
-              page={page}
-              onSetPage={(_event, newPage) => onPageChange(newPage, pageSize)}
-              onPerPageSelect={(_event, newPerPage) =>
-                onPageChange(1, newPerPage)
-              }
-              variant="top"
-              isCompact
-            />
-          </ToolbarItem>
-        </ToolbarContent>
-      </Toolbar>
-
-      <Table aria-label="VM groups" variant="compact">
-        <Thead>
-          <Tr>
-            <Th>Group name</Th>
-            <Th>Created on</Th>
-            <Th screenReaderText="Actions" />
-          </Tr>
-        </Thead>
-        <Tbody>
-          {loading ? (
+            <ToolbarItem align={{ default: "alignEnd" }}>
+              <Pagination
+                itemCount={total}
+                perPage={pageSize}
+                page={page}
+                onSetPage={(_event, newPage) => onPageChange(newPage, pageSize)}
+                onPerPageSelect={(_event, newPerPage) =>
+                  onPageChange(1, newPerPage)
+                }
+                variant="top"
+                isCompact
+              />
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
+      </StackItem>
+      <StackItem>
+        <Table aria-label="VM groups" variant="compact">
+          <Thead>
             <Tr>
-              <Td colSpan={3}>
-                <AppEmptyState
-                  titleText="Loading groups"
-                  icon={Spinner}
-                  wrapInBullseye={false}
-                />
-              </Td>
+              <Th>Group name</Th>
+              <Th>Created on</Th>
+              <Th screenReaderText="Actions" />
             </Tr>
-          ) : showWelcomeEmpty ? (
-            <Tr>
-              <Td colSpan={3}>
-                <AppEmptyState
-                  headingLevel="h2"
-                  titleText="No virtual machine groups yet"
-                  body="Create virtual machine groups to generate targeted assessment reports and enhanced VM management."
-                  icon={DesktopIcon}
-                >
-                  <EmptyStateFooter>
-                    <EmptyStateActions>
-                      <Button variant="primary" onClick={onCreateGroup}>
-                        Create VM group
-                      </Button>
-                    </EmptyStateActions>
-                  </EmptyStateFooter>
-                </AppEmptyState>
-              </Td>
-            </Tr>
-          ) : groups.length === 0 ? (
-            <Tr>
-              <Td colSpan={3}>
-                <AppEmptyState
-                  titleText="No groups match the current filters"
-                  body="Try adjusting your filters or clear all filters."
-                  icon={SearchIcon}
-                />
-              </Td>
-            </Tr>
-          ) : (
-            groups.map((group) => (
-              <Tr key={group.id}>
-                <Td dataLabel="Group name">
-                  <Link
-                    to={`/report/groups/${group.id}`}
-                    className={styles.nameLink}
-                  >
-                    {group.name}
-                  </Link>
-                </Td>
-                <Td dataLabel="Created on">
-                  {formatCreatedDate(group.createdAt)}
-                </Td>
-                <Td isActionCell>
-                  <Dropdown
-                    isOpen={openMenuGroupId === group.id}
-                    onOpenChange={(isOpen) =>
-                      setOpenMenuGroupId(isOpen ? group.id : null)
-                    }
-                    onSelect={() => setOpenMenuGroupId(null)}
-                    toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-                      <MenuToggle
-                        ref={toggleRef}
-                        variant="plain"
-                        onClick={() =>
-                          setOpenMenuGroupId((current) =>
-                            current === group.id ? null : group.id,
-                          )
-                        }
-                        isExpanded={openMenuGroupId === group.id}
-                        aria-label={`Actions for ${group.name}`}
-                      >
-                        <EllipsisVIcon />
-                      </MenuToggle>
-                    )}
-                    popperProps={{ position: "right" }}
-                  >
-                    <DropdownList>
-                      <DropdownItem
-                        key="edit"
-                        onClick={() => {
-                          setOpenMenuGroupId(null);
-                          onEditGroupName(group);
-                        }}
-                      >
-                        Edit group name
-                      </DropdownItem>
-                      <DropdownItem
-                        key="delete"
-                        onClick={() => {
-                          setOpenMenuGroupId(null);
-                          onDeleteGroup(group);
-                        }}
-                      >
-                        Delete group
-                      </DropdownItem>
-                    </DropdownList>
-                  </Dropdown>
+          </Thead>
+          <Tbody>
+            {loading ? (
+              <Tr>
+                <Td colSpan={3}>
+                  <AppEmptyState
+                    titleText="Loading groups"
+                    icon={Spinner}
+                    wrapInBullseye={false}
+                  />
                 </Td>
               </Tr>
-            ))
-          )}
-        </Tbody>
-      </Table>
-    </>
+            ) : showWelcomeEmpty ? (
+              <Tr>
+                <Td colSpan={3}>
+                  <AppEmptyState
+                    headingLevel="h2"
+                    titleText="No virtual machine groups yet"
+                    body="Create virtual machine groups to generate targeted assessment reports and enhanced VM management."
+                    icon={DesktopIcon}
+                  >
+                    <EmptyStateFooter>
+                      <EmptyStateActions>
+                        <Button variant="primary" onClick={onCreateGroup}>
+                          Create VM group
+                        </Button>
+                      </EmptyStateActions>
+                    </EmptyStateFooter>
+                  </AppEmptyState>
+                </Td>
+              </Tr>
+            ) : groups.length === 0 ? (
+              <Tr>
+                <Td colSpan={3}>
+                  <AppEmptyState
+                    titleText="No groups match the current filters"
+                    body="Try adjusting your filters or clear all filters."
+                    icon={SearchIcon}
+                  />
+                </Td>
+              </Tr>
+            ) : (
+              groups.map((group) => (
+                <Tr key={group.id}>
+                  <Td dataLabel="Group name">
+                    <Link to={`/report/groups/${group.id}`}>{group.name}</Link>
+                  </Td>
+                  <Td dataLabel="Created on">
+                    {formatCreatedDate(group.createdAt)}
+                  </Td>
+                  <Td isActionCell>
+                    <Dropdown
+                      isOpen={openMenuGroupId === group.id}
+                      onOpenChange={(isOpen) =>
+                        setOpenMenuGroupId(isOpen ? group.id : null)
+                      }
+                      onSelect={() => setOpenMenuGroupId(null)}
+                      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                        <MenuToggle
+                          ref={toggleRef}
+                          variant="plain"
+                          onClick={() =>
+                            setOpenMenuGroupId((current) =>
+                              current === group.id ? null : group.id,
+                            )
+                          }
+                          isExpanded={openMenuGroupId === group.id}
+                          aria-label={`Actions for ${group.name}`}
+                        >
+                          <EllipsisVIcon />
+                        </MenuToggle>
+                      )}
+                      popperProps={{ position: "right" }}
+                    >
+                      <DropdownList>
+                        <DropdownItem
+                          key="edit"
+                          onClick={() => {
+                            setOpenMenuGroupId(null);
+                            onEditGroupName(group);
+                          }}
+                        >
+                          Edit group name
+                        </DropdownItem>
+                        <DropdownItem
+                          key="delete"
+                          onClick={() => {
+                            setOpenMenuGroupId(null);
+                            onDeleteGroup(group);
+                          }}
+                        >
+                          Delete group
+                        </DropdownItem>
+                      </DropdownList>
+                    </Dropdown>
+                  </Td>
+                </Tr>
+              ))
+            )}
+          </Tbody>
+        </Table>
+      </StackItem>
+    </Stack>
   );
 };
 

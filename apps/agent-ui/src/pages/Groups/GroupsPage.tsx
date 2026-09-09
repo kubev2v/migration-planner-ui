@@ -60,7 +60,7 @@ export const GroupsPage: React.FC = () => {
   };
 
   return (
-    <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+    <PageSection hasBodyWrapper={false} isFilled>
       <GroupsTable
         groups={groups}
         loading={loading}

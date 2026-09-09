@@ -1,4 +1,3 @@
-import { css } from "@emotion/css";
 import {
   Alert,
   AlertActionCloseButton,
@@ -53,15 +52,6 @@ import {
   paginateItems,
 } from "./applicationFilters";
 import type { ApplicationOverview } from "./applicationsApi";
-
-const styles = {
-  toolbar: css`
-    margin-bottom: 16px;
-  `,
-  header: css`
-    margin-bottom: 16px;
-  `,
-};
 
 interface ApplicationsViewProps {
   applications: ApplicationOverview[];
@@ -273,7 +263,6 @@ export const ApplicationsView: React.FC<ApplicationsViewProps> = ({
         <DrawerContent panelContent={panelContent}>
           <DrawerContentBody>
             <Flex
-              className={styles.header}
               alignItems={{ default: "alignItemsCenter" }}
               spaceItems={{ default: "spaceItemsSm" }}
             >
@@ -313,7 +302,7 @@ export const ApplicationsView: React.FC<ApplicationsViewProps> = ({
             )}
 
             <Toolbar
-              className={`${styles.toolbar} ${attributeValueFilterToolbarStyle}`}
+              className={attributeValueFilterToolbarStyle}
               clearAllFilters={clearAllFilters}
             >
               <ToolbarContent>

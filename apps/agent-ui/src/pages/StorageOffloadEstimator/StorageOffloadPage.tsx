@@ -8,7 +8,7 @@ export const StorageOffloadPage: React.FC = () => {
   const basePath = getAgentApiBasePath(getAgentApiClient());
 
   return (
-    <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+    <PageSection hasBodyWrapper={false} isFilled>
       <StorageOffloadTab basePath={basePath} />
     </PageSection>
   );

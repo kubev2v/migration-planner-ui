@@ -278,7 +278,7 @@ export const GroupDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+      <PageSection hasBodyWrapper={false} isFilled>
         <AppEmptyState
           titleText="Loading group"
           icon={Spinner}
@@ -293,7 +293,7 @@ export const GroupDetailPage: React.FC = () => {
       ? getGroupErrorMessage(groupError)
       : "Group not found.";
     return (
-      <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+      <PageSection hasBodyWrapper={false} isFilled>
         <Alert variant="danger" title="Unable to load group">
           {message}
         </Alert>
@@ -315,7 +315,7 @@ export const GroupDetailPage: React.FC = () => {
 
   const clusterSelectDisabled = clusterView.clusterOptions.length <= 1;
   return (
-    <PageSection hasBodyWrapper={false} isFilled style={{ padding: "24px" }}>
+    <PageSection hasBodyWrapper={false} isFilled>
       <Stack hasGutter>
         <StackItem>
           <Breadcrumb>
