@@ -1,3 +1,4 @@
+import { css } from "@emotion/css";
 import {
   Alert,
   Content,
@@ -10,13 +11,14 @@ import {
   Stack,
   StackItem,
   Tab,
+  TabContent,
   TabContentBody,
   Tabs,
   TabTitleText,
 } from "@patternfly/react-core";
 import { InboxIcon } from "@patternfly/react-icons";
 import type React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getAgentApiClient } from "../../api/agentApiClient";
 import { AppEmptyState } from "../../common/components/index";
@@ -72,6 +74,20 @@ const EMPTY_FILTER_OPTIONS: VMTableFilterOptions = {
   applications: [],
 };
 
+const tabsStackItemStyle = css`
+  display: flex;
+  flex-direction: column;
+`;
+
+const vmsTabContentStyle = css`
+  flex: 1;
+  min-height: 0;
+`;
+
+const vmsTabContentBodyStyle = css`
+  height: 100%;
+`;
+
 export const ReportContainer: React.FC = () => {
   const { isRvtoolsMode } = useAgentStatus();
   const agentApi = getAgentApiClient();
@@ -86,6 +102,10 @@ export const ReportContainer: React.FC = () => {
   const [vmsPage, setVmsPage] = useState(1);
   const [vmsPageSize, setVmsPageSize] = useState(20);
   const [vmsSortFields, setVmsSortFields] = useState<string[]>([]);
+
+  const overviewTabRef = useRef<HTMLElement>(null);
+  const vmsTabRef = useRef<HTMLElement>(null);
+  const applicationsTabRef = useRef<HTMLElement>(null);
 
   const initialVMFilters = useMemo(
     () => searchParamsToFilters(searchParams),
@@ -403,85 +423,116 @@ export const ReportContainer: React.FC = () => {
         )}
 
         {/* Tabs */}
-        <StackItem>
+        <StackItem isFilled className={tabsStackItemStyle}>
           <Tabs activeKey={activeTab} onSelect={handleTabSelect}>
             <Tab
               eventKey={REPORT_TAB.overview}
               title={<TabTitleText>Assessment report</TabTitleText>}
-            >
-              <TabContentBody hasPadding>
-                {clusterView.viewInfra && clusterView.viewVms ? (
-                  <Dashboard
-                    key={`assessment-${clusterView.viewVms.total ?? 0}-${clusterView.selectionId}`}
-                    infra={clusterView.viewInfra}
-                    cpuCores={clusterView.cpuCores}
-                    ramGB={clusterView.ramGB}
-                    vms={clusterView.viewVms}
-                    clusters={clusterView.viewClusters}
-                    isAggregateView={clusterView.isAggregateView}
-                    clusterFound={clusterView.clusterFound}
-                    onConcernClick={handleConcernClick}
-                    onNavigateToVMFilters={handleNavigateToVMFilters}
-                  />
-                ) : (
-                  <AppEmptyState
-                    titleText={
-                      clusterView.isAggregateView
-                        ? "This assessment does not have report data yet"
-                        : "No data is available for the selected cluster"
-                    }
-                    body={
-                      clusterView.isAggregateView
-                        ? "Report data will appear here once inventory collection is complete."
-                        : "Select a different cluster or check that inventory data has been collected."
-                    }
-                    icon={InboxIcon}
-                    bullseyeStyle={{ minHeight: "240px" }}
-                  />
-                )}
-              </TabContentBody>
-            </Tab>
+              tabContentId="report-tab-overview"
+              tabContentRef={overviewTabRef}
+            />
             <Tab
               eventKey={REPORT_TAB.vms}
               title={<TabTitleText>Virtual Machines</TabTitleText>}
-            >
-              <TabContentBody hasPadding>
-                <VirtualMachinesView
-                  vms={vmsList}
-                  loading={vmsFetching}
-                  initialFilters={initialVMFilters}
-                  totalVMs={vmsTotalCount}
-                  currentPage={vmsPage}
-                  pageSize={vmsPageSize}
-                  onFiltersChange={handleFiltersChange}
-                  onPageChange={handlePageChange}
-                  onSortChange={handleSortChange}
-                  sortFields={vmsSortFields}
-                  availableFilterOptions={availableFilterOptions}
-                  agentApi={agentApi}
-                />
-              </TabContentBody>
-            </Tab>
+              tabContentId="report-tab-vms"
+              tabContentRef={vmsTabRef}
+            />
             {!isRvtoolsMode && (
               <Tab
                 eventKey={REPORT_TAB.applications}
                 title={<TabTitleText>Applications</TabTitleText>}
-              >
-                <TabContentBody hasPadding>
-                  <ApplicationsView
-                    applications={applicationsList}
-                    loading={applicationsFetching}
-                    error={applicationsError}
-                    agentApi={agentApi}
-                    selectedApplicationName={selectedApplicationName}
-                    onClearSelectedApplication={handleClearSelectedApplication}
-                    onNavigateToVm={handleNavigateToVm}
-                    onViewInVmList={handleViewApplicationInVmList}
-                  />
-                </TabContentBody>
-              </Tab>
+                tabContentId="report-tab-applications"
+                tabContentRef={applicationsTabRef}
+              />
             )}
           </Tabs>
+
+          {/* TabsContent */}
+          <TabContent
+            eventKey={REPORT_TAB.overview}
+            id="report-tab-overview"
+            ref={overviewTabRef}
+            hidden={activeTab !== REPORT_TAB.overview}
+          >
+            <TabContentBody hasPadding>
+              {clusterView.viewInfra && clusterView.viewVms ? (
+                <Dashboard
+                  key={`assessment-${clusterView.viewVms.total ?? 0}-${clusterView.selectionId}`}
+                  infra={clusterView.viewInfra}
+                  cpuCores={clusterView.cpuCores}
+                  ramGB={clusterView.ramGB}
+                  vms={clusterView.viewVms}
+                  clusters={clusterView.viewClusters}
+                  isAggregateView={clusterView.isAggregateView}
+                  clusterFound={clusterView.clusterFound}
+                  onConcernClick={handleConcernClick}
+                  onNavigateToVMFilters={handleNavigateToVMFilters}
+                />
+              ) : (
+                <AppEmptyState
+                  titleText={
+                    clusterView.isAggregateView
+                      ? "This assessment does not have report data yet"
+                      : "No data is available for the selected cluster"
+                  }
+                  body={
+                    clusterView.isAggregateView
+                      ? "Report data will appear here once inventory collection is complete."
+                      : "Select a different cluster or check that inventory data has been collected."
+                  }
+                  icon={InboxIcon}
+                  bullseyeStyle={{ minHeight: "240px" }}
+                />
+              )}
+            </TabContentBody>
+          </TabContent>
+
+          <TabContent
+            eventKey={REPORT_TAB.vms}
+            id="report-tab-vms"
+            ref={vmsTabRef}
+            hidden={activeTab !== REPORT_TAB.vms}
+            className={vmsTabContentStyle}
+          >
+            <TabContentBody hasPadding className={vmsTabContentBodyStyle}>
+              <VirtualMachinesView
+                vms={vmsList}
+                loading={vmsFetching}
+                initialFilters={initialVMFilters}
+                totalVMs={vmsTotalCount}
+                currentPage={vmsPage}
+                pageSize={vmsPageSize}
+                onFiltersChange={handleFiltersChange}
+                onPageChange={handlePageChange}
+                onSortChange={handleSortChange}
+                sortFields={vmsSortFields}
+                availableFilterOptions={availableFilterOptions}
+                agentApi={agentApi}
+              />
+            </TabContentBody>
+          </TabContent>
+
+          {!isRvtoolsMode && (
+            <TabContent
+              eventKey={REPORT_TAB.applications}
+              id="report-tab-applications"
+              ref={applicationsTabRef}
+              hidden={activeTab !== REPORT_TAB.applications}
+            >
+              <TabContentBody hasPadding>
+                <ApplicationsView
+                  applications={applicationsList}
+                  loading={applicationsFetching}
+                  error={applicationsError}
+                  agentApi={agentApi}
+                  selectedApplicationName={selectedApplicationName}
+                  onClearSelectedApplication={handleClearSelectedApplication}
+                  onNavigateToVm={handleNavigateToVm}
+                  onViewInVmList={handleViewApplicationInVmList}
+                />
+              </TabContentBody>
+            </TabContent>
+          )}
         </StackItem>
       </Stack>
 

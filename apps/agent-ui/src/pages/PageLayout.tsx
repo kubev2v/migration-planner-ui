@@ -302,6 +302,7 @@ export const PageLayout: React.FC = () => {
             </PageSidebarBody>
           </PageSidebar>
         }
+        isContentFilled
       >
         <RunNewReportAlerts />
         <Outlet />

@@ -2,13 +2,16 @@ import {
   Alert,
   AlertActionCloseButton,
   Button,
+  Content,
+  ContentVariants,
   Drawer,
   DrawerContent,
   DrawerContentBody,
   Flex,
   FlexItem,
   Pagination,
-  Title,
+  Stack,
+  StackItem,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -262,147 +265,161 @@ export const ApplicationsView: React.FC<ApplicationsViewProps> = ({
       <Drawer isExpanded={drawerApplication !== null} isInline position="end">
         <DrawerContent panelContent={panelContent}>
           <DrawerContentBody>
-            <Flex
-              alignItems={{ default: "alignItemsCenter" }}
-              spaceItems={{ default: "spaceItemsSm" }}
-            >
-              <FlexItem>
-                <Title headingLevel="h2" size="lg">
-                  Applications
-                </Title>
-              </FlexItem>
-              <FlexItem>
-                <TechnologyPreviewBadge />
-              </FlexItem>
-            </Flex>
+            <Stack hasGutter>
+              <StackItem>
+                <Flex
+                  alignItems={{ default: "alignItemsCenter" }}
+                  spaceItems={{ default: "spaceItemsSm" }}
+                >
+                  <FlexItem>
+                    <Content component={ContentVariants.h2}>
+                      Applications
+                    </Content>
+                  </FlexItem>
+                  <FlexItem>
+                    <TechnologyPreviewBadge />
+                  </FlexItem>
+                </Flex>
+              </StackItem>
 
-            {error && (
-              <Alert
-                variant="danger"
-                title="Error loading applications"
-                style={{ marginBottom: "16px" }}
-              >
-                {error}
-              </Alert>
-            )}
-            {actionError && (
-              <Alert
-                variant="danger"
-                title="Label update failed"
-                isInline
-                style={{ marginBottom: "16px" }}
-                actionClose={
-                  <AlertActionCloseButton
-                    onClose={() => setActionError(null)}
-                  />
-                }
-              >
-                {actionError}
-              </Alert>
-            )}
-
-            <Toolbar
-              className={attributeValueFilterToolbarStyle}
-              clearAllFilters={clearAllFilters}
-            >
-              <ToolbarContent>
-                <ToolbarGroup variant="filter-group">
-                  <ToolbarItem>
-                    <AttributeValueFilter attributes={filterAttributes} />
-                  </ToolbarItem>
-                </ToolbarGroup>
-                <ToolbarItem align={{ default: "alignEnd" }}>
-                  <Pagination
-                    itemCount={filteredApplications.length}
-                    perPage={pageSize}
-                    page={page}
-                    onSetPage={(_event, newPage) => setPage(newPage)}
-                    onPerPageSelect={(_event, newPerPage) => {
-                      setPage(1);
-                      setPageSize(newPerPage);
-                    }}
-                    variant="top"
-                    isCompact
-                  />
-                </ToolbarItem>
-              </ToolbarContent>
-            </Toolbar>
-
-            <Table aria-label="Applications" variant="compact">
-              <Thead>
-                <Tr>
-                  <Th>Application name</Th>
-                  <Th>
-                    <span
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "4px",
-                      }}
-                    >
-                      Certification status
-                      <Tooltip content={CERTIFICATION_STATUS_TOOLTIP}>
-                        <Button
-                          variant="plain"
-                          aria-label="Certification status information"
-                          style={{ padding: 0, minHeight: "auto" }}
-                        >
-                          <QuestionCircleIcon />
-                        </Button>
-                      </Tooltip>
-                    </span>
-                  </Th>
-                  <Th>VMs</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {loading ? (
-                  <Tr>
-                    <Td colSpan={3}>Loading applications...</Td>
-                  </Tr>
-                ) : filteredApplications.length === 0 ? (
-                  <Tr>
-                    <Td colSpan={3}>
-                      <AppEmptyState
-                        titleText={
-                          applications.length === 0
-                            ? "No applications were detected on your virtual machines"
-                            : "No applications match the current filters"
-                        }
-                        body={
-                          applications.length === 0
-                            ? "Applications are identified during virtual machine inspection."
-                            : "Try adjusting your filters or search criteria."
-                        }
-                        icon={
-                          applications.length === 0 ? CubesIcon : SearchIcon
-                        }
+              {error && (
+                <StackItem>
+                  <Alert
+                    variant="danger"
+                    title="Error loading applications"
+                    style={{ marginBottom: "16px" }}
+                  >
+                    {error}
+                  </Alert>
+                </StackItem>
+              )}
+              {actionError && (
+                <StackItem>
+                  <Alert
+                    variant="danger"
+                    title="Label update failed"
+                    isInline
+                    style={{ marginBottom: "16px" }}
+                    actionClose={
+                      <AlertActionCloseButton
+                        onClose={() => setActionError(null)}
                       />
-                    </Td>
-                  </Tr>
-                ) : (
-                  paginatedApplications.map((application) => (
-                    <Tr key={application.name}>
-                      <Td dataLabel="Application name">{application.name}</Td>
-                      <Td dataLabel="Certification status">
-                        {getCertificationStatusLabel(
-                          getApplicationCertificationStatus(application.name),
-                        )}
-                      </Td>
-                      <Td dataLabel="VMs">
-                        <Button
-                          variant="link"
-                          isInline
-                          onClick={() => openDrawer(application)}
+                    }
+                  >
+                    {actionError}
+                  </Alert>
+                </StackItem>
+              )}
+
+              <StackItem>
+                <Toolbar
+                  className={attributeValueFilterToolbarStyle}
+                  clearAllFilters={clearAllFilters}
+                >
+                  <ToolbarContent>
+                    <ToolbarGroup variant="filter-group">
+                      <ToolbarItem>
+                        <AttributeValueFilter attributes={filterAttributes} />
+                      </ToolbarItem>
+                    </ToolbarGroup>
+                    <ToolbarItem align={{ default: "alignEnd" }}>
+                      <Pagination
+                        itemCount={filteredApplications.length}
+                        perPage={pageSize}
+                        page={page}
+                        onSetPage={(_event, newPage) => setPage(newPage)}
+                        onPerPageSelect={(_event, newPerPage) => {
+                          setPage(1);
+                          setPageSize(newPerPage);
+                        }}
+                        variant="top"
+                        isCompact
+                      />
+                    </ToolbarItem>
+                  </ToolbarContent>
+                </Toolbar>
+
+                <Table aria-label="Applications" variant="compact">
+                  <Thead>
+                    <Tr>
+                      <Th>Application name</Th>
+                      <Th>
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "4px",
+                          }}
                         >
-                          {application.vmCount}
-                        </Button>
-                      </Td>
+                          Certification status
+                          <Tooltip content={CERTIFICATION_STATUS_TOOLTIP}>
+                            <Button
+                              variant="plain"
+                              aria-label="Certification status information"
+                              style={{ padding: 0, minHeight: "auto" }}
+                            >
+                              <QuestionCircleIcon />
+                            </Button>
+                          </Tooltip>
+                        </span>
+                      </Th>
+                      <Th>VMs</Th>
                     </Tr>
-                  ))
-                )}
-              </Tbody>
-            </Table>
+                  </Thead>
+                  <Tbody>
+                    {loading ? (
+                      <Tr>
+                        <Td colSpan={3}>Loading applications...</Td>
+                      </Tr>
+                    ) : filteredApplications.length === 0 ? (
+                      <Tr>
+                        <Td colSpan={3}>
+                          <AppEmptyState
+                            titleText={
+                              applications.length === 0
+                                ? "No applications were detected on your virtual machines"
+                                : "No applications match the current filters"
+                            }
+                            body={
+                              applications.length === 0
+                                ? "Applications are identified during virtual machine inspection."
+                                : "Try adjusting your filters or search criteria."
+                            }
+                            icon={
+                              applications.length === 0 ? CubesIcon : SearchIcon
+                            }
+                          />
+                        </Td>
+                      </Tr>
+                    ) : (
+                      paginatedApplications.map((application) => (
+                        <Tr key={application.name}>
+                          <Td dataLabel="Application name">
+                            {application.name}
+                          </Td>
+                          <Td dataLabel="Certification status">
+                            {getCertificationStatusLabel(
+                              getApplicationCertificationStatus(
+                                application.name,
+                              ),
+                            )}
+                          </Td>
+                          <Td dataLabel="VMs">
+                            <Button
+                              variant="link"
+                              isInline
+                              onClick={() => openDrawer(application)}
+                            >
+                              {application.vmCount}
+                            </Button>
+                          </Td>
+                        </Tr>
+                      ))
+                    )}
+                  </Tbody>
+                </Table>
+              </StackItem>
+            </Stack>
           </DrawerContentBody>
         </DrawerContent>
       </Drawer>
