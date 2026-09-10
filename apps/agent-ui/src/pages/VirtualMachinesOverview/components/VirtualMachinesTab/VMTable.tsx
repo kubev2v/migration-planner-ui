@@ -16,11 +16,23 @@ const vmTableContainerStyle = css`
   min-height: 0;
 `;
 
+const vmTableContainerCompactStyle = css`
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+`;
+
 const gridScrollContainerStyle = css`
   flex-grow: 1;
   overflow: auto;
   min-height: 0;
   flex-basis: 0;
+`;
+
+const gridScrollContainerCompactStyle = css`
+  overflow: auto;
+  min-height: 0;
+  max-height: 50vh;
 `;
 
 export const VMTable: React.FC<VMTableProps> = ({
@@ -59,6 +71,7 @@ export const VMTable: React.FC<VMTableProps> = ({
 }) => {
   const variantUI = resolveVariantUI({ variant, totalVMs });
   const isGroupRowActions = variant === "groups";
+  const isCompact = variant === "compact";
 
   const logic = useVMTableLogic({
     vms,
@@ -77,7 +90,11 @@ export const VMTable: React.FC<VMTableProps> = ({
   });
 
   return (
-    <div className={vmTableContainerStyle}>
+    <div
+      className={
+        isCompact ? vmTableContainerCompactStyle : vmTableContainerStyle
+      }
+    >
       <VMTableToolbar
         logic={logic}
         variantUI={variantUI}
@@ -102,7 +119,11 @@ export const VMTable: React.FC<VMTableProps> = ({
         inspectionContextVms={inspectionContextVms}
         selectionContextLoadFailed={selectionContextLoadFailed}
       />
-      <div className={gridScrollContainerStyle}>
+      <div
+        className={
+          isCompact ? gridScrollContainerCompactStyle : gridScrollContainerStyle
+        }
+      >
         <VMTableGrid
           logic={logic}
           variantUI={variantUI}
