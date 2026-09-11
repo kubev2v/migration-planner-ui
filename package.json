@@ -16,7 +16,7 @@
     "knip": "knip --workspace apps/agent-ui"
   },
   "devDependencies": {
-    "@biomejs/biome": "~2.5.11",
+    "@biomejs/biome": "~2.5.12",
     "@types/node": "^26.4.1",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
